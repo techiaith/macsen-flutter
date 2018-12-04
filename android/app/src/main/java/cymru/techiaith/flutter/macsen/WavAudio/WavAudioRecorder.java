@@ -1,4 +1,4 @@
-package cymru.techiaith.flutter.macsen;
+package cymru.techiaith.flutter.macsen.WavAudio;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,30 +18,30 @@ import android.media.MediaRecorder;
 
 import android.util.Log;
 
-import io.flutter.plugin.common.MethodChannel;
+import cymru.techiaith.flutter.macsen.MainActivity;
 
 public class WavAudioRecorder {
 
-    private AudioRecord _audiorecorder;
     private MainActivity _mainactivity;
-    private MethodChannel _methodChannel;
+    private AudioRecord _audiorecorder;
 
-    private int sampleRate = 16000;
-    private int channelConfig = AudioFormat.CHANNEL_IN_MONO;
-    private int audioEncoding = AudioFormat.ENCODING_PCM_16BIT;
+    //
+    private boolean isRecording = false;
 
+    private final static int sampleRate = 16000;
+    private final static int channelConfig = AudioFormat.CHANNEL_IN_MONO;
+    private final static int audioEncoding = AudioFormat.ENCODING_PCM_16BIT;
     private final static int WAV_HEADER_SIZE = 44;
 
     private int bufferSize = 0;
     private Thread recordingThread = null;
-    private boolean isRecording = false;
-    short[] audioData;
 
+    short[] audioData;
     private File wavFile;
 
-    public WavAudioRecorder(MainActivity activity, MethodChannel channel){
+
+    public WavAudioRecorder(MainActivity activity){
         _mainactivity=activity;
-        _methodChannel=channel;
     }
 
     public File getWavFile(){

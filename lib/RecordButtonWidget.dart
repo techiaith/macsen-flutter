@@ -81,6 +81,10 @@ class _RecordButtonState extends State<RecordButtonWidget> {
       isListening=false;
       if (stopRecordingResult!="FAIL") {
         audioRecordingFilePath = stopRecordingResult;
+
+        //
+        platform.invokeMethod('playRecording', audioRecordingFilePath);
+
       } else {
         audioRecordingFilePath = null;
       }

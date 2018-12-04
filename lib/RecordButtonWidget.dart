@@ -1,7 +1,12 @@
 import 'dart:async';
+import 'dart:io';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import 'package:http/http.dart' as http;
+
 
 class RecordButtonWidget extends StatefulWidget{
     RecordButtonWidget({Key key,}) : super(key: key);
@@ -70,8 +75,13 @@ class _RecordButtonState extends State<RecordButtonWidget> {
 
   Future<void> _stopRecording() async{
     String stopRecordingResult;
+    //String stt;
+
     try{
       stopRecordingResult = await platform.invokeMethod('stopRecording');
+      String stt = await performMacsenSTT(stopRecordingResult);
+      print (stt);
+
     }
     on PlatformException catch (e) {
       stopRecordingResult = "FAIL";
@@ -81,14 +91,46 @@ class _RecordButtonState extends State<RecordButtonWidget> {
       isListening=false;
       if (stopRecordingResult!="FAIL") {
         audioRecordingFilePath = stopRecordingResult;
-
-        //
-        platform.invokeMethod('playRecording', audioRecordingFilePath);
-
       } else {
         audioRecordingFilePath = null;
       }
     });
+  }
+
+  Future<String> performMacsenSTT(String recordedFilePath) async {
+    //
+    platform.invokeMethod('playRecording', audioRecordingFilePath);
+
+    // send to server ! :)
+    var url = "http://macsen-stt.techiaith.cymru/dsserver/handleaudio/";
+
+    File uploadFile = new File(recordedFilePath);
+    int length = uploadFile.lengthSync();
+    Stream uploadStream = uploadFile.openRead();
+
+    try{
+      HttpClient client = new HttpClient();
+      HttpClientRequest request = await client.postUrl(Uri.parse(url));
+
+      request.headers.contentLength=length;
+      request.headers.contentType=ContentType.binary;
+
+      await request.addStream(uploadStream);
+
+      HttpClientResponse response = await request.close();
+
+      if (response.statusCode==200) {
+        StringBuffer sb = new StringBuffer();
+        await for (String a in response.transform(utf8.decoder)){
+          sb.write(a);
+        }
+        return sb.toString();
+      }
+    } on Exception catch (e) {
+      print (e);
+    }
+
+    return null;
   }
 
 

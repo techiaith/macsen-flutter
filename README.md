@@ -1,16 +1,8 @@
-# macsen
+# Macsen
 
-Macsen - Y cynorthwyydd personol digidol Cymraeg
+## Macsen - Y Cynorthwyydd personol Digidol Cymraeg
 
-## Getting Started
+Sgrinlun o fersiwn v0.000001
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.io/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.io/docs/cookbook)
-
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.io/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+![sgrinlun 0.000001](Screenshot_20181205-134326.png)

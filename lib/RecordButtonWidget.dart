@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:http/http.dart' as http;
+//import 'package:http/http.dart' as http;
 
 
 class RecordButtonWidget extends StatefulWidget{
@@ -13,6 +13,7 @@ class RecordButtonWidget extends StatefulWidget{
 
     @override
     _RecordButtonState createState() => new _RecordButtonState();
+
 }
 
 
@@ -23,7 +24,7 @@ class _RecordButtonState extends State<RecordButtonWidget> {
   bool isAllowed = false;
   bool isListening = false;
   String audioRecordingFilePath;
-
+  String sttResult = '';
 
   _RecordButtonState(){
     _checkMicrophonePermissions();
@@ -61,6 +62,7 @@ class _RecordButtonState extends State<RecordButtonWidget> {
     String startRecordingResult;
     try{
         startRecordingResult = await platform.invokeMethod('startRecording', 'tmpwavfile');
+        sttResult='';
     }
     on PlatformException catch (e) {
         startRecordingResult = "FAIL";
@@ -74,32 +76,31 @@ class _RecordButtonState extends State<RecordButtonWidget> {
 
 
   Future<void> _stopRecording() async{
-    String stopRecordingResult;
-    //String stt;
 
+    String stopRecordingResult;
     try{
       stopRecordingResult = await platform.invokeMethod('stopRecording');
-      String stt = await performMacsenSTT(stopRecordingResult);
-      print (stt);
-
+      sttResult = await performMacsenSTT(stopRecordingResult);
     }
     on PlatformException catch (e) {
       stopRecordingResult = "FAIL";
     }
 
+    //
     setState((){
       isListening=false;
       if (stopRecordingResult!="FAIL") {
         audioRecordingFilePath = stopRecordingResult;
+        //platform.invokeMethod('playRecording', audioRecordingFilePath);
       } else {
         audioRecordingFilePath = null;
       }
     });
+
   }
 
+
   Future<String> performMacsenSTT(String recordedFilePath) async {
-    //
-    platform.invokeMethod('playRecording', audioRecordingFilePath);
 
     // send to server ! :)
     var url = "http://macsen-stt.techiaith.cymru/dsserver/handleaudio/";
@@ -137,22 +138,39 @@ class _RecordButtonState extends State<RecordButtonWidget> {
   @override
   Widget build(BuildContext context) {
 
+    Widget recordIconButton;
+
     if (isAllowed == true) {
-      return !isListening ?
-      _buildIconButton(
-          Icons.mic,
-          _startRecording,
-          Colors.teal
-      )
-          :
-      _buildIconButton(
-          Icons.mic_none,
-          _stopRecording,
-          Colors.redAccent
-      );
+      if (!isListening){
+        recordIconButton = _buildIconButton(Icons.mic,
+                                            _startRecording,
+                                            Colors.teal
+        );
+      }  else {
+        recordIconButton =  _buildIconButton(Icons.mic_none,
+                                             _stopRecording,
+                                             Colors.redAccent
+        );
+      }
     } else {
-      return _buildIconButton(Icons.mic_off, null, Colors.red);
+      recordIconButton = _buildIconButton(Icons.mic_off, null, Colors.red);
     }
+
+
+    Widget recordIconButtonWithLabel = Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            "$sttResult",
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis),
+          recordIconButton
+        ],
+    );
+
+
+    return recordIconButtonWithLabel;
+
   }
 
 

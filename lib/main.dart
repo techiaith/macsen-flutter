@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'HomePage.dart';
 
+import 'package:macsen/bloc/BlocProvider.dart';
+import 'package:macsen/bloc/SpeechToTextBloc.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -13,7 +16,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.teal
       ),
-      home: new HomePage(title: 'Macsen'),
+      home: BlocProvider<SpeechToTextBloc>(
+        bloc: SpeechToTextBloc(),
+        child: HomePage(),
+      ),
     );
   }
 }

@@ -1,27 +1,19 @@
+
 import 'package:flutter/material.dart';
+
 import 'RecordButtonWidget.dart';
+import 'package:macsen/bloc/BlocProvider.dart';
+import 'package:macsen/bloc/SpeechToTextBloc.dart';
 
-class HomePage extends StatefulWidget {
-
-  HomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  _HomePageState createState() => new _HomePageState();
-}
-
-
-class _HomePageState extends State<HomePage> {
+class HomePage extends StatelessWidget  {
 
   @override
   Widget build(BuildContext context) {
+    final  SpeechToTextBloc sttBloc = BlocProvider.of<SpeechToTextBloc>(context);
 
     return new Scaffold(
       appBar: new AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: new Text(widget.title),
+        title: new Text("Macsen"),
       ),
       body: new Center(
 
@@ -29,7 +21,11 @@ class _HomePageState extends State<HomePage> {
 
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-
+            StreamBuilder<String>(
+              stream: sttBloc.transcription,
+              initialData: '',
+              builder: (context, snapshot) => Text(snapshot.data)
+            )
           ],
         ),
       ),

@@ -1,23 +1,20 @@
 import 'dart:async';
-import 'dart:io';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-//import 'package:http/http.dart' as http;
+import 'package:macsen/bloc/BlocProvider.dart';
+import 'package:macsen/bloc/SpeechToTextBloc.dart';
 
+class RecordButtonWidget extends  StatefulWidget {
+  RecordButtonWidget({Key key,}) : super(key: key);
 
-class RecordButtonWidget extends StatefulWidget{
-    RecordButtonWidget({Key key,}) : super(key: key);
-
-    @override
-    _RecordButtonState createState() => new _RecordButtonState();
-
+  @override
+  RecordButtonState createState() => new RecordButtonState();
 }
 
 
-class _RecordButtonState extends State<RecordButtonWidget> {
+class RecordButtonState extends State<RecordButtonWidget> {
 
   static const platform = const MethodChannel('cymru.techiaith.flutter.macsen');
 
@@ -26,7 +23,7 @@ class _RecordButtonState extends State<RecordButtonWidget> {
   String audioRecordingFilePath;
   String sttResult = '';
 
-  _RecordButtonState(){
+  RecordButtonState(){
     _checkMicrophonePermissions();
     platform.setMethodCallHandler(nativeCallbackHandler);
   }
@@ -71,7 +68,6 @@ class _RecordButtonState extends State<RecordButtonWidget> {
     setState((){
       startRecordingResult=="OK" ? isListening=true : isListening=false;
     });
-
   }
 
 
@@ -80,7 +76,6 @@ class _RecordButtonState extends State<RecordButtonWidget> {
     String stopRecordingResult;
     try{
       stopRecordingResult = await platform.invokeMethod('stopRecording');
-      sttResult = await performMacsenSTT(stopRecordingResult);
     }
     on PlatformException catch (e) {
       stopRecordingResult = "FAIL";
@@ -88,50 +83,19 @@ class _RecordButtonState extends State<RecordButtonWidget> {
 
     //
     setState((){
+      final SpeechToTextBloc sttBloc = BlocProvider.of<SpeechToTextBloc>(this.context);
+
       isListening=false;
       if (stopRecordingResult!="FAIL") {
         audioRecordingFilePath = stopRecordingResult;
+        sttBloc.onNewSpeechRecording.add(audioRecordingFilePath);
+
         //platform.invokeMethod('playRecording', audioRecordingFilePath);
+
       } else {
         audioRecordingFilePath = null;
       }
     });
-
-  }
-
-
-  Future<String> performMacsenSTT(String recordedFilePath) async {
-
-    // send to server ! :)
-    var url = "http://macsen-stt.techiaith.cymru/dsserver/handleaudio/";
-
-    File uploadFile = new File(recordedFilePath);
-    int length = uploadFile.lengthSync();
-    Stream uploadStream = uploadFile.openRead();
-
-    try{
-      HttpClient client = new HttpClient();
-      HttpClientRequest request = await client.postUrl(Uri.parse(url));
-
-      request.headers.contentLength=length;
-      request.headers.contentType=ContentType.binary;
-
-      await request.addStream(uploadStream);
-
-      HttpClientResponse response = await request.close();
-
-      if (response.statusCode==200) {
-        StringBuffer sb = new StringBuffer();
-        await for (String a in response.transform(utf8.decoder)){
-          sb.write(a);
-        }
-        return sb.toString();
-      }
-    } on Exception catch (e) {
-      print (e);
-    }
-
-    return null;
   }
 
 
@@ -167,7 +131,6 @@ class _RecordButtonState extends State<RecordButtonWidget> {
           recordIconButton
         ],
     );
-
 
     return recordIconButtonWithLabel;
 

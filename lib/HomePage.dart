@@ -1,9 +1,9 @@
-
 import 'package:flutter/material.dart';
 
-import 'RecordButtonWidget.dart';
 import 'package:macsen/bloc/BlocProvider.dart';
 import 'package:macsen/bloc/SpeechToTextBloc.dart';
+
+import 'RecordButtonWidget.dart';
 
 class HomePage extends StatelessWidget  {
 

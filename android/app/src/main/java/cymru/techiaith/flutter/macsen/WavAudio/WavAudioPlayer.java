@@ -18,7 +18,6 @@ public class WavAudioPlayer {
 
     private Thread playingThread = null;
 
-
     public WavAudioPlayer(MainActivity activity){
         _mainactivity=activity;
         _context = _mainactivity.getApplicationContext();

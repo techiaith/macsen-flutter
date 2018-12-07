@@ -5,8 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
-import 'package:macsen/bloc/BlocProvider.dart';
-import 'package:macsen/bloc/SpeechToTextBloc.dart';
+import 'package:macsen/blocs/BlocProvider.dart';
+import 'package:macsen/blocs/ConversationBloc.dart';
+
+import 'package:macsen/models/ConversationModel.dart';
+
 
 class RecordButtonWidget extends  StatefulWidget {
   RecordButtonWidget({Key key,}) : super(key: key);
@@ -22,6 +25,7 @@ class RecordButtonState extends State<RecordButtonWidget> {
 
   bool isAllowed = false;
   bool isListening = false;
+  bool isWaiting = false;
 
   String audioRecordingFilePath;
 
@@ -29,6 +33,7 @@ class RecordButtonState extends State<RecordButtonWidget> {
   String beep_lo_file_path;
 
   RecordButtonState(){
+
     _checkMicrophonePermissions();
 
     beep_hi_file_path = '';
@@ -43,6 +48,7 @@ class RecordButtonState extends State<RecordButtonWidget> {
     });
 
     platform.setMethodCallHandler(nativeCallbackHandler);
+
   }
 
   Future<String> loadAudio(String asset_filename) async {
@@ -64,6 +70,17 @@ class RecordButtonState extends State<RecordButtonWidget> {
       });
     }
 
+  }
+
+
+  void handleConversationStateChange(ConversationModel conversationModel)
+  {
+    isWaiting=conversationModel.isWaiting;
+
+    setState(() {
+      print ("handleConversationStateChange iswaiting " + conversationModel.isWaiting.toString());
+      //isWaiting=conversationModel.isWaiting;
+    });
   }
 
 
@@ -114,12 +131,12 @@ class RecordButtonState extends State<RecordButtonWidget> {
 
     //
     setState((){
-      final SpeechToTextBloc sttBloc = BlocProvider.of<SpeechToTextBloc>(this.context);
+      final ConversationBloc conversationBloc = BlocProvider.of<ConversationBloc>(this.context);
 
       isListening=false;
       if (stopRecordingResult!="FAIL") {
         audioRecordingFilePath = stopRecordingResult;
-        sttBloc.onNewSpeechRecording.add(audioRecordingFilePath);
+        conversationBloc.processSpeech.add(audioRecordingFilePath);
 
         //platform.invokeMethod('playRecording', audioRecordingFilePath);
 
@@ -133,36 +150,56 @@ class RecordButtonState extends State<RecordButtonWidget> {
   @override
   Widget build(BuildContext context) {
 
-    if (isAllowed == true) {
-      if (!isListening){
-        return _buildIconButton(Icons.mic,
-                                _startRecording,
-                                Colors.teal
-        );
-      }  else {
-        return _buildIconButton(Icons.mic_none,
-                                _stopRecording,
-                                Colors.redAccent
-        );
-      }
-    } else {
-        return _buildIconButton(Icons.mic_off, null, Colors.red);
-    }
+    final ConversationBloc conversationBloc = BlocProvider.of<ConversationBloc>(context);
+
+    return new Padding(
+      padding: new EdgeInsets.all(12.0),
+      child: StreamBuilder(
+          stream: conversationBloc.conversation,
+          builder: (context, snapshot) => FloatingActionButton(
+            child: new Icon(getIcon(snapshot.data), size: 32.0),
+                            backgroundColor: getBackgroundColor(snapshot.data),
+                            onPressed: getOnPress(snapshot.data),
+          ),
+      )
+    );
 
   }
 
 
-  Widget _buildIconButton(IconData icon,
-                          VoidCallback onPress,
-                          Color color)
+  IconData getIcon(ConversationModel model){
+    if (model!=null) {
+      print ("getIcon iswaiting " + model.isWaiting.toString());
+      if (model.isWaiting==true)
+        return Icons.mic_off;
+    }
+
+    if (isListening)
+      return Icons.mic_none;
+
+    return Icons.mic;
+
+  }
+
+  Color getBackgroundColor(ConversationModel model)
   {
-    return new Padding(
-        padding: new EdgeInsets.all(12.0),
-        child: new FloatingActionButton(
-            child: new Icon(icon, size: 32.0),
-            backgroundColor: color,
-            onPressed: onPress),
-    );
+    if (model!=null) {
+      if (model.isWaiting)
+        return Colors.deepOrangeAccent;
+    }
+
+    if (isListening)
+      return Colors.redAccent;
+
+    return Colors.teal;
+
+  }
+
+  VoidCallback getOnPress(ConversationModel model){
+    if (!isListening)
+      return _startRecording;
+    else
+      return _stopRecording;
   }
 
 }

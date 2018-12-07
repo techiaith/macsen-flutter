@@ -2,36 +2,12 @@ import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:rxdart/subjects.dart';
-import 'package:macsen/bloc/BlocProvider.dart';
-
-class SpeechToTextBloc implements BlocBase {
-
-  // in
-  final StreamController<String> _newSpeechRecordingController = StreamController<String>();
-  Sink<String> get onNewSpeechRecording => _newSpeechRecordingController.sink;
-
-  // out
-  final BehaviorSubject<String> _transcription = BehaviorSubject<String>(seedValue: '');
-  Stream<String> get transcription => _transcription.stream;
+class SpeechToText {
 
   //
-  SpeechToTextBloc() {
-    _newSpeechRecordingController.stream.listen((filename) {
-      performSTT(filename);
-    });
-  }
+  Future<String> transcribe(String recordedFilePath) async {
 
-
-  //
-  void dispose() {
-    _newSpeechRecordingController.close();
-    _transcription.close();
-  }
-
-
-  //
-  Future<void> performSTT(String recordedFilePath) async {
+    String result = '';
 
     // send to server ! :)
     var url = "http://macsen-stt.techiaith.cymru/dsserver/handleaudio/";
@@ -55,13 +31,13 @@ class SpeechToTextBloc implements BlocBase {
         await for (String a in response.transform(utf8.decoder)){
           sb.write(a);
         }
-        _transcription.value = sb.toString();
+        result = sb.toString();
       }
     } on Exception catch (e) {
-      _transcription.value = '';
+      result = '';
       print (e);
     }
-
+    return result;
   }
 
 }

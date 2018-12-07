@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:macsen/bloc/BlocProvider.dart';
-import 'package:macsen/bloc/SpeechToTextBloc.dart';
+import 'package:macsen/blocs/BlocProvider.dart';
+import 'package:macsen/blocs/ConversationBloc.dart';
 
 import 'RecordButtonWidget.dart';
 
@@ -9,7 +9,7 @@ class HomePage extends StatelessWidget  {
 
   @override
   Widget build(BuildContext context) {
-    final  SpeechToTextBloc sttBloc = BlocProvider.of<SpeechToTextBloc>(context);
+    final ConversationBloc conversationBloc = BlocProvider.of<ConversationBloc>(context);
 
     return new Scaffold(
       appBar: new AppBar(
@@ -22,7 +22,7 @@ class HomePage extends StatelessWidget  {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             StreamBuilder<String>(
-              stream: sttBloc.transcription,
+              stream: conversationBloc.transcription,
               initialData: '',
               builder: (context, snapshot) => Text(snapshot.data)
             )

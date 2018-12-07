@@ -26,7 +26,7 @@ public class WavAudioPlayer {
 
     public boolean stopPlaying(){
         try{
-            if (_player!=null && _player.isPlaying()){
+            if (_player!=null){ // && _player.isPlaying()){
                 _player.stop();
                 _player.release();
 

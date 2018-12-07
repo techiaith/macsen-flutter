@@ -1,14 +1,16 @@
 import 'dart:async';
 
 import 'package:macsen/blocs/BlocProvider.dart';
-import 'package:macsen/models/ConversationModel.dart';
+import 'package:macsen/apis/TextToSpeech.dart';
 import 'package:macsen/apis/SpeechToText.dart';
+import 'package:macsen/models/ConversationModel.dart';
 
 import 'package:rxdart/subjects.dart';
 
 class ConversationBloc implements BlocBase {
 
   SpeechToText sttApi;
+  TextToSpeech ttsApi;
 
   // in
   final StreamController<bool> _listeningController= StreamController<bool>();
@@ -36,7 +38,8 @@ class ConversationBloc implements BlocBase {
   //
   ConversationBloc() {
 
-    stt = new SpeechToText();
+    sttApi = new SpeechToText();
+    ttsApi = new TextToSpeech();
 
     _listeningController.stream.listen((isListening) {
       onConversationStateChange(isListening);
@@ -94,12 +97,12 @@ class ConversationBloc implements BlocBase {
        cvm.isListening=true;
        _conversationModel.add(cvm);
 
-       print("onNewSpeechFile then iswaiting set to " +  _conversationModel.value.isWaiting.toString());
-
        _transcription.add(transcription);
 
        if (transcription.contains("tywydd")){
-         // .....
+          ttsApi.speak("Mae'n bwrw glaw yn sobor iawn");
+       } else if (transcription.contains("newyddion")){
+         ttsApi.speak("Yn anffodus, does dim lawer o newyddion da heddiw");
        }
 
      });

@@ -73,17 +73,6 @@ class RecordButtonState extends State<RecordButtonWidget> {
   }
 
 
-  void handleConversationStateChange(ConversationModel conversationModel)
-  {
-    isWaiting=conversationModel.isWaiting;
-
-    setState(() {
-      print ("handleConversationStateChange iswaiting " + conversationModel.isWaiting.toString());
-      //isWaiting=conversationModel.isWaiting;
-    });
-  }
-
-
   Future<void> _checkMicrophonePermissions() async {
     bool checkMicrophonePermissionsResult;
     try {
@@ -169,7 +158,6 @@ class RecordButtonState extends State<RecordButtonWidget> {
 
   IconData getIcon(ConversationModel model){
     if (model!=null) {
-      print ("getIcon iswaiting " + model.isWaiting.toString());
       if (model.isWaiting==true)
         return Icons.mic_off;
     }

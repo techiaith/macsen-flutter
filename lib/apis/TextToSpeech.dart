@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:async';
 
+import 'package:path/path.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
@@ -41,7 +42,8 @@ class TextToSpeech {
 
 
   void onCompletedSpeaking(String audioFilePath){
-    if (audioFilePath.startsWith("tts_")){
+    String filename = basename(audioFilePath);
+    if (filename.startsWith("tts_")){
       File oldAudioFile = new File(audioFilePath);
       if (oldAudioFile.existsSync()) {
         oldAudioFile.delete();

@@ -17,7 +17,7 @@ class NewsSkill {
       return response.body;
     }).then((bodyString) {
       var rss_channel = new RssFeed.parse(bodyString);
-      parent.speak.add("Dyma pennawdau newyddion gwefan Golwg 3 6 dim");
+      parent.speak.add("Dyma benawdau newyddion gwefan Golwg 3 6 diim");
       for (int i=0; i<5;i++){
 
         String newsItemText = rss_channel.items[i].title + ". " +

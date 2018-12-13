@@ -18,10 +18,9 @@ class RecordButtonWidget extends  StatefulWidget {
   RecordButtonState createState() => new RecordButtonState();
 }
 
+const MethodChannel platform = const MethodChannel('cymru.techiaith.flutter.macsen/wavrecorder');
 
 class RecordButtonState extends State<RecordButtonWidget> {
-
-  static const platform = const MethodChannel('cymru.techiaith.flutter.macsen');
 
   bool isAllowed = false;
   bool isListening = false;
@@ -63,13 +62,11 @@ class RecordButtonState extends State<RecordButtonWidget> {
 
 
   Future<dynamic> nativeCallbackHandler(MethodCall methodCall) async {
-
     if (methodCall.method == "audioRecordingPermissionGranted") {
       setState(() {
         isAllowed = true;
       });
     }
-
   }
 
 

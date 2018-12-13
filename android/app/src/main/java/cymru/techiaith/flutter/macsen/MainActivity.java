@@ -12,15 +12,19 @@ import io.flutter.plugins.GeneratedPluginRegistrant;
 
 import cymru.techiaith.flutter.macsen.WavAudio.WavAudioRecorder;
 import cymru.techiaith.flutter.macsen.WavAudio.WavAudioPlayer;
+import cymru.techiaith.flutter.macsen.WavAudio.WavAudioPlayerEventListener;
 
-public class MainActivity extends FlutterActivity implements MethodChannel.MethodCallHandler {
+public class MainActivity extends FlutterActivity implements MethodChannel.MethodCallHandler, WavAudioPlayerEventListener {
 
     private static final String METHOD_CHANNEL = "cymru.techiaith.flutter.macsen";
+
     private final static int PERMISSIONS_REQUEST_RECORD_AUDIO = 22;
 
     private WavAudioRecorder wavAudioRecorder;
     private WavAudioPlayer wavAudioPlayer;
-    private MethodChannel channel;
+
+    private MethodChannel wavplayer_channel;
+    private MethodChannel wavrecorder_channel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,11 +32,15 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
 
         GeneratedPluginRegistrant.registerWith(this);
 
-        channel = new MethodChannel(getFlutterView(), METHOD_CHANNEL);
-        channel.setMethodCallHandler(this);
+        wavrecorder_channel = new MethodChannel(getFlutterView(), METHOD_CHANNEL + "/wavrecorder");
+        wavrecorder_channel.setMethodCallHandler(this);
+
+        wavplayer_channel = new MethodChannel(getFlutterView(), METHOD_CHANNEL + "/wavplayer");
+        wavplayer_channel.setMethodCallHandler(this);
 
         wavAudioRecorder = new WavAudioRecorder(this);
         wavAudioPlayer = new WavAudioPlayer(this);
+        wavAudioPlayer.registerWavAudioPlayerEventListener(this);
 
     }
 
@@ -79,10 +87,14 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         switch (requestCode) {
             case PERMISSIONS_REQUEST_RECORD_AUDIO: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    channel.invokeMethod("audioRecordingPermissionGranted","OK");
+                    wavrecorder_channel.invokeMethod("audioRecordingPermissionGranted","OK");
                 }
             }
         }
+    }
+
+    public void onWavAudioPlayerCompletionEvent(String audioFilePath){
+        wavplayer_channel.invokeMethod("audioPlayCompleted", audioFilePath);
     }
 
 }

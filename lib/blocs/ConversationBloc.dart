@@ -1,16 +1,28 @@
+
 import 'dart:async';
+import 'dart:collection';
+
+import 'package:rxdart/subjects.dart';
+
+import 'package:flutter/services.dart';
 
 import 'package:macsen/blocs/BlocProvider.dart';
 import 'package:macsen/apis/TextToSpeech.dart';
 import 'package:macsen/apis/SpeechToText.dart';
 import 'package:macsen/models/ConversationModel.dart';
 
-import 'package:rxdart/subjects.dart';
+// skills
+import 'package:macsen/skills/weather/Weather.dart';
+import 'package:macsen/skills/news/News.dart';
+
+
+const MethodChannel _channel = const MethodChannel('cymru.techiaith.flutter.macsen/wavplayer');
 
 class ConversationBloc implements BlocBase {
 
   SpeechToText sttApi;
   TextToSpeech ttsApi;
+  Queue<String> speakQueue;
 
   // in
   final StreamController<bool> _listeningController= StreamController<bool>();
@@ -18,6 +30,9 @@ class ConversationBloc implements BlocBase {
 
   final StreamController<String> _newSpeechController = StreamController<String>();
   Sink<String> get processSpeech => _newSpeechController.sink;
+
+  final StreamController<String> _speakController = StreamController<String>();
+  Sink<String> get speak => _speakController.sink;
 
 
   // out
@@ -31,15 +46,19 @@ class ConversationBloc implements BlocBase {
   void dispose() {
     _listeningController.close();
     _newSpeechController.close();
-    _conversationModel.close();
+    _speakController.close();
+
     _transcription.close();
+    _conversationModel.close();
   }
 
-  //
+
   ConversationBloc() {
 
     sttApi = new SpeechToText();
     ttsApi = new TextToSpeech();
+
+    speakQueue = new Queue<String>();
 
     _listeningController.stream.listen((isListening) {
       onConversationStateChange(isListening);
@@ -49,9 +68,23 @@ class ConversationBloc implements BlocBase {
       onNewSpeechFile(newSpeechFilepath);
     });
 
+    _speakController.stream.listen((text){
+      onSpeakText(text);
+    });
+
     _conversationModel.value.isActive = true;
 
+    _channel.setMethodCallHandler(_nativeCallbackHandler);
+
   }
+
+
+  Future<dynamic> _nativeCallbackHandler(MethodCall methodCall) async {
+    if (methodCall.method == "audioPlayCompleted") {
+      onCompletedSpeaking(methodCall.arguments);
+    }
+  }
+
 
   void onConversationStateChange(bool isListening) {
 
@@ -77,14 +110,36 @@ class ConversationBloc implements BlocBase {
     if (isListening == true) {
       cvm.isWaiting = false;
       cvm.isSpeaking = false;
+      _transcription.add('');
     }
 
     _conversationModel.add(cvm);
 
   }
 
-   void onNewSpeechFile(String newSpeechFilePath)
-   {
+  void onSpeakText(String text) {
+    speakQueue.add(text);
+    if (_conversationModel.value.isSpeaking==false)
+      _speakNextInQueue();
+  }
+
+  void onCompletedSpeaking(String audioFilePath){
+    _conversationModel.value.isSpeaking=false;
+    ttsApi.onCompletedSpeaking(audioFilePath);
+    _speakNextInQueue();
+  }
+
+  void _speakNextInQueue(){
+    if (speakQueue.length > 0){
+      String text = speakQueue.removeFirst();
+      _transcription.add(text);
+      _conversationModel.value.isSpeaking=true;
+      ttsApi.speak(text);
+    }
+  }
+
+  void onNewSpeechFile(String newSpeechFilePath)
+  {
      ConversationModel cvm = _conversationModel.value.clone();
      cvm.isWaiting=true;
      cvm.isListening=false;
@@ -100,12 +155,13 @@ class ConversationBloc implements BlocBase {
        _transcription.add(transcription);
 
        if (transcription.contains("tywydd")){
-          ttsApi.speak("Mae'n bwrw glaw yn sobor iawn");
+         WeatherSkill.execute(this);
        } else if (transcription.contains("newyddion")){
-         ttsApi.speak("Yn anffodus, does dim lawer o newyddion da heddiw");
+         NewsSkill.execute(this);
        }
 
      });
-   }
-}
 
+  }
+
+}

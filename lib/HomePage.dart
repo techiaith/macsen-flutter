@@ -10,6 +10,8 @@ class HomePage extends StatelessWidget  {
   @override
   Widget build(BuildContext context) {
     final ConversationBloc conversationBloc = BlocProvider.of<ConversationBloc>(context);
+    double mediaWidth = MediaQuery.of(context).size.width;
+    double width_80 = mediaWidth * 0.8;
 
     return new Scaffold(
       appBar: new AppBar(
@@ -18,14 +20,22 @@ class HomePage extends StatelessWidget  {
       body: new Center(
 
         child: new Column(
-
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             StreamBuilder<String>(
               stream: conversationBloc.transcription,
               initialData: '',
-              builder: (context, snapshot) => Text(snapshot.data)
-            )
+              builder: (context, snapshot) => Container(
+                  width: width_80,
+                  child: Text(
+                      snapshot.data,
+                      maxLines: 10,
+                      style: TextStyle(
+                        fontSize: 12
+                      )
+                  ),
+                ),
+              ), //Text(snapshot.data)
           ],
         ),
       ),

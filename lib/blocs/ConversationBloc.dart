@@ -117,17 +117,20 @@ class ConversationBloc implements BlocBase {
 
   }
 
+
   void onSpeakText(String text) {
     speakQueue.add(text);
     if (_conversationModel.value.isSpeaking==false)
       _speakNextInQueue();
   }
 
+
   void onCompletedSpeaking(String audioFilePath){
     _conversationModel.value.isSpeaking=false;
     ttsApi.onCompletedSpeaking(audioFilePath);
     _speakNextInQueue();
   }
+
 
   void _speakNextInQueue(){
     if (speakQueue.length > 0){
@@ -137,6 +140,7 @@ class ConversationBloc implements BlocBase {
       ttsApi.speak(text);
     }
   }
+
 
   void onNewSpeechFile(String newSpeechFilePath)
   {

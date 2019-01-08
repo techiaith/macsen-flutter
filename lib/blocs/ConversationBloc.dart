@@ -18,11 +18,30 @@ import 'package:macsen/skills/news/News.dart';
 
 const MethodChannel _channel = const MethodChannel('cymru.techiaith.flutter.macsen/wavplayer');
 
+
+class TextToSpeechUtterance {
+  String originalText;
+  String locallyAdaptedText;
+
+  TextToSpeechUtterance(String originalText,
+                        String locallyAdaptedText) {
+    this.originalText=originalText;
+    if (locallyAdaptedText==''){
+      this.locallyAdaptedText=this.originalText;
+    } else {
+      this.locallyAdaptedText=locallyAdaptedText;
+    }
+  }
+}
+
+
 class ConversationBloc implements BlocBase {
 
   SpeechToText sttApi;
   TextToSpeech ttsApi;
-  Queue<String> speakQueue;
+
+  Queue<TextToSpeechUtterance> speakQueue;
+
 
   // in
   final StreamController<bool> _listeningController= StreamController<bool>();
@@ -31,8 +50,8 @@ class ConversationBloc implements BlocBase {
   final StreamController<String> _newSpeechController = StreamController<String>();
   Sink<String> get processSpeech => _newSpeechController.sink;
 
-  final StreamController<String> _speakController = StreamController<String>();
-  Sink<String> get speak => _speakController.sink;
+  final StreamController<TextToSpeechUtterance> _speakController = StreamController<TextToSpeechUtterance>();
+  Sink<TextToSpeechUtterance> get speak => _speakController.sink;
 
 
   // out
@@ -58,7 +77,7 @@ class ConversationBloc implements BlocBase {
     sttApi = new SpeechToText();
     ttsApi = new TextToSpeech();
 
-    speakQueue = new Queue<String>();
+    speakQueue = new Queue<TextToSpeechUtterance>();
 
     _listeningController.stream.listen((isListening) {
       onConversationStateChange(isListening);
@@ -68,8 +87,8 @@ class ConversationBloc implements BlocBase {
       onNewSpeechFile(newSpeechFilepath);
     });
 
-    _speakController.stream.listen((text){
-      onSpeakText(text);
+    _speakController.stream.listen((ttsUtterance) {
+      onSpeakTextUtterance(ttsUtterance);
     });
 
     _conversationModel.value.isActive = true;
@@ -118,8 +137,8 @@ class ConversationBloc implements BlocBase {
   }
 
 
-  void onSpeakText(String text) {
-    speakQueue.add(text);
+  void onSpeakTextUtterance(TextToSpeechUtterance ttsUtterance) {
+    speakQueue.add(ttsUtterance);
     if (_conversationModel.value.isSpeaking==false)
       _speakNextInQueue();
   }
@@ -134,11 +153,17 @@ class ConversationBloc implements BlocBase {
 
   void _speakNextInQueue(){
     if (speakQueue.length > 0){
-      String text = speakQueue.removeFirst();
-      _transcription.add(text);
+      TextToSpeechUtterance nextUtterance = speakQueue.removeFirst();
       _conversationModel.value.isSpeaking=true;
-      ttsApi.speak(text);
+
+      // show original text
+      _transcription.add(nextUtterance.originalText);
+
+      // speak the locally adapted text
+      ttsApi.speak(nextUtterance.locallyAdaptedText);
+
     }
+
   }
 
 

@@ -8,8 +8,6 @@ import 'package:path_provider/path_provider.dart';
 
 import 'package:macsen/utils/md5.dart';
 
-
-
 const channel = const MethodChannel('cymru.techiaith.flutter.macsen/wavplayer');
 
 class TextToSpeech {
@@ -17,8 +15,8 @@ class TextToSpeech {
   static String ttsApiKey = '62bb5885-294d-4fcf-9b2a-23195723ea07';
 
   Future<void> speak(String text) async {
-    HttpClient httpClient = new HttpClient();
 
+    HttpClient httpClient = new HttpClient();
     var request = await httpClient.getUrl(new Uri.https(
         'api.techiaith.org', '/marytts/v1',
         {
@@ -39,6 +37,7 @@ class TextToSpeech {
       await channel.invokeMethod('playRecording', file.path);
     }
   }
+
 
 
   void onCompletedSpeaking(String audioFilePath){

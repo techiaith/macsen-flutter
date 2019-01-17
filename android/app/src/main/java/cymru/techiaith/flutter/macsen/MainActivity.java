@@ -3,6 +3,7 @@ package cymru.techiaith.flutter.macsen;
 import android.Manifest;
 import android.os.Bundle;
 import android.content.pm.PackageManager;
+
 import android.support.v4.app.ActivityCompat;
 
 import io.flutter.app.FlutterActivity;

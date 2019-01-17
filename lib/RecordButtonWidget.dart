@@ -7,7 +7,6 @@ import 'package:path_provider/path_provider.dart';
 
 import 'package:macsen/blocs/BlocProvider.dart';
 import 'package:macsen/blocs/ConversationBloc.dart';
-
 import 'package:macsen/models/ConversationModel.dart';
 
 

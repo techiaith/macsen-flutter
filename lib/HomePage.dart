@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
 
-import 'package:macsen/blocs/BlocProvider.dart';
-import 'package:macsen/blocs/ConversationBloc.dart';
-
 import 'RecordButtonWidget.dart';
 import 'MacsenDrawer.dart';
+
+import 'package:macsen/blocs/application_state_provider.dart';
 
 class HomePage extends StatelessWidget  {
 
   @override
   Widget build(BuildContext context) {
 
-    final ConversationBloc conversationBloc = BlocProvider.of<ConversationBloc>(context);
+    final ApplicationBloc appBloc = ApplicationStateProvider.of(context);
+
     double mediaWidth = MediaQuery.of(context).size.width;
     double width_80 = mediaWidth * 0.8;
-
-    // https://github.com/flutter/flutter/blob/master/examples/flutter_gallery/lib/demo/material/menu_demo.dart
 
     return new Scaffold(
         appBar:
@@ -38,7 +36,19 @@ class HomePage extends StatelessWidget  {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   StreamBuilder<String>(
-                    stream: conversationBloc.transcription,
+                    stream: appBloc.intentParsingBloc.questionOrCommand,
+                    initialData: '',
+                    builder: (context, snapshot) => Container(
+                      width: width_80,
+                      child: Text(
+                          snapshot.data,
+                          maxLines: 10,
+                          style: TextStyle(fontSize: 24)
+                      ),
+                    ),
+                  ),
+                  StreamBuilder<String>(
+                    stream: appBloc.loudspeakerBloc.currentSoundText,
                     initialData: '',
                     builder: (context, snapshot) => Container(
                       width: width_80,

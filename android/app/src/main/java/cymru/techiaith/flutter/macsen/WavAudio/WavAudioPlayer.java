@@ -69,14 +69,12 @@ public class WavAudioPlayer {
                                     _player = null;
 
                                     _wavAudioEventListener.onWavAudioPlayerCompletionEvent(audioFilePath);
-
                                 }
                             });
                             _player.start();
                         } catch (Exception e){
                             Log.e("WavAudioPlayer", "playAudio " + e.getMessage() + "\n" + e.getStackTrace());
                         }
-
                     }
                 });
                 playingThread.start();

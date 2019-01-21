@@ -1,25 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:macsen/blocs/application_state_provider.dart';
 
 import 'HomePage.dart';
-
-import 'package:macsen/blocs/BlocProvider.dart';
-import 'package:macsen/blocs/ConversationBloc.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Macsen',
-      theme: ThemeData(
-        primarySwatch: Colors.teal
-      ),
-      home: BlocProvider<ConversationBloc>(
-        bloc: ConversationBloc(),
-        child: HomePage(),
-      ),
+    return ApplicationStateProvider(
+      child: MaterialApp(
+        title: 'Macsen',
+        theme:
+          ThemeData(
+            primarySwatch: Colors.teal
+          ),
+        home:
+          HomePage(),
+      )
     );
   }
+
+
+//    return MaterialApp(
+//        title: 'Macsen',
+//        theme:
+//          ThemeData(
+//            primarySwatch: Colors.teal
+//          ),
+//        home:
+//          BlocProvider<ConversationBloc>(
+//            bloc: ConversationBloc(),
+//            child: HomePage(),
+//          ),
+////        routes:
+////          <String, WidgetBuilder>{
+////              "/TextualInputScreen": (BuildContext context) => new TextualInputScreen(),
+////          }
+//    );
+
 }

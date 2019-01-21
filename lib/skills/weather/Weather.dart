@@ -1,11 +1,15 @@
 
 import 'package:webfeed/webfeed.dart';
-import 'package:macsen/blocs/ConversationBloc.dart';
+
 import 'package:macsen/utils/httpRss.dart';
+
+import 'package:macsen/blocs/text_to_speech.dart';
+import 'package:macsen/blocs/application_state_provider.dart';
+
 
 class WeatherSkill {
 
-  static String weather_rss_url = 'https://weather-broker-cdn.api.bbci.co.uk/cy/observation/rss/8299867';
+  static String _weatherRssUrl = 'https://weather-broker-cdn.api.bbci.co.uk/cy/observation/rss/8299867';
 
   /*
   <?xml version="1.0" encoding="UTF-8"?>
@@ -34,13 +38,15 @@ class WeatherSkill {
   </rss>
   */
 
-  static void execute(ConversationBloc parent) {
+  static void execute(ApplicationBloc applicationBloc, dynamic json) {
 
-    HttpRss.getRssChannelContent(weather_rss_url).then((bodyString) {
+    HttpRss.getRssChannelContent(_weatherRssUrl).then((bodyString) {
       var channel = new RssFeed.parse(bodyString);
-      parent.speak.add(new TextToSpeechUtterance(channel.description, localAdaptStringForTts(channel.description)));
-      parent.speak.add(new TextToSpeechUtterance(channel.items[0].title, localAdaptStringForTts(channel.items[0].title)));
-      parent.speak.add(new TextToSpeechUtterance(channel.items[0].description, localAdaptStringForTts(channel.items[0].description)));
+
+      applicationBloc.textToSpeechBloc.speak.add(new TextToSpeechText(channel.description, localAdaptStringForTts(channel.description)));
+      applicationBloc.textToSpeechBloc.speak.add(new TextToSpeechText(channel.items[0].title, localAdaptStringForTts(channel.items[0].title)));
+      applicationBloc.textToSpeechBloc.speak.add(new TextToSpeechText(channel.items[0].description, localAdaptStringForTts(channel.items[0].description)));
+
     });
 
   }

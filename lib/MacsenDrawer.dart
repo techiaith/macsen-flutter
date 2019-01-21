@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import 'TextualInputScreen.dart';
 
 class MacsenDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context){
 
-      return ListView(
+    return ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
           Container(
@@ -40,6 +41,11 @@ class MacsenDrawer extends StatelessWidget {
                       ),
                     onTap: () {
                       Navigator.pop(context);
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) => TextualInputScreen(),
+                        )
+                      );
                     },
                   ),
                   ListTile(
@@ -60,6 +66,4 @@ class MacsenDrawer extends StatelessWidget {
         ]
       );
   }
-
 }
-

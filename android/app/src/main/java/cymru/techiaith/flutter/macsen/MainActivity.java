@@ -40,6 +40,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         wavplayer_channel.setMethodCallHandler(this);
 
         wavAudioRecorder = new WavAudioRecorder(this);
+
         wavAudioPlayer = new WavAudioPlayer(this);
         wavAudioPlayer.registerWavAudioPlayerEventListener(this);
 
@@ -53,11 +54,11 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             handleCheckMicrophonePermission(result);
         } else if (methodCall.method.equals("startRecording")){
             result.success(wavAudioRecorder.startRecord((String) methodCall.arguments) ? "OK" : "FAIL");
-        } else if (methodCall.method.equals(("stopRecording"))) {
+        } else if (methodCall.method.equals("stopRecording")) {
             result.success(wavAudioRecorder.stopRecord() ? wavAudioRecorder.getWavFile().getAbsolutePath() : "FAIL");
-        } else if (methodCall.method.equals(("playRecording"))) {
+        } else if (methodCall.method.equals("playRecording")) {
             result.success(wavAudioPlayer.playAudio((String) methodCall.arguments) ? "OK" : "FAIL");
-        } else if (methodCall.method.equals(("stopPlayingRecording"))) {
+        } else if (methodCall.method.equals("stopPlayingRecording")) {
             result.success(wavAudioPlayer.stopPlaying() ? "OK" : "FAIL");
         } else {
             result.notImplemented();
@@ -95,6 +96,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     }
 
     public void onWavAudioPlayerCompletionEvent(String audioFilePath){
+        System.out.println("Native callback audioPlayCompleted");
         wavplayer_channel.invokeMethod("audioPlayCompleted", audioFilePath);
     }
 

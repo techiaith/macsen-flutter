@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:rxdart/subjects.dart';
 
@@ -43,6 +44,8 @@ class TextToSpeechBloc implements BlocBase {
   ApplicationBloc _applicationBloc;
   TextToSpeech _ttsApi;
 
+  bool _isWaitingForTts = false;
+  Queue<TextToSpeechText> _ttsQueue;
 
   // Sinks
   final StreamController<TextToSpeechText> _speakTextController = StreamController<TextToSpeechText>();
@@ -61,7 +64,10 @@ class TextToSpeechBloc implements BlocBase {
 
   TextToSpeechBloc(ApplicationBloc parentBloc){
     _applicationBloc = parentBloc;
+
     _ttsApi = new TextToSpeech();
+    _ttsQueue = new Queue<TextToSpeechText>();
+
 
     _speakTextController.stream.listen((ttsText){
       _onCreateTTSUtterance(ttsText);
@@ -70,13 +76,27 @@ class TextToSpeechBloc implements BlocBase {
 
 
   void _onCreateTTSUtterance(TextToSpeechText ttsText){
-    _ttsApi.speak(ttsText.locallyAdaptedText).then((wavfile){
 
-      SoundFile soundFile=new SoundFile(wavfile, ttsText.originalText);
-      _ttsResultBehaviour.add(soundFile);
+    _ttsQueue.add(ttsText);
+    _processNextInTtsQueue();
 
-    });
+
   }
 
+  Future<void> _processNextInTtsQueue() async {
+    if (_ttsQueue.length > 0){
+      if (_isWaitingForTts==false){
+        _isWaitingForTts=true;
+        TextToSpeechText nextTextToSpeechText = _ttsQueue.removeFirst();
+
+        await _ttsApi.speak(nextTextToSpeechText.locallyAdaptedText).then((wavfile){
+          _isWaitingForTts=false;
+          SoundFile soundFile = new SoundFile(wavfile, nextTextToSpeechText.originalText);
+          _ttsResultBehaviour.add(soundFile);
+          _processNextInTtsQueue();
+        });
+      }
+    }
+  }
 
 }

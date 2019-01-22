@@ -1,3 +1,4 @@
+import 'dart:convert' as JSON;
 
 import 'package:webfeed/webfeed.dart';
 
@@ -9,7 +10,7 @@ import 'package:macsen/blocs/application_state_provider.dart';
 
 class WeatherSkill {
 
-  static String _weatherRssUrl = 'https://weather-broker-cdn.api.bbci.co.uk/cy/observation/rss/8299867';
+  static String _weatherRssUrl = 'https://weather-broker-cdn.api.bbci.co.uk/cy/observation/rss/'; //8299867';
 
   /*
   <?xml version="1.0" encoding="UTF-8"?>
@@ -40,9 +41,17 @@ class WeatherSkill {
 
   static void execute(ApplicationBloc applicationBloc, dynamic json) {
 
-    HttpRss.getRssChannelContent(_weatherRssUrl).then((bodyString) {
-      var channel = new RssFeed.parse(bodyString);
+    // extract location id from json
+    var weatherMetaData = JSON.jsonDecode(json);
+    String bbcLocationId = '8299867';  //default Garndolbenmaen
 
+    if (weatherMetaData["bbc_location_id"] != null) {
+      bbcLocationId = weatherMetaData["bbc_location_id"];
+    }
+
+    //
+    HttpRss.getRssChannelContent(_weatherRssUrl + bbcLocationId).then((bodyString) {
+      var channel = new RssFeed.parse(bodyString);
       applicationBloc.textToSpeechBloc.speak.add(new TextToSpeechText(channel.description, localAdaptStringForTts(channel.description)));
       applicationBloc.textToSpeechBloc.speak.add(new TextToSpeechText(channel.items[0].title, localAdaptStringForTts(channel.items[0].title)));
       applicationBloc.textToSpeechBloc.speak.add(new TextToSpeechText(channel.items[0].description, localAdaptStringForTts(channel.items[0].description)));

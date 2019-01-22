@@ -77,14 +77,15 @@ class IntentParsingBloc implements BlocBase {
   }
 
   void _dispatchToSkill(String jsonString){
+
     // {"Location": "Bangor", "intent_type": "WeatherIntent", "target": null, "Keyword": "tywydd", "confidence": 1.0}
     var intentJson = JSON.jsonDecode(jsonString);
     print(intentJson["intent_type"]);
 
     if (intentJson["intent_type"]=="NewsIntent"){
-      NewsSkill.execute(applicationBloc, intentJson);
+      NewsSkill.execute(applicationBloc, jsonString);
     } else if (intentJson["intent_type"]=="WeatherIntent") {
-      WeatherSkill.execute(applicationBloc, intentJson);
+      WeatherSkill.execute(applicationBloc, jsonString);
     }
 
   }

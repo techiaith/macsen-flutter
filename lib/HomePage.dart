@@ -36,7 +36,7 @@ class HomePage extends StatelessWidget  {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   StreamBuilder<String>(
-                    stream: appBloc.intentParsingBloc.questionOrCommand,
+                    stream: appBloc.currentRequestText,
                     initialData: '',
                     builder: (context, snapshot) => Container(
                       width: width_80,
@@ -48,7 +48,7 @@ class HomePage extends StatelessWidget  {
                     ),
                   ),
                   StreamBuilder<String>(
-                    stream: appBloc.loudspeakerBloc.currentSoundText,
+                    stream: appBloc.currentResponseText,
                     initialData: '',
                     builder: (context, snapshot) => Container(
                       width: width_80,

@@ -73,6 +73,7 @@ class LoudSpeakerBloc implements BlocBase {
   Stream<BeepEnum> get beepCompleted => _beepCompletedBehaviour.asBroadcastStream();
 
 
+
   void dispose(){
     _playBeepController.close();
     _playSoundFileController.close();
@@ -83,6 +84,7 @@ class LoudSpeakerBloc implements BlocBase {
 
   LoudSpeakerBloc(ApplicationBloc parentBloc){
 
+    applicationBloc = parentBloc;
     soundsQueue = new Queue<SoundFile>();
 
     //
@@ -109,6 +111,7 @@ class LoudSpeakerBloc implements BlocBase {
       _onResetPlayWavFileQueue();
     });
 
+    //
     _native_play_channel.setMethodCallHandler(_nativeCallbackHandler);
 
   }

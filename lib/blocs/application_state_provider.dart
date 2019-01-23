@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:rxdart/subjects.dart';
 import 'package:macsen/blocs/BlocProvider.dart';
 
 import 'package:macsen/blocs/microphone_bloc.dart';
@@ -35,7 +36,15 @@ class ApplicationBloc extends BlocBase {
   TextToSpeechBloc textToSpeechBloc;
   IntentParsingBloc intentParsingBloc;
 
+  // Streams
+  final BehaviorSubject<String> _currentRequestBehavior = BehaviorSubject<String>();
+  Stream<String> get currentRequestText => _currentRequestBehavior.asBroadcastStream();
 
+  final BehaviorSubject<String> _currentResponseBehavior = BehaviorSubject<String>();
+  Stream<String> get currentResponseText => _currentResponseBehavior.asBroadcastStream();
+
+
+  //
   ApplicationBloc(){
 
     loudspeakerBloc = LoudSpeakerBloc(this);
@@ -56,6 +65,23 @@ class ApplicationBloc extends BlocBase {
     textToSpeechBloc.ttsResult.listen((utteranceWavfile){
       loudspeakerBloc.play.add(utteranceWavfile);
     });
+
+    //
+    microphoneBloc.microphoneStatus.listen((micStatus){
+      if (micStatus==MicrophoneStatus.Recording){
+        _currentRequestBehavior.add('');
+        _currentResponseBehavior.add('');
+      }
+    });
+
+    loudspeakerBloc.currentSoundText.listen((text){
+      _currentResponseBehavior.add(text);
+    });
+
+    intentParsingBloc.questionOrCommand.listen((text){
+      _currentRequestBehavior.add(text);
+    });
+
 
   }
 

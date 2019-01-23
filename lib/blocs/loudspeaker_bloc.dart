@@ -58,8 +58,8 @@ class LoudSpeakerBloc implements BlocBase {
   final StreamController<bool> _stopPlayingController = StreamController<bool>();
   Sink<bool> get stop => _stopPlayingController.sink;
 
-  final StreamController<bool> _resetPlayWavfileQueueController = StreamController<bool>();
-  Sink<bool> get reset => _resetPlayWavfileQueueController.sink;
+  final StreamController<bool> _resetQueueController = StreamController<bool>();
+  Sink<bool> get reset => _resetQueueController.sink;
 
 
   // Streams
@@ -78,7 +78,7 @@ class LoudSpeakerBloc implements BlocBase {
     _playBeepController.close();
     _playSoundFileController.close();
     _stopPlayingController.close();
-    _resetPlayWavfileQueueController.close();
+    _resetQueueController.close();
   }
 
 
@@ -107,8 +107,8 @@ class LoudSpeakerBloc implements BlocBase {
       _onStopPlayWavFile();
     });
 
-    _resetPlayWavfileQueueController.stream.listen((reset){
-      _onResetPlayWavFileQueue();
+    _resetQueueController.stream.listen((reset){
+      _onResetQueue();
     });
 
     //
@@ -190,8 +190,9 @@ class LoudSpeakerBloc implements BlocBase {
   }
 
 
-  void _onResetPlayWavFileQueue(){
+  void _onResetQueue(){
     soundsQueue.clear();
+    _isLoudspeakerPlaying=false;
   }
 
 

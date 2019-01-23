@@ -58,7 +58,7 @@ class _TextualInputFormState extends State<TextualInputScreen>{
                               {
                                 _formKey.currentState.save();
                                 print ("request text " + _requestText);
-                                appBloc.intentParsingBloc.determineIntent.add(_requestText);
+                                appBloc.request.add(_requestText);
                                 Navigator.pop(context, _requestText);
                               },
                             child: Text("Gofyn",

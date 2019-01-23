@@ -51,6 +51,9 @@ class TextToSpeechBloc implements BlocBase {
   final StreamController<TextToSpeechText> _speakTextController = StreamController<TextToSpeechText>();
   Sink<TextToSpeechText> get speak => _speakTextController.sink;
 
+  final StreamController<bool> _resetQueueController = StreamController<bool>();
+  Sink<bool> get reset => _resetQueueController.sink;
+
 
   // Streams
   final BehaviorSubject<SoundFile> _ttsResultBehaviour = BehaviorSubject<SoundFile>();
@@ -59,6 +62,7 @@ class TextToSpeechBloc implements BlocBase {
 
   void dispose(){
     _speakTextController.close();
+    _resetQueueController.close();
   }
 
 
@@ -72,15 +76,16 @@ class TextToSpeechBloc implements BlocBase {
     _speakTextController.stream.listen((ttsText){
       _onCreateTTSUtterance(ttsText);
     });
+
+    _resetQueueController.stream.listen((reset){
+      _onResetQueue();
+    });
   }
 
 
   void _onCreateTTSUtterance(TextToSpeechText ttsText){
-
     _ttsQueue.add(ttsText);
     _processNextInTtsQueue();
-
-
   }
 
   Future<void> _processNextInTtsQueue() async {
@@ -88,7 +93,6 @@ class TextToSpeechBloc implements BlocBase {
       if (_isWaitingForTts==false){
         _isWaitingForTts=true;
         TextToSpeechText nextTextToSpeechText = _ttsQueue.removeFirst();
-
         await _ttsApi.speak(nextTextToSpeechText.locallyAdaptedText).then((wavfile){
           _isWaitingForTts=false;
           SoundFile soundFile = new SoundFile(wavfile, nextTextToSpeechText.originalText);
@@ -97,6 +101,11 @@ class TextToSpeechBloc implements BlocBase {
         });
       }
     }
+  }
+
+  void _onResetQueue(){
+    _ttsQueue.clear();
+    _isWaitingForTts=false;
   }
 
 }

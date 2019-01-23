@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:rxdart/subjects.dart';
@@ -36,6 +37,11 @@ class ApplicationBloc extends BlocBase {
   TextToSpeechBloc textToSpeechBloc;
   IntentParsingBloc intentParsingBloc;
 
+  //
+  final StreamController<String> _requestController = StreamController<String>();
+  Sink<String> get request => _requestController.sink;
+
+
   // Streams
   final BehaviorSubject<String> _currentRequestBehavior = BehaviorSubject<String>();
   Stream<String> get currentRequestText => _currentRequestBehavior.asBroadcastStream();
@@ -43,6 +49,10 @@ class ApplicationBloc extends BlocBase {
   final BehaviorSubject<String> _currentResponseBehavior = BehaviorSubject<String>();
   Stream<String> get currentResponseText => _currentResponseBehavior.asBroadcastStream();
 
+
+  void dispose(){
+    _requestController.close();
+  }
 
   //
   ApplicationBloc(){
@@ -58,37 +68,46 @@ class ApplicationBloc extends BlocBase {
       speechToTextBloc.recogniseFile.add(filepath);
     });
 
+    //
     speechToTextBloc.sttResult.listen((recognizedText){
       intentParsingBloc.determineIntent.add(recognizedText);
     });
 
+    // from TextualInputScreen
+    _requestController.stream.listen((text){
+      intentParsingBloc.determineIntent.add(text);
+    });
+
+
     textToSpeechBloc.ttsResult.listen((utteranceWavfile){
       loudspeakerBloc.play.add(utteranceWavfile);
     });
+
+
+
 
     //
     microphoneBloc.microphoneStatus.listen((micStatus){
       if (micStatus==MicrophoneStatus.Recording){
         _currentRequestBehavior.add('');
         _currentResponseBehavior.add('');
+
+        textToSpeechBloc.reset.add(true);
+        loudspeakerBloc.reset.add(true);
       }
     });
 
+    //
     loudspeakerBloc.currentSoundText.listen((text){
       _currentResponseBehavior.add(text);
     });
 
+    //
     intentParsingBloc.questionOrCommand.listen((text){
       _currentRequestBehavior.add(text);
     });
 
-
   }
-
-
-  void dispose(){
-  }
-
 
 
   // Macsen Model/Application state

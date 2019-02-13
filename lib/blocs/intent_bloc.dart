@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert' as JSON;
 
 import 'package:rxdart/subjects.dart';
 
@@ -7,8 +6,8 @@ import 'package:macsen/apis/IntentParsing.dart';
 import 'package:macsen/blocs/BlocProvider.dart';
 import 'package:macsen/blocs/application_state_provider.dart';
 
-import 'package:macsen/skills/news/News.dart';
-import 'package:macsen/skills/weather/Weather.dart';
+import 'package:macsen/skills/question_answer/QA.dart';
+
 
 
 //
@@ -36,10 +35,6 @@ class IntentParsingBloc implements BlocBase {
 
   double _latitude=0.0;
   double _longitude=0.0;
-
-  // Skills
-  NewsSkill newsSkill;
-  WeatherSkill weatherSkill;
 
 
   // Sinks
@@ -91,18 +86,8 @@ class IntentParsingBloc implements BlocBase {
   }
 
   void _dispatchToSkill(String jsonString){
-
-    // {"Location": "Bangor", "intent_type": "WeatherIntent", "target": null, "Keyword": "tywydd", "confidence": 1.0}
-
-    var intentJson = JSON.jsonDecode(jsonString);
-    print(intentJson["intent_type"]);
-
-    if (intentJson["intent_type"]=="NewsIntent"){
-      NewsSkill.execute(applicationBloc, jsonString);
-    } else if (intentJson["intent_type"]=="WeatherIntent") {
-      WeatherSkill.execute(applicationBloc, jsonString);
-    }
-
+    QASkill.execute(applicationBloc, jsonString);
   }
+
 
 }

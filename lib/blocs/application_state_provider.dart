@@ -7,6 +7,7 @@ import 'package:macsen/blocs/BlocProvider.dart';
 import 'package:macsen/blocs/microphone_bloc.dart';
 import 'package:macsen/blocs/loudspeaker_bloc.dart';
 import 'package:macsen/blocs/speech_to_text.bloc.dart';
+import 'package:macsen/blocs/geolocation_bloc.dart';
 import 'package:macsen/blocs/text_to_speech.dart';
 import 'package:macsen/blocs/intent_bloc.dart';
 
@@ -32,6 +33,7 @@ class ApplicationBloc extends BlocBase {
 
   MicrophoneBloc microphoneBloc;
   LoudSpeakerBloc loudspeakerBloc;
+  GeolocationBloc geolocationBloc;
 
   SpeechToTextBloc speechToTextBloc;
   TextToSpeechBloc textToSpeechBloc;
@@ -59,10 +61,12 @@ class ApplicationBloc extends BlocBase {
 
     loudspeakerBloc = LoudSpeakerBloc(this);
     microphoneBloc = MicrophoneBloc(this);
+    geolocationBloc = GeolocationBloc(this);
 
     speechToTextBloc = SpeechToTextBloc(this);
     textToSpeechBloc = TextToSpeechBloc(this);
     intentParsingBloc = IntentParsingBloc(this);
+
 
     microphoneBloc.recordingFilePath.listen((filepath){
       speechToTextBloc.recogniseFile.add(filepath);
@@ -84,8 +88,6 @@ class ApplicationBloc extends BlocBase {
     });
 
 
-
-
     //
     microphoneBloc.microphoneStatus.listen((micStatus){
       if (micStatus==MicrophoneStatus.Recording){
@@ -97,10 +99,12 @@ class ApplicationBloc extends BlocBase {
       }
     });
 
+
     //
     loudspeakerBloc.currentSoundText.listen((text){
       _currentResponseBehavior.add(text);
     });
+
 
     //
     intentParsingBloc.questionOrCommand.listen((text){

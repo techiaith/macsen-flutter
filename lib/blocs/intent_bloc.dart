@@ -34,6 +34,9 @@ class IntentParsingBloc implements BlocBase {
   ApplicationBloc applicationBloc;
   IntentParsing intentApi;
 
+  double _latitude=0.0;
+  double _longitude=0.0;
+
   // Skills
   NewsSkill newsSkill;
   WeatherSkill weatherSkill;
@@ -64,21 +67,33 @@ class IntentParsingBloc implements BlocBase {
     _determineIntentController.stream.listen((text){
       _onDetermineIntent(text);
     });
+
+    applicationBloc.geolocationBloc.latitude.listen((latitude){
+      _latitude=latitude;
+    });
+
+    applicationBloc.geolocationBloc.longitude.listen((longitude){
+      _longitude=longitude;
+    });
   }
 
 
   void _onDetermineIntent(String text){
     if (text.length > 0) {
       _currentQuestionCommandBehavior.add(text);
-      intentApi.determineIntent(text).then((intentJsonString) {
-        _dispatchToSkill(intentJsonString);
-      });
+      intentApi.performSkill(text,
+                             _latitude,
+                             _longitude)
+          .then((intentJsonString) {
+            _dispatchToSkill(intentJsonString);
+          });
     }
   }
 
   void _dispatchToSkill(String jsonString){
 
     // {"Location": "Bangor", "intent_type": "WeatherIntent", "target": null, "Keyword": "tywydd", "confidence": 1.0}
+
     var intentJson = JSON.jsonDecode(jsonString);
     print(intentJson["intent_type"]);
 

@@ -49,14 +49,6 @@ public class WavAudioRecorder {
     }
 
     //
-    public boolean checkMicrophonePermissions(){
-        int permissionCheck = ContextCompat.checkSelfPermission(_mainactivity,  Manifest.permission.RECORD_AUDIO);
-        boolean permissionGranted = permissionCheck == PackageManager.PERMISSION_GRANTED;
-        return permissionGranted;
-    }
-
-
-    //
     public boolean startRecord(final String filename){
 
         try {

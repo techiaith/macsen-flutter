@@ -40,14 +40,12 @@ class MicrophoneBloc implements BlocBase {
 
 
   // Streams
-  final BehaviorSubject<MicrophoneStatus> _microphoneStatusBehavour = BehaviorSubject<MicrophoneStatus>(seedValue: MicrophoneStatus.NotAllowed);
-  Stream<MicrophoneStatus> get microphoneStatus => _microphoneStatusBehavour.asBroadcastStream();
+  final BehaviorSubject<MicrophoneStatus> _microphoneStatusBehaviour = BehaviorSubject<MicrophoneStatus>(seedValue: MicrophoneStatus.NotAllowed);
+  Stream<MicrophoneStatus> get microphoneStatus => _microphoneStatusBehaviour.asBroadcastStream();
 
 
   final BehaviorSubject<String> _recordingBehaviour = BehaviorSubject<String>(seedValue: '');
   Stream<String> get recordingFilePath => _recordingBehaviour.asBroadcastStream();
-
-
 
   //
   void dispose(){
@@ -64,23 +62,22 @@ class MicrophoneBloc implements BlocBase {
       _onRecordStateChange(toggle);
     });
 
-    //
-    _checkMicrophonePermissions();
-
     applicationBloc.loudspeakerBloc.beepCompleted.listen((completedBeep){
       _onBeepCompleted(completedBeep);
     });
 
+    _native_mic_record_channel.setMethodCallHandler(_nativeCallbackHandler);
+
+    _checkMicrophonePermissions();
   }
 
 
-  void _onBeepCompleted(BeepEnum beep){
-    // we only wait for a hi beep
-    print ("Beep completed");
-    if (beep==BeepEnum.HiBeep)
-      _startRecording();
-    else if (beep==BeepEnum.LoBeep)
-      _recordingBehaviour.add(nativeRecordingResult);
+  Future<dynamic> _nativeCallbackHandler(MethodCall methodCall) async {
+    if (methodCall.method == "audioRecordingPermissionGranted") {
+      if (methodCall.arguments=="OK"){
+        _onMicrophonePermissionsChange(true);
+      }
+    }
   }
 
 
@@ -93,11 +90,25 @@ class MicrophoneBloc implements BlocBase {
       print(e.message);
       checkMicrophonePermissionsResult=false;
     }
+    _onMicrophonePermissionsChange(checkMicrophonePermissionsResult);
+  }
 
-    if (checkMicrophonePermissionsResult==true){
+
+  Future<void> _onMicrophonePermissionsChange(bool permissionGranted) async {
+    if (permissionGranted){
       _micStatus=MicrophoneStatus.Available;
-      _microphoneStatusBehavour.add(MicrophoneStatus.Available);
+      _microphoneStatusBehaviour.add(MicrophoneStatus.Available);
     }
+  }
+
+
+  void _onBeepCompleted(BeepEnum beep){
+    // we only wait for a hi beep
+    print ("Beep completed");
+    if (beep==BeepEnum.HiBeep)
+      _startRecording();
+    else if (beep==BeepEnum.LoBeep)
+      _recordingBehaviour.add(nativeRecordingResult);
   }
 
 
@@ -125,11 +136,11 @@ class MicrophoneBloc implements BlocBase {
       nativeInvokeResult = await _native_mic_record_channel.invokeMethod('startRecording', 'tmpwavfile');
       if (nativeInvokeResult == "OK"){
         _micStatus=MicrophoneStatus.Recording;
-        _microphoneStatusBehavour.add(MicrophoneStatus.Recording);
+        _microphoneStatusBehaviour.add(MicrophoneStatus.Recording);
       }
     } on PlatformException catch (e) {
       print(e.message);
-      _microphoneStatusBehavour.add(MicrophoneStatus.Available);
+      _microphoneStatusBehaviour.add(MicrophoneStatus.Available);
       _recordingBehaviour.add('');
     }
   }
@@ -145,7 +156,7 @@ class MicrophoneBloc implements BlocBase {
         _recordingBehaviour.add('');
       }
       _micStatus=MicrophoneStatus.Available;
-      _microphoneStatusBehavour.add(MicrophoneStatus.Available);
+      _microphoneStatusBehaviour.add(MicrophoneStatus.Available);
     }
   }
 

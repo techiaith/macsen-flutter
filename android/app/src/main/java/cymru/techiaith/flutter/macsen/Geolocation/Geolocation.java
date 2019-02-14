@@ -11,20 +11,9 @@ import io.flutter.plugin.common.MethodChannel;
 public class Geolocation  {
 
     private MainActivity _mainactivity;
-
     private static LocationManager locationManager;
 
-//    private final LocationListener locationListener = new LocationListener(){
-//
-//        @Override
-//        public void onLocationChanged(Location location){
-//            locationManager.removeUpdates(locationListener);
-//            location.getLatitude();
-//            location.getLongitude();
-//        }
-//
-//    }
-
+    
     public Geolocation(MainActivity activity){
         _mainactivity=activity;
         locationManager = (LocationManager)_mainactivity.getSystemService(this._mainactivity.getApplicationContext().LOCATION_SERVICE);

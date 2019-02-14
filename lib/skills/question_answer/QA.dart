@@ -9,11 +9,14 @@ class QASkill {
                       dynamic json){
 
     var jsonResult = JSON.jsonDecode(json);
+    String ttsString;
 
     for (int i = 0; i < jsonResult["result"].length;i++){
-      String ttsString = jsonResult["result"][i]["title"]
-        + ". "
-        + jsonResult["result"][i]["description"];
+      ttsString = jsonResult["result"][i]["title"].trim()
+                    + ' '
+                    + jsonResult["result"][i]["description"].trim();
+
+      ttsString = ttsString.trim();
 
       applicationBloc.textToSpeechBloc.speak.add(
         new TextToSpeechText(ttsString,
@@ -22,8 +25,13 @@ class QASkill {
     }
   }
 
+
   static String localAdaptStringForTts(String inString) {
-    return inString;
+    String outString = inString;
+    outString = outString.replaceAll("Celsius", "selsiws");
+    outString = outString.replaceAll("Golwg 360", "Golwg tri chwech dim");
+    return outString;
   }
+
 
 }

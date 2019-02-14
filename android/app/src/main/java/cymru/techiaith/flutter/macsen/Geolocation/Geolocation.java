@@ -13,7 +13,7 @@ public class Geolocation  {
     private MainActivity _mainactivity;
     private static LocationManager locationManager;
 
-    
+
     public Geolocation(MainActivity activity){
         _mainactivity=activity;
         locationManager = (LocationManager)_mainactivity.getSystemService(this._mainactivity.getApplicationContext().LOCATION_SERVICE);

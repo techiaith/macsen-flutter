@@ -40,9 +40,9 @@ public class Geolocation  {
 
         if (lastKnownLocation!=null) {
             String coordinates =
-                    Double.toString(lastKnownLocation.getLongitude())
-                            + "|"
-                            + Double.toString(lastKnownLocation.getLatitude());
+                    Double.toString(lastKnownLocation.getLatitude())
+                    + "|"
+                    + Double.toString(lastKnownLocation.getLongitude());
 
             location_channel.invokeMethod("locationCoordinates", coordinates);
         } else {

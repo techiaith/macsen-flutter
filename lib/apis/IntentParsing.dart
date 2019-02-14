@@ -15,8 +15,8 @@ class IntentParsing {
           'api.techiaith.org', '/assistant/perform_skill',
           {
             "text": text,
-            "long": longitude.toString(),
-            "lat" : latitude.toString()
+            "latitude" : latitude.toString(),
+            "longitude": longitude.toString()
           }));
 
       var response = await request.close();

@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
+import 'package:uuid/uuid.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:rxdart/subjects.dart';
 import 'package:macsen/blocs/BlocProvider.dart';
 
@@ -111,7 +114,24 @@ class ApplicationBloc extends BlocBase {
       _currentRequestBehavior.add(text);
     });
 
+    getUniqueUID();
+
   }
+
+  //
+  // This method assigns a unique Id to the application installation.
+  // The UID does not identify the identity of the device and/or user
+  // The UID is used in other parts whether any submissions to cloud
+  // based services may need to be differentiated from submissions from
+  // other devices.
+  //
+  Future<String> getUniqueUID() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String uid = prefs.getString("UID") ?? new Uuid().v1();
+    prefs.setString("UID", uid);
+    return uid;
+  }
+
 
 
   // Macsen Model/Application state

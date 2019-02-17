@@ -26,6 +26,8 @@ dependencies:
   path_provider: ^0.4.1
   webfeed: ^0.4.1
   crypto: ^2.0.6
+  shared_preferences: ^0.4.2
+  uuid: ^2.0.0
 
 
 dev_dependencies:

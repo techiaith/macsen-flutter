@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert' as JSON;
 
 import 'package:rxdart/subjects.dart';
 
@@ -41,6 +42,11 @@ class IntentParsingBloc implements BlocBase {
   final StreamController<String> _determineIntentController = StreamController<String>();
   Sink<String> get determineIntent => _determineIntentController.sink;
 
+  final StreamController<String> _getUnrecordedSentenceController = StreamController<String>();
+  Sink<String> get getUnRecordedSentences => _getUnrecordedSentenceController.sink;
+
+
+
   // Streams
   final BehaviorSubject<String> _currentQuestionCommandBehavior = BehaviorSubject<String>();
   Stream<String> get questionOrCommand => _currentQuestionCommandBehavior.asBroadcastStream();
@@ -50,8 +56,13 @@ class IntentParsingBloc implements BlocBase {
   Stream<Intent> get intentResult => _intentResultBehavior.asBroadcastStream();
 
 
+  final BehaviorSubject<String> _unRecordedSentenceResultBehaviour = BehaviorSubject<String>();
+  Stream<String> get unRecordedSentenceResult => _unRecordedSentenceResultBehaviour.asBroadcastStream();
+
+
   void dispose(){
     _determineIntentController.close();
+    _getUnrecordedSentenceController.close();
   }
 
 
@@ -63,6 +74,10 @@ class IntentParsingBloc implements BlocBase {
       _onDetermineIntent(text);
     });
 
+    _getUnrecordedSentenceController.stream.listen((uid){
+      _onGetUnrecordedSentences(uid);
+    });
+
     applicationBloc.geolocationBloc.latitude.listen((latitude){
       _latitude=latitude;
     });
@@ -70,6 +85,7 @@ class IntentParsingBloc implements BlocBase {
     applicationBloc.geolocationBloc.longitude.listen((longitude){
       _longitude=longitude;
     });
+
   }
 
 
@@ -84,6 +100,19 @@ class IntentParsingBloc implements BlocBase {
           });
     }
   }
+
+
+  void _onGetUnrecordedSentences(String uid){
+    intentApi.getUnrecordedSentence(uid)
+        .then((json){
+      var jsonResult = JSON.jsonDecode(json);
+      if (jsonResult["success"]==true){
+        String result = jsonResult["result"][0];
+        _unRecordedSentenceResultBehaviour.add(result);
+      }
+    });
+  }
+
 
   void _dispatchToSkill(String jsonString){
     QASkill.execute(applicationBloc, jsonString);

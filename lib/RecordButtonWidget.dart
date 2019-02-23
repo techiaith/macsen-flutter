@@ -18,6 +18,7 @@ const MethodChannel platform = const MethodChannel('cymru.techiaith.flutter.macs
 class RecordButtonState extends State<RecordButtonWidget> {
 
 
+
   @override
   Widget build(BuildContext context) {
 
@@ -65,7 +66,6 @@ class RecordButtonState extends State<RecordButtonWidget> {
 
 
   VoidCallback getOnPress() {
-    print ("getOnPress ");
     final ApplicationBloc appBloc = ApplicationStateProvider.of(context);
     appBloc.microphoneBloc.record.add(true);
     return null;

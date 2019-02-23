@@ -31,6 +31,7 @@ class ApplicationStateProvider extends InheritedWidget {
 
 }
 
+enum RecordingType { RequestRecording, SentenceRecording }
 
 class ApplicationBloc extends BlocBase {
 
@@ -42,9 +43,14 @@ class ApplicationBloc extends BlocBase {
   TextToSpeechBloc textToSpeechBloc;
   IntentParsingBloc intentParsingBloc;
 
+  RecordingType _recordingType = RecordingType.RequestRecording;
+
   //
   final StreamController<String> _requestController = StreamController<String>();
   Sink<String> get request => _requestController.sink;
+
+  final StreamController<RecordingType> _recordingTypeController = StreamController<RecordingType>();
+  Sink<RecordingType> get recordingType => _recordingTypeController.sink;
 
 
   // Streams
@@ -57,6 +63,7 @@ class ApplicationBloc extends BlocBase {
 
   void dispose(){
     _requestController.close();
+    _recordingTypeController.close();
   }
 
   //
@@ -70,9 +77,22 @@ class ApplicationBloc extends BlocBase {
     textToSpeechBloc = TextToSpeechBloc(this);
     intentParsingBloc = IntentParsingBloc(this);
 
+    _recordingTypeController.stream.listen((recordingType){
+      _recordingType=recordingType;
+    });
+
 
     microphoneBloc.recordingFilePath.listen((filepath){
-      speechToTextBloc.recogniseFile.add(filepath);
+      if (_recordingType==RecordingType.RequestRecording) {
+        speechToTextBloc.recogniseFile.add(filepath);
+      }
+      else {
+        intentParsingBloc.intentApi
+            .uploadRecordedSentence(
+                    getUniqueUID(),
+                    intentParsingBloc.unRecordedSentenceResult,
+                    filepath);
+      }
     });
 
     //

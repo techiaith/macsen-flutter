@@ -31,8 +31,10 @@ enum MicrophoneStatus{ NotAllowed, Available, Recording}
 class MicrophoneBloc implements BlocBase {
 
   ApplicationBloc applicationBloc;
+
   MicrophoneStatus _micStatus = MicrophoneStatus.NotAllowed;
   String nativeRecordingResult;
+
 
   // Sinks
   final StreamController<bool> _recordController = StreamController<bool>();
@@ -46,6 +48,7 @@ class MicrophoneBloc implements BlocBase {
 
   final BehaviorSubject<String> _recordingBehaviour = BehaviorSubject<String>(seedValue: '');
   Stream<String> get recordingFilePath => _recordingBehaviour.asBroadcastStream();
+
 
   //
   void dispose(){

@@ -5,7 +5,14 @@ import 'MacsenDrawer.dart';
 
 import 'package:macsen/blocs/application_state_provider.dart';
 
-class HomePage extends StatelessWidget  {
+class HomePageScreen extends StatefulWidget {
+  HomePageScreen({Key key,}) : super (key: key);
+
+  @override
+  _HomePageScreenState createState() => _HomePageScreenState();
+}
+
+class _HomePageScreenState extends State<HomePageScreen> {
 
   @override
   Widget build(BuildContext context) {
@@ -63,11 +70,21 @@ class HomePage extends StatelessWidget  {
               ),
           ),
 
-        floatingActionButton: new RecordButtonWidget(),
+        floatingActionButton: new RecordButtonWidget(
+          onPressed: getOnRequestPress,
+        ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
 
     );
 
+  }
+
+  VoidCallback getOnRequestPress() {
+    print ("onRequestPress");
+    final ApplicationBloc appBloc = ApplicationStateProvider.of(context);
+    appBloc.recordingType.add(RecordingType.RequestRecording);
+    appBloc.microphoneBloc.record.add(true);
+    return null;
   }
 
 }

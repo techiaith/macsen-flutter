@@ -2,6 +2,9 @@ import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:http/http.dart';
+import 'package:path/path.dart';
+import 'package:http_parser/http_parser.dart';
 
 class IntentParsing {
 
@@ -37,28 +40,35 @@ class IntentParsing {
                                       String recordedFilePath) async {
 
     File fileToUpload = new File(recordedFilePath);
-    int length = fileToUpload.lengthSync();
+    int wav_length = fileToUpload.lengthSync();
     Stream uploadStream = fileToUpload.openRead();
 
     try {
-      HttpClient httpClient = new HttpClient();
-      HttpClientRequest request = await httpClient.postUrl(
+
+      MultipartRequest request = new MultipartRequest("POST",
         new Uri.https(
-            _apiAuthorityUrl,
-            "/assistant/upload_recorded_sentence/"
-        )
+          _apiAuthorityUrl,
+          "/assistant/upload_recorded_sentence/"
+        ));
+
+      request.fields["uid"] = uid;
+      request.fields["sentence"] = sentence;
+      request.files.add(
+          new MultipartFile(
+              'soundfile',
+              uploadStream,
+              wav_length,
+              filename: basename(recordedFilePath),
+              contentType: new MediaType('audio','wav')
+              )
       );
 
-      request.headers.contentLength=length;
-      request.headers.contentType=ContentType.binary;
-      await request.addStream(uploadStream);
-
-      var response = await request.close();
-
-      if (response.statusCode!=200){
-        print(response.statusCode)
-        return false;
-      }
+      request.send().then((response){
+        if (response.statusCode!=200){
+          print(response.statusCode);
+          return false;
+        }
+      });
 
     } on Exception catch (e) {
       print(e);

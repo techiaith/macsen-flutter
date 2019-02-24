@@ -44,6 +44,8 @@ class ApplicationBloc extends BlocBase {
   IntentParsingBloc intentParsingBloc;
 
   RecordingType _recordingType = RecordingType.RequestRecording;
+  String _recordedSentence;
+
 
   //
   final StreamController<String> _requestController = StreamController<String>();
@@ -79,21 +81,32 @@ class ApplicationBloc extends BlocBase {
 
     _recordingTypeController.stream.listen((recordingType){
       _recordingType=recordingType;
+      print (_recordingType.toString());
+    });
+
+    intentParsingBloc.unRecordedSentenceResult.listen((sentence){
+      _recordedSentence=sentence;
     });
 
 
     microphoneBloc.recordingFilePath.listen((filepath){
+      if (filepath.length == 0)
+        return;
+
       if (_recordingType==RecordingType.RequestRecording) {
         speechToTextBloc.recogniseFile.add(filepath);
       }
       else {
-        intentParsingBloc.intentApi
-            .uploadRecordedSentence(
-                    getUniqueUID(),
-                    intentParsingBloc.unRecordedSentenceResult,
-                    filepath);
+        getUniqueUID().then((uid){
+          intentParsingBloc.intentApi
+              .uploadRecordedSentence(
+              uid,
+              _recordedSentence,
+              filepath);
+        });
       }
     });
+
 
     //
     speechToTextBloc.sttResult.listen((recognizedText){
@@ -137,6 +150,7 @@ class ApplicationBloc extends BlocBase {
     getUniqueUID();
 
   }
+
 
   //
   // This method assigns a unique Id to the application installation.

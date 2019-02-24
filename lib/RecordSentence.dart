@@ -16,7 +16,6 @@ class RecordSentenceScreen extends StatefulWidget {
 
 class _RecordSentenceScreenState extends State<RecordSentenceScreen>  {
 
-  String _sentenceToRecord;
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +28,8 @@ class _RecordSentenceScreenState extends State<RecordSentenceScreen>  {
     appBloc.getUniqueUID().then((uid){
       appBloc.intentParsingBloc.getUnRecordedSentences.add(uid);
     });
+
+    appBloc.recordingType.add(RecordingType.SentenceRecording);
 
     return new Scaffold(
         appBar: AppBar(
@@ -57,11 +58,20 @@ class _RecordSentenceScreenState extends State<RecordSentenceScreen>  {
               ),
           ),
 
-        floatingActionButton: new RecordButtonWidget(),
+        floatingActionButton: new RecordButtonWidget(
+          onPressed: onRecordPress,
+        ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
 
     );
 
   }
 
+  VoidCallback onRecordPress() {
+    print ("onRecordPress");
+    final ApplicationBloc appBloc = ApplicationStateProvider.of(context);
+    appBloc.recordingType.add(RecordingType.SentenceRecording);
+    appBloc.microphoneBloc.record.add(true);
+    return null;
+  }
 }

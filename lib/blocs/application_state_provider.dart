@@ -119,16 +119,9 @@ class ApplicationBloc extends BlocBase {
       else {
         _applicationWaitStateBehaviour.add(ApplicationWaitState.ApplicationWaiting);
         getUniqueUID().then((uid){
-          IntentRecording intentRecording
-              = IntentRecording
-                (
-                  uid,
-                  _recordedSentence,
-                  filepath
-                );
-
+          IntentRecording intentRecording = IntentRecording(uid,_recordedSentence,filepath);
           intentParsingBloc.saveIntentRecording.add(intentRecording);
-
+          intentParsingBloc.getUnRecordedSentences.add(uid);
         });
       }
     });

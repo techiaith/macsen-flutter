@@ -34,7 +34,6 @@ class IntentRecording {
   String uid;
   String sentence;
   String recordingFilePath;
-
 }
 
 

@@ -12,6 +12,7 @@ class RecordButtonWidget extends  StatefulWidget {
 
   final VoidCallback onPressed;
 
+
   @override
   RecordButtonState createState() => new RecordButtonState();
 }
@@ -19,6 +20,7 @@ class RecordButtonWidget extends  StatefulWidget {
 const MethodChannel platform = const MethodChannel('cymru.techiaith.flutter.macsen/wavrecorder');
 
 class RecordButtonState extends State<RecordButtonWidget> {
+
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +45,6 @@ class RecordButtonState extends State<RecordButtonWidget> {
 
 
   IconData getMicrophoneIcon(MicrophoneStatus micStatus){
-    print ("getMicrophoneIcon " + micStatus.toString());
     if (micStatus == MicrophoneStatus.NotAllowed)
       return Icons.mic_off;
 
@@ -55,7 +56,6 @@ class RecordButtonState extends State<RecordButtonWidget> {
 
 
   Color getBackgroundColor(MicrophoneStatus micStatus){
-    print ("getBackgroundColor " + micStatus.toString());
     if (micStatus == MicrophoneStatus.Recording){
       return Colors.redAccent;
     }
@@ -64,13 +64,6 @@ class RecordButtonState extends State<RecordButtonWidget> {
     }
     return Colors.teal;
   }
-
-
-  //VoidCallback getOnPress() {
-  //  final ApplicationBloc appBloc = ApplicationStateProvider.of(context);
-  //  appBloc.microphoneBloc.record.add(true);
-  //  return null;
-  //}
 
 
 }

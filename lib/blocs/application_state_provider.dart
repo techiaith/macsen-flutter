@@ -32,6 +32,7 @@ class ApplicationStateProvider extends InheritedWidget {
 }
 
 enum RecordingType { RequestRecording, SentenceRecording }
+enum ApplicationWaitState { ApplicationWaiting, ApplicationReady }
 
 class ApplicationBloc extends BlocBase {
 
@@ -44,6 +45,8 @@ class ApplicationBloc extends BlocBase {
   IntentParsingBloc intentParsingBloc;
 
   RecordingType _recordingType = RecordingType.RequestRecording;
+  ApplicationWaitState _applicationWaitState = ApplicationWaitState.ApplicationReady;
+
   String _recordedSentence;
 
 
@@ -54,6 +57,10 @@ class ApplicationBloc extends BlocBase {
   final StreamController<RecordingType> _recordingTypeController = StreamController<RecordingType>();
   Sink<RecordingType> get recordingType => _recordingTypeController.sink;
 
+  final StreamController<ApplicationWaitState> _applicationWaitStateController = StreamController<ApplicationWaitState>();
+  Sink<ApplicationWaitState> get changeApplicationWaitState => _applicationWaitStateController.sink;
+
+
 
   // Streams
   final BehaviorSubject<String> _currentRequestBehavior = BehaviorSubject<String>();
@@ -62,11 +69,17 @@ class ApplicationBloc extends BlocBase {
   final BehaviorSubject<String> _currentResponseBehavior = BehaviorSubject<String>();
   Stream<String> get currentResponseText => _currentResponseBehavior.asBroadcastStream();
 
+  final BehaviorSubject<ApplicationWaitState> _applicationWaitStateBehaviour = BehaviorSubject<ApplicationWaitState>();
+  Stream<ApplicationWaitState> get onApplicationWaitStateChange => _applicationWaitStateBehaviour.asBroadcastStream();
+
+
 
   void dispose(){
     _requestController.close();
     _recordingTypeController.close();
+    _applicationWaitStateController.close();
   }
+
 
   //
   ApplicationBloc(){
@@ -84,6 +97,13 @@ class ApplicationBloc extends BlocBase {
       print (_recordingType.toString());
     });
 
+    _applicationWaitStateController.stream.listen((waitState){
+      _applicationWaitState=waitState;
+      _applicationWaitStateBehaviour.add(_applicationWaitState);
+    });
+
+
+    //
     intentParsingBloc.unRecordedSentenceResult.listen((sentence){
       _recordedSentence=sentence;
     });
@@ -97,12 +117,18 @@ class ApplicationBloc extends BlocBase {
         speechToTextBloc.recogniseFile.add(filepath);
       }
       else {
+        _applicationWaitStateBehaviour.add(ApplicationWaitState.ApplicationWaiting);
         getUniqueUID().then((uid){
-          intentParsingBloc.intentApi
-              .uploadRecordedSentence(
-              uid,
-              _recordedSentence,
-              filepath);
+          IntentRecording intentRecording
+              = IntentRecording
+                (
+                  uid,
+                  _recordedSentence,
+                  filepath
+                );
+
+          intentParsingBloc.saveIntentRecording.add(intentRecording);
+
         });
       }
     });
@@ -124,7 +150,6 @@ class ApplicationBloc extends BlocBase {
     });
 
 
-    //
     microphoneBloc.microphoneStatus.listen((micStatus){
       if (micStatus==MicrophoneStatus.Recording){
         _currentRequestBehavior.add('');

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'RecordButtonWidget.dart';
-import 'MacsenDrawer.dart';
-
 import 'package:macsen/blocs/application_state_provider.dart';
+
 
 class RecordSentenceScreen extends StatefulWidget {
   RecordSentenceScreen({Key key, this.title}): super(key: key);
@@ -14,8 +13,8 @@ class RecordSentenceScreen extends StatefulWidget {
 
 }
 
-class _RecordSentenceScreenState extends State<RecordSentenceScreen>  {
 
+class _RecordSentenceScreenState extends State<RecordSentenceScreen>  {
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +28,6 @@ class _RecordSentenceScreenState extends State<RecordSentenceScreen>  {
       appBloc.intentParsingBloc.getUnRecordedSentences.add(uid);
     });
 
-    appBloc.recordingType.add(RecordingType.SentenceRecording);
 
     return new Scaffold(
         appBar: AppBar(
@@ -58,14 +56,27 @@ class _RecordSentenceScreenState extends State<RecordSentenceScreen>  {
               ),
           ),
 
-        floatingActionButton: new RecordButtonWidget(
-          onPressed: onRecordPress,
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+          floatingActionButton: StreamBuilder<ApplicationWaitState>(
+              stream: appBloc.onApplicationWaitStateChange,
+              builder: (context, snapshot) => _buildActionButton(context, snapshot.data),
+          ),
+
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
 
     );
 
   }
+
+
+  Widget _buildActionButton(BuildContext context, ApplicationWaitState waitState){
+    if (waitState==ApplicationWaitState.ApplicationWaiting){
+      return new CircularProgressIndicator();
+    }
+    return new RecordButtonWidget(
+      onPressed: onRecordPress
+    );
+  }
+
 
   VoidCallback onRecordPress() {
     print ("onRecordPress");
@@ -74,4 +85,6 @@ class _RecordSentenceScreenState extends State<RecordSentenceScreen>  {
     appBloc.microphoneBloc.record.add(true);
     return null;
   }
+
+
 }

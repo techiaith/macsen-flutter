@@ -118,7 +118,6 @@ class LoudSpeakerBloc implements BlocBase {
 
 
   Future<dynamic> _nativeCallbackHandler(MethodCall methodCall) async {
-    print ("loudspeaker _nativeCallbackHandler called");
     if (methodCall.method == "audioPlayCompleted") {
       _onCompletedPlaying(methodCall.arguments);
     }
@@ -131,7 +130,6 @@ class LoudSpeakerBloc implements BlocBase {
       _onBeepCompleted(wavfilePath);
     }
     else {
-      print ("Deleting file " + wavfilePath);
       File audioFile = new File(wavfilePath);
       audioFile.delete();
 
@@ -163,7 +161,6 @@ class LoudSpeakerBloc implements BlocBase {
 
   void _onPlayWavFile(SoundFile soundFile){
     if (soundFile.wavFilePath.length > 0) {
-      print ("play wav file " + soundFile.text);
       soundsQueue.add(soundFile);
       _playNextInQueue();
     }

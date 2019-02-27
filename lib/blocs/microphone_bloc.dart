@@ -107,7 +107,6 @@ class MicrophoneBloc implements BlocBase {
 
   void _onBeepCompleted(BeepEnum beep){
     // we only wait for a hi beep
-    print ("Beep completed");
     if (beep==BeepEnum.HiBeep)
       _startRecording();
     else if (beep==BeepEnum.LoBeep)

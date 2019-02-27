@@ -63,10 +63,13 @@ class IntentParsing {
               )
       );
 
-      request.send().then((response){
+      await request.send().then((response){
         if (response.statusCode!=200){
           print(response.statusCode);
           return false;
+        }
+        else {
+          return true;
         }
       });
 

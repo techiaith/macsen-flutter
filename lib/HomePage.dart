@@ -70,21 +70,34 @@ class _HomePageScreenState extends State<HomePageScreen> {
               ),
           ),
 
-        floatingActionButton: new RecordButtonWidget(
-          onPressed: getOnRequestPress,
+        floatingActionButton: StreamBuilder<ApplicationWaitState>(
+            stream: appBloc.onApplicationWaitStateChange,
+            builder: (context, snapshot) => _buildActionButton(context, snapshot.data)
         ),
+
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
 
     );
 
   }
 
-  VoidCallback getOnRequestPress() {
-    print ("onRequestPress");
+
+  Widget _buildActionButton(BuildContext context, ApplicationWaitState waitState){
+    if (waitState==ApplicationWaitState.ApplicationWaiting){
+      return new CircularProgressIndicator();
+    }
+    return new RecordButtonWidget(
+      onPressed: onRequestPress,
+    );
+  }
+
+
+  VoidCallback onRequestPress() {
     final ApplicationBloc appBloc = ApplicationStateProvider.of(context);
     appBloc.recordingType.add(RecordingType.RequestRecording);
     appBloc.microphoneBloc.record.add(true);
     return null;
   }
+
 
 }

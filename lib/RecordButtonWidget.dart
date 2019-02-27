@@ -7,7 +7,11 @@ import 'package:macsen/blocs/application_state_provider.dart';
 
 
 class RecordButtonWidget extends  StatefulWidget {
-  RecordButtonWidget({Key key,}) : super(key: key);
+  RecordButtonWidget({Key key,
+    this.onPressed,}) : super(key: key);
+
+  final VoidCallback onPressed;
+
 
   @override
   RecordButtonState createState() => new RecordButtonState();
@@ -31,7 +35,7 @@ class RecordButtonState extends State<RecordButtonWidget> {
               stream: appBloc.microphoneBloc.microphoneStatus,
               builder: (context, snapshot) =>
                 FloatingActionButton(
-                  onPressed: getOnPress,
+                  onPressed: widget.onPressed,
                   backgroundColor: getBackgroundColor(snapshot.data),
                   child: Icon(getMicrophoneIcon(snapshot.data), size: 32.0),
                 )
@@ -41,7 +45,6 @@ class RecordButtonState extends State<RecordButtonWidget> {
 
 
   IconData getMicrophoneIcon(MicrophoneStatus micStatus){
-    print ("getMicrophoneIcon " + micStatus.toString());
     if (micStatus == MicrophoneStatus.NotAllowed)
       return Icons.mic_off;
 
@@ -53,7 +56,6 @@ class RecordButtonState extends State<RecordButtonWidget> {
 
 
   Color getBackgroundColor(MicrophoneStatus micStatus){
-    print ("getBackgroundColor " + micStatus.toString());
     if (micStatus == MicrophoneStatus.Recording){
       return Colors.redAccent;
     }
@@ -61,14 +63,6 @@ class RecordButtonState extends State<RecordButtonWidget> {
       return Colors.red;
     }
     return Colors.teal;
-  }
-
-
-  VoidCallback getOnPress() {
-    print ("getOnPress ");
-    final ApplicationBloc appBloc = ApplicationStateProvider.of(context);
-    appBloc.microphoneBloc.record.add(true);
-    return null;
   }
 
 

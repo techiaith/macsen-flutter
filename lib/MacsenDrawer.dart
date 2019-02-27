@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'TextualInputScreen.dart';
+import 'RecordSentence.dart';
+
 
 class MacsenDrawer extends StatelessWidget {
 
@@ -58,6 +60,11 @@ class MacsenDrawer extends StatelessWidget {
                     ),
                     onTap: () {
                       Navigator.pop(context);
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => RecordSentenceScreen(),
+                        )
+                      );
                     },
                   )
                 ],

@@ -52,7 +52,9 @@ class SpeechToTextBloc implements BlocBase {
 
 
   void _onRecognizeWavFile(String wavFilePath){
+    _applicationBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationWaiting);
     _sttApi.transcribe(wavFilePath).then((transcription){
+      _applicationBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationReady);
       _sttResultBehaviour.add(transcription);
     });
   }

@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
+import 'package:uuid/uuid.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:rxdart/subjects.dart';
 import 'package:macsen/blocs/BlocProvider.dart';
 
@@ -28,6 +31,8 @@ class ApplicationStateProvider extends InheritedWidget {
 
 }
 
+enum RecordingType { RequestRecording, SentenceRecording }
+enum ApplicationWaitState { ApplicationWaiting, ApplicationReady }
 
 class ApplicationBloc extends BlocBase {
 
@@ -39,9 +44,22 @@ class ApplicationBloc extends BlocBase {
   TextToSpeechBloc textToSpeechBloc;
   IntentParsingBloc intentParsingBloc;
 
+  RecordingType _recordingType = RecordingType.RequestRecording;
+  ApplicationWaitState _applicationWaitState = ApplicationWaitState.ApplicationReady;
+
+  String _recordedSentence;
+
+
   //
   final StreamController<String> _requestController = StreamController<String>();
   Sink<String> get request => _requestController.sink;
+
+  final StreamController<RecordingType> _recordingTypeController = StreamController<RecordingType>();
+  Sink<RecordingType> get recordingType => _recordingTypeController.sink;
+
+  final StreamController<ApplicationWaitState> _applicationWaitStateController = StreamController<ApplicationWaitState>();
+  Sink<ApplicationWaitState> get changeApplicationWaitState => _applicationWaitStateController.sink;
+
 
 
   // Streams
@@ -51,10 +69,17 @@ class ApplicationBloc extends BlocBase {
   final BehaviorSubject<String> _currentResponseBehavior = BehaviorSubject<String>();
   Stream<String> get currentResponseText => _currentResponseBehavior.asBroadcastStream();
 
+  final BehaviorSubject<ApplicationWaitState> _applicationWaitStateBehaviour = BehaviorSubject<ApplicationWaitState>();
+  Stream<ApplicationWaitState> get onApplicationWaitStateChange => _applicationWaitStateBehaviour.asBroadcastStream();
+
+
 
   void dispose(){
     _requestController.close();
+    _recordingTypeController.close();
+    _applicationWaitStateController.close();
   }
+
 
   //
   ApplicationBloc(){
@@ -67,10 +92,40 @@ class ApplicationBloc extends BlocBase {
     textToSpeechBloc = TextToSpeechBloc(this);
     intentParsingBloc = IntentParsingBloc(this);
 
+    _recordingTypeController.stream.listen((recordingType){
+      _recordingType=recordingType;
+      print (_recordingType.toString());
+    });
+
+    _applicationWaitStateController.stream.listen((waitState){
+      _applicationWaitState=waitState;
+      _applicationWaitStateBehaviour.add(_applicationWaitState);
+    });
+
+
+    //
+    intentParsingBloc.unRecordedSentenceResult.listen((sentence){
+      _recordedSentence=sentence;
+    });
+
 
     microphoneBloc.recordingFilePath.listen((filepath){
-      speechToTextBloc.recogniseFile.add(filepath);
+      if (filepath.length == 0)
+        return;
+
+      if (_recordingType==RecordingType.RequestRecording) {
+        speechToTextBloc.recogniseFile.add(filepath);
+      }
+      else {
+        _applicationWaitStateBehaviour.add(ApplicationWaitState.ApplicationWaiting);
+        getUniqueUID().then((uid){
+          IntentRecording intentRecording = IntentRecording(uid,_recordedSentence,filepath);
+          intentParsingBloc.saveIntentRecording.add(intentRecording);
+          intentParsingBloc.getUnRecordedSentences.add(uid);
+        });
+      }
     });
+
 
     //
     speechToTextBloc.sttResult.listen((recognizedText){
@@ -88,7 +143,6 @@ class ApplicationBloc extends BlocBase {
     });
 
 
-    //
     microphoneBloc.microphoneStatus.listen((micStatus){
       if (micStatus==MicrophoneStatus.Recording){
         _currentRequestBehavior.add('');
@@ -111,7 +165,25 @@ class ApplicationBloc extends BlocBase {
       _currentRequestBehavior.add(text);
     });
 
+    getUniqueUID();
+
   }
+
+
+  //
+  // This method assigns a unique Id to the application installation.
+  // The UID does not identify the identity of the device and/or user
+  // The UID is used in other parts whether any submissions to cloud
+  // based services may need to be differentiated from submissions from
+  // other devices.
+  //
+  Future<String> getUniqueUID() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String uid = prefs.getString("UID") ?? new Uuid().v1();
+    prefs.setString("UID", uid);
+    return uid;
+  }
+
 
 
   // Macsen Model/Application state

@@ -13,12 +13,12 @@ if (flutterRoot == null) {
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 if (flutterVersionCode == null) {
-    flutterVersionCode = '1'
+    flutterVersionCode = '2'
 }
 
 def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {
-    flutterVersionName = '1.0'
+    flutterVersionName = '2.0'
 }
 
 apply plugin: 'com.android.application'
@@ -48,6 +48,10 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 flutter {
@@ -55,6 +59,8 @@ flutter {
 }
 
 dependencies {
+    implementation files('../spotify-app-remote-release-0.6.1/spotify-app-remote-release-0.6.1.aar')
+    implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.android.support:support-v4:27.0.0'
     implementation 'com.android.support:support-annotations:27.1.1'
     testImplementation 'junit:junit:4.12'

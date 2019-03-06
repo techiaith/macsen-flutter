@@ -23,22 +23,4 @@ class MyApp extends StatelessWidget {
     );
   }
 
-
-//    return MaterialApp(
-//        title: 'Macsen',
-//        theme:
-//          ThemeData(
-//            primarySwatch: Colors.teal
-//          ),
-//        home:
-//          BlocProvider<ConversationBloc>(
-//            bloc: ConversationBloc(),
-//            child: HomePage(),
-//          ),
-////        routes:
-////          <String, WidgetBuilder>{
-////              "/TextualInputScreen": (BuildContext context) => new TextualInputScreen(),
-////          }
-//    );
-
 }

@@ -8,6 +8,7 @@ import 'package:macsen/blocs/BlocProvider.dart';
 import 'package:macsen/blocs/application_state_provider.dart';
 
 import 'package:macsen/skills/question_answer/QA.dart';
+import 'package:macsen/skills/spotify/Spotify.dart';
 
 
 
@@ -141,7 +142,8 @@ class IntentParsingBloc implements BlocBase {
 
 
   void _dispatchToSkill(String jsonString){
-    QASkill.execute(_applicationBloc, jsonString);
+    //QASkill.execute(_applicationBloc, jsonString);
+    Spotify.execute(_applicationBloc, jsonString);
   }
 
 

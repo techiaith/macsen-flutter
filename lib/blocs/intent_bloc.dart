@@ -9,7 +9,7 @@ import 'package:macsen/blocs/application_state_provider.dart';
 
 import 'package:macsen/skills/question_answer/QA.dart';
 import 'package:macsen/skills/spotify/Spotify.dart';
-
+import 'package:macsen/skills/alarm/Alarm.dart';
 
 
 //
@@ -149,7 +149,7 @@ class IntentParsingBloc implements BlocBase {
       if (intent=="chwaraea.cerddoriaeth") {
         Spotify.execute(_applicationBloc, jsonString);
       } else if (intent=="gosoda.larwm"){
-        print ("Gosod larwm....");
+        Alarm.execute(_applicationBloc, jsonString);
       } else {
         QASkill.execute(_applicationBloc, jsonString);
       }

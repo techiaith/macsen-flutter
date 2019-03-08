@@ -142,8 +142,18 @@ class IntentParsingBloc implements BlocBase {
 
 
   void _dispatchToSkill(String jsonString){
-    //QASkill.execute(_applicationBloc, jsonString);
-    Spotify.execute(_applicationBloc, jsonString);
+    var jsonResult = JSON.jsonDecode(jsonString);
+    bool success = jsonResult["success"];
+    if (success){
+      String intent=jsonResult["intent"];
+      if (intent=="chwaraea.cerddoriaeth") {
+        Spotify.execute(_applicationBloc, jsonString);
+      } else if (intent=="gosoda.larwm"){
+        print ("Gosod larwm....");
+      } else {
+        QASkill.execute(_applicationBloc, jsonString);
+      }
+    }
   }
 
 

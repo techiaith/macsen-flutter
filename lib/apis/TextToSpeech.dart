@@ -37,7 +37,6 @@ class TextToSpeech {
     }  on Exception catch (e) {
       print (e);
     }
-
     return '';
   }
 

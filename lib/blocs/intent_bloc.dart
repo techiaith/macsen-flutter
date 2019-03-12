@@ -120,8 +120,13 @@ class IntentParsingBloc implements BlocBase {
       _applicationBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationWaiting);
       _currentQuestionCommandBehavior.add(text);
       _intentApi.performSkill(text,_latitude,_longitude).then((intentJsonString) {
-        _applicationBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationPerforming);
-        _dispatchToSkill(intentJsonString);
+        if (intentJsonString.length > 0){
+          _applicationBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationPerforming);
+          _dispatchToSkill(intentJsonString);
+        }
+        else {
+          _applicationBloc.stopPerformingCurrentIntent.add(true);
+        }
       });
     }
   }

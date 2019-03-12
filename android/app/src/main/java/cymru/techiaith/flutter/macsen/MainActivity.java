@@ -100,7 +100,6 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
 
     protected void onStart(){
         super.onStop();
-        spotify.connect();
     }
 
     protected void onStop(){
@@ -127,14 +126,15 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         } else if (methodCall.method.equals("stopPlayingRecording")) {
             result.success(wavAudioPlayer.stopPlaying() ? "OK" : "FAIL");
         } else if (methodCall.method.equals("spotifyPlayArtistOrBand")){
-            result.success(spotify.play_artist((String) methodCall.arguments) ? "OK":"FAIL");
-        } else if (methodCall.method.equals("setAlarm")){
+            result.success(spotify.connect((String) methodCall.arguments) ? "OK":"FAIL");
+        } else if (methodCall.method.equals(("spotifyStopPlayArtistOrBand"))) {
+            result.success(spotify.disconnect());
+        } else if (methodCall.method.equals("setAlarm")) {
             result.success(alarm.setAlarm(
-                    (int)methodCall.argument("hour"),
-                    (int)methodCall.argument("minutes")
-            ) ? "OK":"FAIL");
-        }
-        else {
+                    (int) methodCall.argument("hour"),
+                    (int) methodCall.argument("minutes")
+            ) ? "OK" : "FAIL");
+        } else {
             result.notImplemented();
         }
     }

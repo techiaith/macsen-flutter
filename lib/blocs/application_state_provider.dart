@@ -32,7 +32,7 @@ class ApplicationStateProvider extends InheritedWidget {
 }
 
 enum RecordingType { RequestRecording, SentenceRecording }
-enum ApplicationWaitState { ApplicationWaiting, ApplicationReady }
+enum ApplicationWaitState { ApplicationWaiting, ApplicationReady, ApplicationPerforming }
 
 class ApplicationBloc extends BlocBase {
 
@@ -60,6 +60,8 @@ class ApplicationBloc extends BlocBase {
   final StreamController<ApplicationWaitState> _applicationWaitStateController = StreamController<ApplicationWaitState>();
   Sink<ApplicationWaitState> get changeApplicationWaitState => _applicationWaitStateController.sink;
 
+  final StreamController<bool> _stopPerformingCurrentIntentController = StreamController<bool>();
+  Sink<bool> get stopPerformingCurrentIntent => _stopPerformingCurrentIntentController.sink;
 
 
   // Streams
@@ -78,6 +80,7 @@ class ApplicationBloc extends BlocBase {
     _requestController.close();
     _recordingTypeController.close();
     _applicationWaitStateController.close();
+    _stopPerformingCurrentIntentController.close();
   }
 
 
@@ -103,9 +106,17 @@ class ApplicationBloc extends BlocBase {
     });
 
 
-    //
-    intentParsingBloc.unRecordedSentenceResult.listen((sentence){
-      _recordedSentence=sentence;
+    _stopPerformingCurrentIntentController.stream.listen((stop){
+      _currentRequestBehavior.add('');
+      _currentResponseBehavior.add('');
+
+      textToSpeechBloc.reset.add(true);
+      loudspeakerBloc.reset.add(true);
+
+      intentParsingBloc.stopPerformIntent.add(true);
+
+      _applicationWaitStateBehaviour.add(ApplicationWaitState.ApplicationReady);
+
     });
 
 
@@ -127,10 +138,10 @@ class ApplicationBloc extends BlocBase {
     });
 
 
-    //
     speechToTextBloc.sttResult.listen((recognizedText){
       intentParsingBloc.determineIntent.add(recognizedText);
     });
+
 
     // from TextualInputScreen
     _requestController.stream.listen((text){
@@ -147,22 +158,25 @@ class ApplicationBloc extends BlocBase {
       if (micStatus==MicrophoneStatus.Recording){
         _currentRequestBehavior.add('');
         _currentResponseBehavior.add('');
-
         textToSpeechBloc.reset.add(true);
         loudspeakerBloc.reset.add(true);
       }
     });
 
 
-    //
     loudspeakerBloc.currentSoundText.listen((text){
       _currentResponseBehavior.add(text);
     });
 
 
-    //
     intentParsingBloc.questionOrCommand.listen((text){
       _currentRequestBehavior.add(text);
+    });
+
+
+    //
+    intentParsingBloc.unRecordedSentenceResult.listen((sentence){
+      _recordedSentence=sentence;
     });
 
     getUniqueUID();

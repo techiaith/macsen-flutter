@@ -25,4 +25,17 @@ class Spotify{
     return playSpotifyResult;
   }
 
+
+  static bool stop(ApplicationBloc applicationBloc){
+    try {
+      _native_spotify_api.invokeMethod('spotifyStopPlayArtistOrBand');
+    }
+    on PlatformException catch (e) {
+      print(e.message);
+      return false;
+    }
+    return true;
+  }
+
+
 }

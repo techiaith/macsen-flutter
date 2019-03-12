@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'RecordButtonWidget.dart';
+import 'StopButtonWidget.dart';
 import 'MacsenDrawer.dart';
 
 import 'package:macsen/blocs/application_state_provider.dart';
@@ -82,13 +83,24 @@ class _HomePageScreenState extends State<HomePageScreen> {
   }
 
 
-  Widget _buildActionButton(BuildContext context, ApplicationWaitState waitState){
-    if (waitState==ApplicationWaitState.ApplicationWaiting){
+  Widget _buildActionButton(BuildContext context, ApplicationWaitState appState){
+    if (appState==ApplicationWaitState.ApplicationWaiting){
       return new CircularProgressIndicator();
+    } else if (appState==ApplicationWaitState.ApplicationPerforming){
+      return new StopButtonWidget(
+        onPressed: onStopRequestPress,
+      );
     }
     return new RecordButtonWidget(
       onPressed: onRequestPress,
     );
+  }
+
+
+  VoidCallback onStopRequestPress(){
+    final ApplicationBloc appBloc = ApplicationStateProvider.of(context);
+    appBloc.stopPerformingCurrentIntent.add(true);
+    return null;
   }
 
 

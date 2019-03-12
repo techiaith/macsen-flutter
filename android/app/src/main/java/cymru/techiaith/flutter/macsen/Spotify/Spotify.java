@@ -17,40 +17,52 @@ public class Spotify {
     public static final String REDIRECT_URI = "cymru.techiaith.flutter.macsen://callback";
 
     private MainActivity _mainactivity;
-    private SpotifyAppRemote mSpotifyAppRemote;
+    private SpotifyAppRemote mSpotifyAppRemote = null;
 
     public Spotify(MainActivity activity){
         _mainactivity=activity;
     }
 
-    public void connect(){
-        ConnectionParams connectionParams =
-                new ConnectionParams.Builder(CLIENT_ID)
-                        .setRedirectUri(REDIRECT_URI)
-                        .showAuthView(true)
-                        .build();
+    public void connect(final String spotifyUri){
 
-        SpotifyAppRemote.connect(_mainactivity, connectionParams,
-                new Connector.ConnectionListener() {
-                    @Override
-                    public void onConnected(SpotifyAppRemote spotifyAppRemote) {
-                        mSpotifyAppRemote=spotifyAppRemote;
-                    }
+        if (mSpotifyAppRemote!=null && mSpotifyAppRemote.isConnected()){
+            play_artist(spotifyUri);
+        } else {
+            ConnectionParams connectionParams =
+                    new ConnectionParams.Builder(CLIENT_ID)
+                            .setRedirectUri(REDIRECT_URI)
+                            .showAuthView(true)
+                            .build();
 
-                    @Override
-                    public void onFailure(Throwable throwable) {
-                        Log.e("MainActivity", throwable.getMessage(), throwable);
-                    }
-                });
+            SpotifyAppRemote.connect(_mainactivity, connectionParams,
+                    new Connector.ConnectionListener() {
+                        @Override
+                        public void onConnected(SpotifyAppRemote spotifyAppRemote) {
+                            mSpotifyAppRemote=spotifyAppRemote;
+                            play_artist(spotifyUri);
+                        }
+
+                        @Override
+                        public void onFailure(Throwable throwable) {
+                            Log.e("MainActivity", throwable.getMessage(), throwable);
+                        }
+                    });
+        }
     }
 
-    public void disconnect(){
-        mSpotifyAppRemote.getPlayerApi().pause();
-        SpotifyAppRemote.disconnect(mSpotifyAppRemote);
+    public boolean disconnect(){
+        try{
+            mSpotifyAppRemote.getPlayerApi().pause();
+            SpotifyAppRemote.disconnect(mSpotifyAppRemote);
+            mSpotifyAppRemote=null;
+        } catch (Exception exc){
+            return false;
+        }
+        return true;
     }
 
 
-    public boolean play_artist(String spotifyUri){
+    private boolean play_artist(String spotifyUri){
 
         mSpotifyAppRemote.getPlayerApi().play(spotifyUri);
 

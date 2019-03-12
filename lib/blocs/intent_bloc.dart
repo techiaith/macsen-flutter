@@ -46,6 +46,7 @@ class IntentParsingBloc implements BlocBase {
   double _latitude=0.0;
   double _longitude=0.0;
 
+  String _currentPerformingIntent;
 
   // Sinks
   final StreamController<String> _determineIntentController = StreamController<String>();
@@ -57,6 +58,8 @@ class IntentParsingBloc implements BlocBase {
   final StreamController<IntentRecording> _intentRecordingController = StreamController<IntentRecording>();
   Sink<IntentRecording> get saveIntentRecording => _intentRecordingController.sink;
 
+  final StreamController<bool> _stopPerformingIntentController = StreamController<bool>();
+  Sink<bool> get stopPerformIntent => _stopPerformingIntentController.sink;
 
 
   // Streams
@@ -76,6 +79,7 @@ class IntentParsingBloc implements BlocBase {
     _determineIntentController.close();
     _getUnrecordedSentenceController.close();
     _intentRecordingController.close();
+    _stopPerformingIntentController.close();
   }
 
 
@@ -96,6 +100,10 @@ class IntentParsingBloc implements BlocBase {
       _onSaveIntentRecording(data);
     });
 
+    _stopPerformingIntentController.stream.listen((stop){
+      _stopPerformingCurrentIntent();
+    });
+
     _applicationBloc.geolocationBloc.latitude.listen((latitude){
       _latitude=latitude;
     });
@@ -112,7 +120,7 @@ class IntentParsingBloc implements BlocBase {
       _applicationBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationWaiting);
       _currentQuestionCommandBehavior.add(text);
       _intentApi.performSkill(text,_latitude,_longitude).then((intentJsonString) {
-        _applicationBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationReady);
+        _applicationBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationPerforming);
         _dispatchToSkill(intentJsonString);
       });
     }
@@ -145,14 +153,21 @@ class IntentParsingBloc implements BlocBase {
     var jsonResult = JSON.jsonDecode(jsonString);
     bool success = jsonResult["success"];
     if (success){
-      String intent=jsonResult["intent"];
-      if (intent=="chwaraea.cerddoriaeth") {
+      _currentPerformingIntent=jsonResult["intent"];
+      if (_currentPerformingIntent=="chwaraea.cerddoriaeth") {
         Spotify.execute(_applicationBloc, jsonString);
-      } else if (intent=="gosoda.larwm"){
+      } else if (_currentPerformingIntent=="gosoda.larwm"){
         Alarm.execute(_applicationBloc, jsonString);
       } else {
         QASkill.execute(_applicationBloc, jsonString);
       }
+    }
+  }
+
+
+  void _stopPerformingCurrentIntent(){
+    if (_currentPerformingIntent=="chwaraea.cerddoriaeth") {
+      Spotify.stop(_applicationBloc);
     }
   }
 

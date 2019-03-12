@@ -110,6 +110,8 @@ class ApplicationBloc extends BlocBase {
       _currentRequestBehavior.add('');
       _currentResponseBehavior.add('');
 
+      loudspeakerBloc.stop.add(true);
+
       textToSpeechBloc.reset.add(true);
       loudspeakerBloc.reset.add(true);
 

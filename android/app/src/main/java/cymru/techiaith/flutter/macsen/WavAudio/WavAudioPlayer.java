@@ -31,12 +31,14 @@ public class WavAudioPlayer {
         try{
             if (_player!=null) {
                 if (_player.isPlaying()) {
+
                     _player.stop();
                     _player.reset();
                     _player.release();
 
                     _player = null;
                     playingThread = null;
+
                 }
             }
         }

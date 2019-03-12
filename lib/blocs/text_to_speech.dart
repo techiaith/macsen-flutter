@@ -19,8 +19,6 @@ import 'package:macsen/blocs/loudspeaker_bloc.dart';
 //  - uses MaryTTS cloud API to convert to wav
 //  - file url of wav to play.
 //
-//
-
 
 class TextToSpeechText {
 
@@ -45,11 +43,17 @@ class TextToSpeechBloc implements BlocBase {
   TextToSpeech _ttsApi;
 
   bool _isWaitingForTts = false;
+  bool _playTtsResult = true;
+
   Queue<TextToSpeechText> _ttsQueue;
 
+
   // Sinks
-  final StreamController<TextToSpeechText> _speakTextController = StreamController<TextToSpeechText>();
-  Sink<TextToSpeechText> get speak => _speakTextController.sink;
+  final StreamController<TextToSpeechText> _ttsQueueController = StreamController<TextToSpeechText>();
+  Sink<TextToSpeechText> get queue => _ttsQueueController.sink;
+
+  final StreamController<bool> _speakQueueController = StreamController<bool>();
+  Sink<bool> get speakQueue => _speakQueueController.sink;
 
   final StreamController<bool> _resetQueueController = StreamController<bool>();
   Sink<bool> get reset => _resetQueueController.sink;
@@ -61,8 +65,10 @@ class TextToSpeechBloc implements BlocBase {
 
 
   void dispose(){
-    _speakTextController.close();
+    //_speakTextController.close();
     _resetQueueController.close();
+    _ttsQueueController.close();
+    _speakQueueController.close();
   }
 
 
@@ -72,21 +78,24 @@ class TextToSpeechBloc implements BlocBase {
     _ttsApi = new TextToSpeech();
     _ttsQueue = new Queue<TextToSpeechText>();
 
+    _ttsQueueController.stream.listen((ttsText){
+      _playTtsResult=true;
+      _ttsQueue.add(ttsText);
+    });
 
-    _speakTextController.stream.listen((ttsText){
-      _onCreateTTSUtterance(ttsText);
+    _speakQueueController.stream.listen((start){
+      _playTtsResult=true;
+      _processNextInTtsQueue();
     });
 
     _resetQueueController.stream.listen((reset){
-      _onResetQueue();
+      _ttsQueue.clear();
+      _playTtsResult=false;
+      _isWaitingForTts=false;
     });
+
   }
 
-
-  void _onCreateTTSUtterance(TextToSpeechText ttsText){
-    _ttsQueue.add(ttsText);
-    _processNextInTtsQueue();
-  }
 
   Future<void> _processNextInTtsQueue() async {
     if (_ttsQueue.length > 0){
@@ -94,18 +103,16 @@ class TextToSpeechBloc implements BlocBase {
         _isWaitingForTts=true;
         TextToSpeechText nextTextToSpeechText = _ttsQueue.removeFirst();
         await _ttsApi.speak(nextTextToSpeechText.locallyAdaptedText).then((wavfile){
+          if (_playTtsResult) {
+            SoundFile soundFile = new SoundFile(wavfile, nextTextToSpeechText.originalText);
+            _ttsResultBehaviour.add(soundFile);
+          }
           _isWaitingForTts=false;
-          SoundFile soundFile = new SoundFile(wavfile, nextTextToSpeechText.originalText);
-          _ttsResultBehaviour.add(soundFile);
           _processNextInTtsQueue();
         });
       }
     }
   }
 
-  void _onResetQueue(){
-    _ttsQueue.clear();
-    _isWaitingForTts=false;
-  }
 
 }

@@ -1,8 +1,6 @@
 import 'dart:convert' as JSON;
-
-import 'package:macsen/blocs/application_state_provider.dart';
-
 import 'package:flutter/services.dart';
+import 'package:macsen/blocs/application_state_provider.dart';
 
 const MethodChannel _native_spotify_api = const MethodChannel('cymru.techiaith.flutter.macsen/spotify');
 

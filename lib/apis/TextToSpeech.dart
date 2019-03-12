@@ -27,7 +27,6 @@ class TextToSpeech {
       if (response.statusCode == 200) {
         var bytes = await consolidateHttpClientResponseBytes(response);
         String dir = (await getTemporaryDirectory()).path;
-
         String filename = "tts_" + Md5Hash.create(text) + ".wav";
         String filepath = '$dir/$filename';
         File file = new File(filepath);

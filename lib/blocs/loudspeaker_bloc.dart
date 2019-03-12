@@ -194,7 +194,7 @@ class LoudSpeakerBloc implements BlocBase {
 
 
   void _onStopPlayWavFile(){
-
+    _native_play_channel.invokeMethod('stopPlayingRecording');
   }
 
 

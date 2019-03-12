@@ -11,18 +11,23 @@ class QASkill {
     var jsonResult = JSON.jsonDecode(json);
     String ttsString;
 
-    for (int i = 0; i < jsonResult["result"].length;i++){
+    for (int i=0; i < jsonResult["result"].length; i++){
       ttsString = jsonResult["result"][i]["title"].trim()
-                    + ' '
-                    + jsonResult["result"][i]["description"].trim();
+          + ' '
+          + jsonResult["result"][i]["description"].trim();
 
       ttsString = ttsString.trim();
 
-      applicationBloc.textToSpeechBloc.speak.add(
-        new TextToSpeechText(ttsString,
-          localAdaptStringForTts(ttsString))
+      applicationBloc.textToSpeechBloc.queue.add(
+          new TextToSpeechText(
+              ttsString,
+              localAdaptStringForTts(ttsString)
+          )
       );
     }
+
+    applicationBloc.textToSpeechBloc.speakQueue.add(true);
+
   }
 
 
@@ -32,6 +37,5 @@ class QASkill {
     outString = outString.replaceAll("Golwg 360", "Golwg tri chwech dim");
     return outString;
   }
-
 
 }

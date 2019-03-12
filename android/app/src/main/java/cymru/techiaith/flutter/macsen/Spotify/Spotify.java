@@ -23,7 +23,8 @@ public class Spotify {
         _mainactivity=activity;
     }
 
-    public void connect(final String spotifyUri){
+
+    public boolean connect(final String spotifyUri){
 
         if (mSpotifyAppRemote!=null && mSpotifyAppRemote.isConnected()){
             play_artist(spotifyUri);
@@ -48,7 +49,9 @@ public class Spotify {
                         }
                     });
         }
+        return true;
     }
+
 
     public boolean disconnect(){
         try{

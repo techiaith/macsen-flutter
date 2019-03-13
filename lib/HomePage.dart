@@ -5,6 +5,7 @@ import 'StopButtonWidget.dart';
 import 'MacsenDrawer.dart';
 import 'MacsenAssistantWidget.dart';
 import 'TextualRequestWidget.dart';
+import 'TrainingWidget.dart';
 
 import 'package:macsen/blocs/application_state_provider.dart';
 
@@ -22,7 +23,7 @@ class HomePageState extends State<HomePage> {
   final List<Widget> _children = [
     MacsenAssistantWidget(),
     TextualRequestWidget(),
-    Container(),
+    TrainingWidget(),
     Container()
   ];
 
@@ -111,7 +112,8 @@ class HomePageState extends State<HomePage> {
 
 
   Widget _buildActionButton(BuildContext context, int currentPageIndex, ApplicationWaitState appState){
-    if (currentPageIndex==0){
+    if ((currentPageIndex==0) || (currentPageIndex==2)){
+
       if (appState==ApplicationWaitState.ApplicationWaiting){
         return new CircularProgressIndicator();
       } else if (appState==ApplicationWaitState.ApplicationPerforming){
@@ -119,11 +121,20 @@ class HomePageState extends State<HomePage> {
           onPressed: onStopRequestPress,
         );
       }
-      return new RecordButtonWidget(
-        onPressed: onRequestPress,
-      );
+
+      if (currentPageIndex==0) {
+        return new RecordButtonWidget(
+          onPressed: onRequestPress,
+        );
+      } else if (currentPageIndex==2) {
+        return new RecordButtonWidget(
+            onPressed: onRecordPress
+        );
+      }
     }
+
     return Container();
+
   }
 
 
@@ -137,6 +148,14 @@ class HomePageState extends State<HomePage> {
   VoidCallback onRequestPress() {
     final ApplicationBloc appBloc = ApplicationStateProvider.of(context);
     appBloc.recordingType.add(RecordingType.RequestRecording);
+    appBloc.microphoneBloc.record.add(true);
+    return null;
+  }
+
+
+  VoidCallback onRecordPress() {
+    final ApplicationBloc appBloc = ApplicationStateProvider.of(context);
+    appBloc.recordingType.add(RecordingType.SentenceRecording);
     appBloc.microphoneBloc.record.add(true);
     return null;
   }

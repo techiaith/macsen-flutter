@@ -65,6 +65,4 @@ class _TextualRequestState extends State<TextualRequestWidget> {
         )
     );
   }
-
-
 }

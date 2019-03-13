@@ -94,8 +94,8 @@ class HomePageState extends State<HomePage> {
                     title: new Text("Hyfforddi"),
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.settings),
-                    title: new Text("Gosodiadau"),
+                    icon: Icon(Icons.help),
+                    title: new Text("Help"),
                   )
                 ]
               ),

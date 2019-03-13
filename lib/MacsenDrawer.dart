@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import 'package:macsen/MozillaCommonVoicePage.dart';
 
 class MacsenDrawer extends StatelessWidget {
 
@@ -31,21 +32,16 @@ class MacsenDrawer extends StatelessWidget {
               Column (
                 children: <Widget>[
                   ListTile(
-                    title:
-                    Text('Ynghylch',
-                        style:
-                        TextStyle(
-                            fontSize: 24.0,
+                    title: Text('Mozilla CommonVoice', style: TextStyle(fontSize: 24.0)),
+                    //subtitle: Text('(gwefan allanol)', style: TextStyle(fontSize: 12.0)),
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => MozillaCommonVoicePage()
                         )
-                    ),
-//                    onTap: () {
-//                      Navigator.pop(context);
-//                      Navigator.of(context).push(
-//                        MaterialPageRoute(
-//                          builder: (context) => RecordSentenceScreen(),
-//                        )
-//                      );
-//                    },
+                      );
+                    },
                   )
                 ],
               )

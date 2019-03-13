@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import 'TextualInputScreen.dart';
 import 'RecordSentence.dart';
-
 
 class MacsenDrawer extends StatelessWidget {
 
@@ -33,23 +31,6 @@ class MacsenDrawer extends StatelessWidget {
             child:
               Column (
                 children: <Widget>[
-                  ListTile(
-                    title:
-                      Text('Mewnbwn Testun',
-                        style:
-                        TextStyle(
-                            fontSize: 24.0,
-                        )
-                      ),
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (context) => TextualInputScreen(),
-                        )
-                      );
-                    },
-                  ),
                   ListTile(
                     title:
                     Text('Hyfforddi',

@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.teal
           ),
         home:
-          HomePageScreen(),
+          HomePage(),
       )
     );
   }

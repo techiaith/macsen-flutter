@@ -8,10 +8,10 @@ import 'package:macsen/blocs/application_state_provider.dart';
 
 class RecordButtonWidget extends  StatefulWidget {
   RecordButtonWidget({Key key,
-    this.onPressed,}) : super(key: key);
+    this.onPressed, this.opacity}) : super(key: key);
 
   final VoidCallback onPressed;
-
+  final double opacity;
 
   @override
   RecordButtonState createState() => new RecordButtonState();
@@ -35,6 +35,7 @@ class RecordButtonState extends State<RecordButtonWidget> {
               stream: appBloc.microphoneBloc.microphoneStatus,
               builder: (context, snapshot) =>
                 FloatingActionButton(
+
                   onPressed: widget.onPressed,
                   backgroundColor: getBackgroundColor(snapshot.data),
                   child: Icon(getMicrophoneIcon(snapshot.data), size: 32.0),

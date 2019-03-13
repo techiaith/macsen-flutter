@@ -3,27 +3,37 @@ import 'package:flutter/material.dart';
 import 'RecordButtonWidget.dart';
 import 'StopButtonWidget.dart';
 import 'MacsenDrawer.dart';
+import 'MacsenAssistantWidget.dart';
+import 'TextualRequestWidget.dart';
 
 import 'package:macsen/blocs/application_state_provider.dart';
 
-class HomePageScreen extends StatefulWidget {
-  HomePageScreen({Key key,}) : super (key: key);
+
+class HomePage extends StatefulWidget {
+  HomePage({Key key,}) : super (key: key);
 
   @override
-  _HomePageScreenState createState() => _HomePageScreenState();
+  HomePageState createState() => HomePageState();
 }
 
-class _HomePageScreenState extends State<HomePageScreen> {
+
+class HomePageState extends State<HomePage> {
+
+  final List<Widget> _children = [
+    MacsenAssistantWidget(),
+    TextualRequestWidget(),
+    Container(),
+    Container()
+  ];
+
 
   @override
   Widget build(BuildContext context) {
 
     final ApplicationBloc appBloc = ApplicationStateProvider.of(context);
 
-    double mediaWidth = MediaQuery.of(context).size.width;
-    double width_80 = mediaWidth * 0.8;
-
-    return new Scaffold(
+    return new Scaffold
+      (
         appBar:
           AppBar(title: new Text("Macsen")),
 
@@ -38,62 +48,82 @@ class _HomePageScreenState extends State<HomePageScreen> {
             ),
 
         body:
-          Center(
-            child:
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  StreamBuilder<String>(
-                    stream: appBloc.currentRequestText,
-                    initialData: '',
-                    builder: (context, snapshot) => Container(
-                      width: width_80,
-                      child: Text(
-                          snapshot.data,
-                          maxLines: 10,
-                          style: TextStyle(fontSize: 24)
-                      ),
-                    ),
-                  ),
-                  StreamBuilder<String>(
-                    stream: appBloc.currentResponseText,
-                    initialData: '',
-                    builder: (context, snapshot) => Container(
-                      width: width_80,
-                      child: Text(
-                        snapshot.data,
-                        maxLines: 10,
-                        style: TextStyle(fontSize: 24)
-                      ),
-                    ),
-                  ), //Text(snapshot.data)
-                ],
-              ),
+          StreamBuilder<int>(
+            initialData: 0,
+            stream: appBloc.onCurrentApplicationPageChange,
+            builder: (context, snapshot) => _children[snapshot.data],
           ),
 
-        floatingActionButton: StreamBuilder<ApplicationWaitState>(
-            stream: appBloc.onApplicationWaitStateChange,
-            builder: (context, snapshot) => _buildActionButton(context, snapshot.data)
+        floatingActionButton: StreamBuilder(
+            initialData: 0,
+            stream: appBloc.onCurrentApplicationPageChange,
+            builder: (context, snaphotPageChange) =>
+              StreamBuilder<ApplicationWaitState>(
+                stream: appBloc.onApplicationWaitStateChange,
+                builder: (context, snapshotApplicationWaitState) =>
+                  _buildActionButton(context,
+                                     snaphotPageChange.data,
+                                     snapshotApplicationWaitState.data)
+                )
         ),
 
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
 
-    );
-
+        bottomNavigationBar:
+          StreamBuilder<int>(
+            initialData: 0,
+            stream: appBloc.onCurrentApplicationPageChange,
+            builder: (context, snapshot) =>
+              BottomNavigationBar(
+                currentIndex: snapshot.data,
+                onTap: onTabPressed,
+                type: BottomNavigationBarType.fixed,
+                fixedColor: Colors.black87,
+                items: [
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.mic),
+                    title: new Text("Siarad"),
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.chat),
+                    title: new Text("Testun"),
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.assignment),
+                    title: new Text("Hyfforddi"),
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.settings),
+                    title: new Text("Gosodiadau"),
+                  )
+                ]
+              ),
+          )
+      );
   }
 
 
-  Widget _buildActionButton(BuildContext context, ApplicationWaitState appState){
-    if (appState==ApplicationWaitState.ApplicationWaiting){
-      return new CircularProgressIndicator();
-    } else if (appState==ApplicationWaitState.ApplicationPerforming){
-      return new StopButtonWidget(
-        onPressed: onStopRequestPress,
+  void onTabPressed(int index) {
+    final ApplicationBloc appBloc = ApplicationStateProvider.of(context);
+    appBloc.changeCurrentApplicationPage.add(index);
+  }
+
+
+
+  Widget _buildActionButton(BuildContext context, int currentPageIndex, ApplicationWaitState appState){
+    if (currentPageIndex==0){
+      if (appState==ApplicationWaitState.ApplicationWaiting){
+        return new CircularProgressIndicator();
+      } else if (appState==ApplicationWaitState.ApplicationPerforming){
+        return new StopButtonWidget(
+          onPressed: onStopRequestPress,
+        );
+      }
+      return new RecordButtonWidget(
+        onPressed: onRequestPress,
       );
     }
-    return new RecordButtonWidget(
-      onPressed: onRequestPress,
-    );
+    return Container();
   }
 
 

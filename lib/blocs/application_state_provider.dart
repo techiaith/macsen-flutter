@@ -63,6 +63,9 @@ class ApplicationBloc extends BlocBase {
   final StreamController<bool> _stopPerformingCurrentIntentController = StreamController<bool>();
   Sink<bool> get stopPerformingCurrentIntent => _stopPerformingCurrentIntentController.sink;
 
+  final StreamController<int> _currentApplicationPageController = StreamController<int>();
+  Sink<int> get changeCurrentApplicationPage => _currentApplicationPageController.sink;
+
 
   // Streams
   final BehaviorSubject<String> _currentRequestBehavior = BehaviorSubject<String>();
@@ -74,6 +77,8 @@ class ApplicationBloc extends BlocBase {
   final BehaviorSubject<ApplicationWaitState> _applicationWaitStateBehaviour = BehaviorSubject<ApplicationWaitState>();
   Stream<ApplicationWaitState> get onApplicationWaitStateChange => _applicationWaitStateBehaviour.asBroadcastStream();
 
+  final BehaviorSubject<int> _currentApplicationPageBehaviour = BehaviorSubject<int>();
+  Stream<int> get onCurrentApplicationPageChange => _currentApplicationPageBehaviour.asBroadcastStream();
 
 
   void dispose(){
@@ -81,6 +86,7 @@ class ApplicationBloc extends BlocBase {
     _recordingTypeController.close();
     _applicationWaitStateController.close();
     _stopPerformingCurrentIntentController.close();
+    _currentApplicationPageController.close();
   }
 
 
@@ -103,6 +109,11 @@ class ApplicationBloc extends BlocBase {
     _applicationWaitStateController.stream.listen((waitState){
       _applicationWaitState=waitState;
       _applicationWaitStateBehaviour.add(_applicationWaitState);
+    });
+
+
+    _currentApplicationPageController.stream.listen((pageIndex){
+      _currentApplicationPageBehaviour.add(pageIndex);
     });
 
 

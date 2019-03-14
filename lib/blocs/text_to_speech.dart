@@ -65,7 +65,6 @@ class TextToSpeechBloc implements BlocBase {
 
 
   void dispose(){
-    //_speakTextController.close();
     _resetQueueController.close();
     _ttsQueueController.close();
     _speakQueueController.close();
@@ -98,11 +97,12 @@ class TextToSpeechBloc implements BlocBase {
 
 
   Future<void> _processNextInTtsQueue() async {
-    if (_ttsQueue.length > 0){
+    if (_ttsQueue.length > 0) {
       if (_isWaitingForTts==false){
         _isWaitingForTts=true;
         TextToSpeechText nextTextToSpeechText = _ttsQueue.removeFirst();
         await _ttsApi.speak(nextTextToSpeechText.locallyAdaptedText).then((wavfile){
+          print ("Playing " + wavfile);
           if (_playTtsResult) {
             SoundFile soundFile = new SoundFile(wavfile, nextTextToSpeechText.originalText);
             _ttsResultBehaviour.add(soundFile);
@@ -111,8 +111,6 @@ class TextToSpeechBloc implements BlocBase {
           _processNextInTtsQueue();
         });
       }
-    } else {
-
     }
   }
 

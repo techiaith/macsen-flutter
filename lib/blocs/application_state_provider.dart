@@ -167,6 +167,13 @@ class ApplicationBloc extends BlocBase {
     });
 
 
+    loudspeakerBloc.onCompletedPlayingAllSounds.listen((completed){
+      if (completed){
+        _applicationWaitStateBehaviour.add(ApplicationWaitState.ApplicationReady);
+      }
+    });
+
+
     microphoneBloc.microphoneStatus.listen((micStatus){
       if (micStatus==MicrophoneStatus.Recording){
         _currentRequestBehavior.add('');

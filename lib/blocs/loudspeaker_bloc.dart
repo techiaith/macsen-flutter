@@ -46,7 +46,7 @@ class LoudSpeakerBloc implements BlocBase {
   String _audioLowBeepFilePath;
 
   bool _isLoudspeakerPlaying=false;
-  Queue<SoundFile> soundsQueue;
+  Queue<SoundFile> _soundsQueue;
 
   // Sinks:
   final StreamController<BeepEnum> _playBeepController = StreamController<BeepEnum>();
@@ -72,6 +72,8 @@ class LoudSpeakerBloc implements BlocBase {
   final BehaviorSubject<BeepEnum> _beepCompletedBehaviour = BehaviorSubject<BeepEnum>();
   Stream<BeepEnum> get beepCompleted => _beepCompletedBehaviour.asBroadcastStream();
 
+  final BehaviorSubject<bool> _soundsQueueCompletedBehaviour = BehaviorSubject<bool>();
+  Stream<bool> get onCompletedPlayingAllSounds => _soundsQueueCompletedBehaviour.asBroadcastStream();
 
 
   void dispose(){
@@ -79,13 +81,14 @@ class LoudSpeakerBloc implements BlocBase {
     _playSoundFileController.close();
     _stopPlayingController.close();
     _resetQueueController.close();
+    _soundsQueueCompletedBehaviour.close();
   }
 
 
   LoudSpeakerBloc(ApplicationBloc parentBloc){
 
     applicationBloc = parentBloc;
-    soundsQueue = new Queue<SoundFile>();
+    _soundsQueue = new Queue<SoundFile>();
 
     //
     _loadAudio('beep_hi.wav').then((localtmpfile){
@@ -161,23 +164,26 @@ class LoudSpeakerBloc implements BlocBase {
 
   void _onPlayWavFile(SoundFile soundFile){
     if (soundFile.wavFilePath.length > 0) {
-      soundsQueue.add(soundFile);
+      _soundsQueue.add(soundFile);
       _playNextInQueue();
     }
   }
 
 
   Future<void> _playNextInQueue() async {
-    if (soundsQueue.length > 0){
+    if (_soundsQueue.length > 0){
       if (_isLoudspeakerPlaying==false){
         _setLoudspeakerPlaying(true);
-        SoundFile nextSoundfile=soundsQueue.removeFirst();
+        SoundFile nextSoundfile=_soundsQueue.removeFirst();
         await _native_play_channel.invokeMethod(
             'playRecording',
             nextSoundfile.wavFilePath
         );
         _currentSoundTextBehavior.add(nextSoundfile.text);
       }
+    } else {
+      print ("Completed playing all sounds");
+      _soundsQueueCompletedBehaviour.add(true);
     }
   }
 
@@ -188,7 +194,7 @@ class LoudSpeakerBloc implements BlocBase {
 
 
   void _onResetQueue(){
-    soundsQueue.clear();
+    _soundsQueue.clear();
     _isLoudspeakerPlaying=false;
   }
 

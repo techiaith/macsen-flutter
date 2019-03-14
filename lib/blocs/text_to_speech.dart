@@ -111,6 +111,8 @@ class TextToSpeechBloc implements BlocBase {
           _processNextInTtsQueue();
         });
       }
+    } else {
+
     }
   }
 

@@ -13,7 +13,7 @@ class QASkill {
 
     for (int i=0; i < jsonResult["result"].length; i++){
       ttsString = jsonResult["result"][i]["title"].trim()
-          + ' '
+          + '\n\n'
           + jsonResult["result"][i]["description"].trim();
 
       ttsString = ttsString.trim();

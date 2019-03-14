@@ -148,12 +148,18 @@ class IntentParsingBloc implements BlocBase {
   void _onGetUnrecordedSentences(String uid){
     _applicationBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationWaiting);
     _intentApi.getUnrecordedSentence(uid).then((json){
-      var jsonResult = JSON.jsonDecode(json);
-      if (jsonResult["success"]==true){
-        String result = jsonResult["result"][0];
-        _unRecordedSentenceResultBehaviour.add(result);
+      try {
+        var jsonResult = JSON.jsonDecode(json);
+        if (jsonResult["success"] == true) {
+          String result = jsonResult["result"][0];
+          _unRecordedSentenceResultBehaviour.add(result);
+        }
+        _applicationBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationReady);
+      } catch (Exception){
+        _applicationBloc.raiseApplicationException.add("Aeth rhywbeth o'i le wrth estyn brawddeg i chi recordio.");
+        return;
       }
-      _applicationBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationReady);
+
     });
   }
 
@@ -161,15 +167,21 @@ class IntentParsingBloc implements BlocBase {
   void _onGetAllSentences(){
     _applicationBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationWaiting);
     _intentApi.getAllSentences().then((json){
-      var jsonResult = JSON.jsonDecode(json);
-      if (jsonResult["success"]==true){
-        List<String> result = new List<String>();
-        for (int i=0; i<jsonResult["result"].length; i++){
-          result.add(jsonResult["result"][i]);
+      try {
+        var jsonResult = JSON.jsonDecode(json);
+        if (jsonResult["success"]==true){
+          List<String> result = new List<String>();
+          for (int i=0; i<jsonResult["result"].length; i++){
+            result.add(jsonResult["result"][i]);
+          }
+          _allSentencesBehavior.add(result);
         }
-        _allSentencesBehavior.add(result);
+        _applicationBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationReady);
+      } catch (Exception){
+        _applicationBloc.raiseApplicationException.add("Aeth rhywbeth o'i le wrth estyn yr holl frawddegau o'r gweinydd.");
+        return;
       }
-      _applicationBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationReady);
+
     });
   }
 

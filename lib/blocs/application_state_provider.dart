@@ -66,6 +66,9 @@ class ApplicationBloc extends BlocBase {
   final StreamController<int> _currentApplicationPageController = StreamController<int>();
   Sink<int> get changeCurrentApplicationPage => _currentApplicationPageController.sink;
 
+  final StreamController<String> _raiseApplicationExceptionController = StreamController<String>();
+  Sink<String> get raiseApplicationException => _raiseApplicationExceptionController.sink;
+
 
   // Streams
   final BehaviorSubject<String> _currentRequestBehavior = BehaviorSubject<String>();
@@ -77,8 +80,12 @@ class ApplicationBloc extends BlocBase {
   final BehaviorSubject<ApplicationWaitState> _applicationWaitStateBehaviour = BehaviorSubject<ApplicationWaitState>();
   Stream<ApplicationWaitState> get onApplicationWaitStateChange => _applicationWaitStateBehaviour.asBroadcastStream();
 
+  final BehaviorSubject<String> _applicationExceptionBehaviour = BehaviorSubject<String>();
+  Stream<String> get onApplicationException => _applicationExceptionBehaviour.asBroadcastStream();
+
   final BehaviorSubject<int> _currentApplicationPageBehaviour = BehaviorSubject<int>();
   Stream<int> get onCurrentApplicationPageChange => _currentApplicationPageBehaviour.asBroadcastStream();
+
 
 
   void dispose(){
@@ -87,6 +94,7 @@ class ApplicationBloc extends BlocBase {
     _applicationWaitStateController.close();
     _stopPerformingCurrentIntentController.close();
     _currentApplicationPageController.close();
+    _raiseApplicationExceptionController.close();
   }
 
 
@@ -130,6 +138,12 @@ class ApplicationBloc extends BlocBase {
 
       _applicationWaitStateBehaviour.add(ApplicationWaitState.ApplicationReady);
 
+    });
+
+
+    _raiseApplicationExceptionController.stream.listen((exceptionMessage){
+      _applicationExceptionBehaviour.add(exceptionMessage);
+      _stopPerformingCurrentIntentController.add(true);
     });
 
 

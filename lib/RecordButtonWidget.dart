@@ -35,7 +35,6 @@ class RecordButtonState extends State<RecordButtonWidget> {
               stream: appBloc.microphoneBloc.microphoneStatus,
               builder: (context, snapshot) =>
                 FloatingActionButton(
-
                   onPressed: widget.onPressed,
                   backgroundColor: getBackgroundColor(snapshot.data),
                   child: Icon(getMicrophoneIcon(snapshot.data), size: 32.0),

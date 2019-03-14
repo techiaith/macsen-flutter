@@ -28,6 +28,7 @@ class HomePageState extends State<HomePage> {
     MacsenHelpWidget()
   ];
 
+  String _currentDialogMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -50,11 +51,19 @@ class HomePageState extends State<HomePage> {
             ),
 
         body:
-          StreamBuilder<int>(
-            initialData: 0,
-            stream: appBloc.onCurrentApplicationPageChange,
-            builder: (context, snapshot) => _children[snapshot.data],
-          ),
+            StreamBuilder<String>(
+              initialData: '',
+              stream: appBloc.onApplicationException,
+              builder: (context, snapShotApplicationException) =>
+                StreamBuilder<int>(
+                  initialData: 0,
+                  stream: appBloc.onCurrentApplicationPageChange,
+                  builder: (context, snapshotPageIndex) => _buildPageAction(
+                      context,
+                      snapshotPageIndex.data,
+                      snapShotApplicationException.data),
+                  ),
+            ),
 
         floatingActionButton: StreamBuilder(
             initialData: 0,
@@ -110,6 +119,40 @@ class HomePageState extends State<HomePage> {
     appBloc.changeCurrentApplicationPage.add(index);
   }
 
+
+  Widget _buildPageAction(BuildContext context, int currentPageIndex, String exceptionMessage){
+    if (exceptionMessage.length > 0){
+      if (_currentDialogMessage != exceptionMessage){
+        _currentDialogMessage = exceptionMessage;
+        WidgetsBinding.instance.addPostFrameCallback((_) => _showDialog(context, exceptionMessage));
+      }
+    }
+    return _children[currentPageIndex];
+  }
+
+
+  Future<Widget> _showDialog(BuildContext context, String message) async {
+
+    final ApplicationBloc appBloc = ApplicationStateProvider.of(context);
+
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Problem",style: TextStyle(fontSize: 24.0)),
+        content: Text(message, style: TextStyle(fontSize: 24.0)),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Iawn', style: TextStyle(fontSize: 24.0)),
+            onPressed: (){
+              _currentDialogMessage='';
+              appBloc.raiseApplicationException.add('');
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      )
+    );
+  }
 
 
   Widget _buildActionButton(BuildContext context, int currentPageIndex, ApplicationWaitState appState){

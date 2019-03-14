@@ -34,7 +34,9 @@ class QASkill {
   static String localAdaptStringForTts(String inString) {
     String outString = inString;
     outString = outString.replaceAll("Celsius", "selsiws");
-    outString = outString.replaceAll("Golwg 360", "Golwg tri chwech dim");
+    outString = outString.replaceAll("Golwg 360", "Golwg tri chwech dimm");
+    outString = outString.replaceAll("OpenWeather", "OopenWeddar");
+    outString = outString.replaceAll("k", "c");
     return outString;
   }
 

@@ -11,6 +11,7 @@ class MacsenAssistantWidget extends StatefulWidget {
 class _MacsenWidgetState extends State<MacsenAssistantWidget> {
 
   Widget build(BuildContext context) {
+
     final ApplicationBloc appBloc = ApplicationStateProvider.of(context);
 
     double text_size = 24.0;

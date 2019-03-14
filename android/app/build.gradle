@@ -38,8 +38,7 @@ android {
         targetSdkVersion 28
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-    }
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"    }
 
     buildTypes {
         release {
@@ -61,9 +60,9 @@ flutter {
 dependencies {
     implementation files('../spotify-app-remote-release-0.6.1/spotify-app-remote-release-0.6.1.aar')
     implementation 'com.google.code.gson:gson:2.8.5'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0-beta01'
-    implementation 'androidx.annotation:annotation:1.0.0-beta01'
+    implementation 'com.android.support:support-v4:28.0.0'
+    implementation 'com.android.support:support-annotations:28.0.0'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }

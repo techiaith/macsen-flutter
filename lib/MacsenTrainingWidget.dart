@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:macsen/blocs/application_state_provider.dart';
 
-class TrainingWidget extends StatefulWidget {
-  TrainingWidget({Key key,}) : super (key: key);
+class MacsenTrainingWidget extends StatefulWidget {
+  MacsenTrainingWidget({Key key,}) : super (key: key);
 
   @override
-  _TrainingState createState() => _TrainingState();
+  _MacsenTrainingState createState() => _MacsenTrainingState();
 }
 
-class _TrainingState extends State<TrainingWidget>{
+class _MacsenTrainingState extends State<MacsenTrainingWidget>{
 
   Widget build(BuildContext context){
     final ApplicationBloc appBloc = ApplicationStateProvider.of(context);
@@ -44,11 +44,11 @@ class _TrainingState extends State<TrainingWidget>{
             margin: EdgeInsets.only(top: 40.0),
             padding: EdgeInsets.only(left: 20.0, right: 20.0),
             child: StreamBuilder<String>(
-              stream: appBloc.intentParsingBloc.unRecordedSentenceResult,
               initialData: '',
+              stream: appBloc.intentParsingBloc.unRecordedSentenceResult,
               builder: (context, snapshot) => Text(
                     snapshot.data,
-                    maxLines: 10,
+                    maxLines: 3,
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 32.0)
                 ),

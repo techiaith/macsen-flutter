@@ -55,6 +55,9 @@ class IntentParsingBloc implements BlocBase {
   final StreamController<String> _getUnrecordedSentenceController = StreamController<String>();
   Sink<String> get getUnRecordedSentences => _getUnrecordedSentenceController.sink;
 
+  final StreamController<bool> _getAllSentencesController = StreamController<bool>();
+  Sink<bool> get getAllSentences => _getAllSentencesController.sink;
+
   final StreamController<IntentRecording> _intentRecordingController = StreamController<IntentRecording>();
   Sink<IntentRecording> get saveIntentRecording => _intentRecordingController.sink;
 
@@ -75,11 +78,16 @@ class IntentParsingBloc implements BlocBase {
   Stream<String> get unRecordedSentenceResult => _unRecordedSentenceResultBehaviour.asBroadcastStream();
 
 
+  final BehaviorSubject<List<String>> _allSentencesBehavior = BehaviorSubject<List<String>>();
+  Stream<List<String>> get allSentencesResult => _allSentencesBehavior.asBroadcastStream();
+
+
   void dispose(){
     _determineIntentController.close();
     _getUnrecordedSentenceController.close();
     _intentRecordingController.close();
     _stopPerformingIntentController.close();
+    _getAllSentencesController.close();
   }
 
 
@@ -88,12 +96,17 @@ class IntentParsingBloc implements BlocBase {
     _applicationBloc = parentBloc;
     _intentApi = new IntentParsing();
 
+
     _determineIntentController.stream.listen((text){
       _onDetermineIntent(text);
     });
 
     _getUnrecordedSentenceController.stream.listen((uid){
       _onGetUnrecordedSentences(uid);
+    });
+
+    _getAllSentencesController.stream.listen((data){
+      _onGetAllSentences();
     });
 
     _intentRecordingController.stream.listen((data){
@@ -139,6 +152,22 @@ class IntentParsingBloc implements BlocBase {
       if (jsonResult["success"]==true){
         String result = jsonResult["result"][0];
         _unRecordedSentenceResultBehaviour.add(result);
+      }
+      _applicationBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationReady);
+    });
+  }
+
+
+  void _onGetAllSentences(){
+    _applicationBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationWaiting);
+    _intentApi.getAllSentences().then((json){
+      var jsonResult = JSON.jsonDecode(json);
+      if (jsonResult["success"]==true){
+        List<String> result = new List<String>();
+        for (int i=0; i<jsonResult["result"].length; i++){
+          result.add(jsonResult["result"][i]);
+        }
+        _allSentencesBehavior.add(result);
       }
       _applicationBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationReady);
     });

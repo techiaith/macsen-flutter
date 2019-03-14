@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:macsen/blocs/application_state_provider.dart';
 
-class TextualRequestWidget extends StatefulWidget {
-  TextualRequestWidget({Key key,}) : super (key: key);
+
+class MacsenTextualRequestWidget extends StatefulWidget {
+  MacsenTextualRequestWidget({Key key,}) : super (key: key);
 
   @override
-  _TextualRequestState createState() => _TextualRequestState();
+  _MacsenTextualRequestState createState() => _MacsenTextualRequestState();
 }
 
 
-class _TextualRequestState extends State<TextualRequestWidget> {
+class _MacsenTextualRequestState extends State<MacsenTextualRequestWidget> {
 
   final _formKey = GlobalKey<FormState>();
   String _requestText;

@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 
 import 'package:macsen/MozillaCommonVoicePage.dart';
 
-class MacsenDrawer extends StatelessWidget {
+class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context){

@@ -35,6 +35,11 @@ class IntentParsing {
   }
 
 
+  Future<String> getAllSentences() async {
+    return await httpsGet('/assistant/get_all_sentences');
+  }
+
+
   Future<bool> uploadRecordedSentence(String uid,
                                       String sentence,
                                       String recordedFilePath) async {

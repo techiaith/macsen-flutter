@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'RecordButtonWidget.dart';
 import 'StopButtonWidget.dart';
-import 'MacsenDrawer.dart';
+import 'AppDrawer.dart';
 import 'MacsenAssistantWidget.dart';
-import 'TextualRequestWidget.dart';
-import 'TrainingWidget.dart';
+import 'MacsenTextualRequestWidget.dart';
+import 'MacsenTrainingWidget.dart';
+import 'MacsenHelpWidget.dart';
 
 import 'package:macsen/blocs/application_state_provider.dart';
 
@@ -22,9 +23,9 @@ class HomePageState extends State<HomePage> {
 
   final List<Widget> _children = [
     MacsenAssistantWidget(),
-    TextualRequestWidget(),
-    TrainingWidget(),
-    Container()
+    MacsenTextualRequestWidget(),
+    MacsenTrainingWidget(),
+    MacsenHelpWidget()
   ];
 
 
@@ -44,7 +45,7 @@ class HomePageState extends State<HomePage> {
               Container(
                 color: Colors.white,
                 child:
-                  MacsenDrawer(),
+                  AppDrawer(),
               )
             ),
 

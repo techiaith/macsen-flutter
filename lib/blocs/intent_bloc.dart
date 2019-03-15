@@ -138,7 +138,8 @@ class IntentParsingBloc implements BlocBase {
           _dispatchToSkill(intentJsonString);
         }
         else {
-          _applicationBloc.stopPerformingCurrentIntent.add(true);
+          _applicationBloc.raiseApplicationException.add("Methwyd adnabod unrhyw gwestiwn neu orchymyn.");
+          return;
         }
       });
     }
@@ -159,7 +160,6 @@ class IntentParsingBloc implements BlocBase {
         _applicationBloc.raiseApplicationException.add("Aeth rhywbeth o'i le wrth estyn brawddeg i chi recordio.");
         return;
       }
-
     });
   }
 
@@ -207,6 +207,9 @@ class IntentParsingBloc implements BlocBase {
       } else {
         QASkill.execute(_applicationBloc, jsonString);
       }
+    } else {
+      _applicationBloc.raiseApplicationException.add("Methwyd adnabod unrhyw gwestiwn neu orchymyn.");
+      return;
     }
   }
 

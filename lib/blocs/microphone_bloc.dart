@@ -79,6 +79,8 @@ class MicrophoneBloc implements BlocBase {
     if (methodCall.method == "audioRecordingPermissionGranted") {
       if (methodCall.arguments=="OK"){
         _onMicrophonePermissionsChange(true);
+      } else {
+        _onMicrophonePermissionsChange(false);
       }
     }
   }
@@ -90,8 +92,8 @@ class MicrophoneBloc implements BlocBase {
       checkMicrophonePermissionsResult = await _native_mic_record_channel.invokeMethod('checkMicrophonePermissions');
     }
     on PlatformException catch (e) {
-      print(e.message);
       checkMicrophonePermissionsResult=false;
+      applicationBloc.raiseApplicationException.add("Roedd problem cysylltu i'r meicroffon.");
     }
     _onMicrophonePermissionsChange(checkMicrophonePermissionsResult);
   }
@@ -101,6 +103,10 @@ class MicrophoneBloc implements BlocBase {
     if (permissionGranted){
       _micStatus=MicrophoneStatus.Available;
       _microphoneStatusBehaviour.add(MicrophoneStatus.Available);
+    } else {
+      applicationBloc.raiseApplicationException.add("Nid yw'r meicroffon ar gael.");
+      _micStatus=MicrophoneStatus.NotAllowed;
+      _microphoneStatusBehaviour.add(MicrophoneStatus.NotAllowed);
     }
   }
 

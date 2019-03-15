@@ -134,7 +134,6 @@ class IntentParsingBloc implements BlocBase {
       _currentQuestionCommandBehavior.add(text);
       _intentApi.performSkill(text,_latitude,_longitude).then((intentJsonString) {
         if (intentJsonString.length > 0){
-          _applicationBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationPerforming);
           _dispatchToSkill(intentJsonString);
         }
         else {
@@ -199,6 +198,7 @@ class IntentParsingBloc implements BlocBase {
     var jsonResult = JSON.jsonDecode(jsonString);
     bool success = jsonResult["success"];
     if (success){
+      _applicationBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationPerforming);
       _currentPerformingIntent=jsonResult["intent"];
       if (_currentPerformingIntent=="chwaraea.cerddoriaeth") {
         Spotify.execute(_applicationBloc, jsonString);

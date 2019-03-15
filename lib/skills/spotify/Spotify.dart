@@ -17,8 +17,8 @@ class Spotify{
       _native_spotify_api.invokeMethod('spotifyPlayArtistOrBand', spotifyUrl);
     }
     on PlatformException catch (e) {
-      print(e.message);
       playSpotifyResult = false;
+      applicationBloc.raiseApplicationException.add("Roedd problem cysylltu i'r ap Spotify.");
     }
     return playSpotifyResult;
   }
@@ -29,7 +29,7 @@ class Spotify{
       _native_spotify_api.invokeMethod('spotifyStopPlayArtistOrBand');
     }
     on PlatformException catch (e) {
-      print(e.message);
+      applicationBloc.raiseApplicationException.add("Roedd problem cysylltu i'r ap Spotify.");
       return false;
     }
     return true;

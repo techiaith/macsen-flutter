@@ -24,10 +24,10 @@ import 'package:macsen/skills/alarm/Alarm.dart';
 //  - emits IntentName and data
 //
 
-class Intent {
-  String screenName;
-  String description;
-}
+//class Intent {
+//  String screenName;
+//  String description;
+//}
 
 class IntentRecording {
   IntentRecording(this.uid, this.sentence, this.recordingFilePath);
@@ -36,6 +36,19 @@ class IntentRecording {
   String sentence;
   String recordingFilePath;
 }
+
+
+class Skill {
+  String name;
+  //List<Intent> intents;
+  List<String> sentences;
+}
+
+
+//class Intent {
+//  String name;
+//  List<String> sentences;
+//}
 
 
 class IntentParsingBloc implements BlocBase {
@@ -70,16 +83,16 @@ class IntentParsingBloc implements BlocBase {
   Stream<String> get questionOrCommand => _currentQuestionCommandBehavior.asBroadcastStream();
 
 
-  final BehaviorSubject<Intent> _intentResultBehavior = BehaviorSubject<Intent>();
-  Stream<Intent> get intentResult => _intentResultBehavior.asBroadcastStream();
+  //final BehaviorSubject<Intent> _intentResultBehavior = BehaviorSubject<Intent>();
+  //Stream<Intent> get intentResult => _intentResultBehavior.asBroadcastStream();
 
 
   final BehaviorSubject<String> _unRecordedSentenceResultBehaviour = BehaviorSubject<String>();
   Stream<String> get unRecordedSentenceResult => _unRecordedSentenceResultBehaviour.asBroadcastStream();
 
 
-  final BehaviorSubject<List<String>> _allSentencesBehavior = BehaviorSubject<List<String>>();
-  Stream<List<String>> get allSentencesResult => _allSentencesBehavior.asBroadcastStream();
+  final BehaviorSubject<List<Skill>> _allSentencesBehavior = BehaviorSubject<List<Skill>>();
+  Stream<List<Skill>> get allSentencesResult => _allSentencesBehavior.asBroadcastStream();
 
 
   void dispose(){
@@ -169,10 +182,26 @@ class IntentParsingBloc implements BlocBase {
       try {
         var jsonResult = JSON.jsonDecode(json);
         if (jsonResult["success"]==true){
-          List<String> result = new List<String>();
-          for (int i=0; i<jsonResult["result"].length; i++){
-            result.add(jsonResult["result"][i]);
-          }
+
+          List<Skill> result = new List<Skill>();
+
+          jsonResult["result"].forEach((k,v){
+            Skill skill = new Skill();
+            skill.name=k;
+            skill.sentences=new List<String>();
+            //skill.intents = new List<Intent>();
+            jsonResult["result"][k].forEach((ik,iv){
+              //Intent intent = new Intent();
+              //intent.name=ik;
+              //intent.sentences=new List<String>();
+              for (int s=0;s<jsonResult["result"][k][ik].length;s++){
+                //intent.sentences.add(jsonResult["result"][k][ik][s]);
+                skill.sentences.add(jsonResult["result"][k][ik][s]);
+              }
+              //skill.intents.add(intent);
+            });
+            result.add(skill);
+          });
           _allSentencesBehavior.add(result);
         }
         _applicationBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationReady);

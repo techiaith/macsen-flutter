@@ -26,6 +26,11 @@ public class Spotify {
 
     public boolean connect(final String spotifyUri){
 
+        //@todo - gwirio os yw Spotify wedi'i osod.
+        // h.y. SpotifyAppRemote.isSpotifyInstalled(...)
+        //
+
+        //
         if (mSpotifyAppRemote!=null && mSpotifyAppRemote.isConnected()){
             play_artist(spotifyUri);
         } else {

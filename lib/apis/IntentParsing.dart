@@ -36,7 +36,7 @@ class IntentParsing {
 
 
   Future<String> getAllSentences() async {
-    return await httpsGet('/assistant/get_all_sentences');
+    return await httpsGet('/assistant//get_all_skills_intents_sentences');
   }
 
 

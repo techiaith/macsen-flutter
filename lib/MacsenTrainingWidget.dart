@@ -17,7 +17,7 @@ class _MacsenTrainingState extends State<MacsenTrainingWidget>{
       appBloc.intentParsingBloc.getUnRecordedSentences.add(uid);
     });
 
-    double text_size = 24.0;
+    double text_size = 22.0;
 
     return Container(
       child: Column(
@@ -28,12 +28,14 @@ class _MacsenTrainingState extends State<MacsenTrainingWidget>{
           Container(
             margin: EdgeInsets.only(top:20.0),
             padding: EdgeInsets.only(left: 20.0, right: 20.0),
-            child: Text("Mae Macsen yn medru deall eich cwestiynau ddim ond weithiau.", style: TextStyle(fontSize: text_size)),
+            child: Text("Mae Macsen yn medru deall eich cwestiynau ddim ond weithiau.",
+                   style: TextStyle(fontSize: text_size)),
           ),
           Container(
             margin: EdgeInsets.only(top:10.0),
             padding: EdgeInsets.only(left: 20.0, right: 20.0),
-            child: Text("Helpwch ni i'w wella drwy recordio rhai ohonynt.", style: TextStyle(fontSize: text_size)),
+            child: Text("Helpwch ni i'w wella drwy recordio rhai ohonynt.",
+                   style: TextStyle(fontSize: text_size)),
           ),
           Container(
             margin: EdgeInsets.only(top:10.0),
@@ -41,14 +43,14 @@ class _MacsenTrainingState extends State<MacsenTrainingWidget>{
             child: Text("Bydd cwestiynau yn ymddangos isod, pwyswch y botwm meicroffon i ddechrau ac i orffen y recordiad.", style: TextStyle(fontSize: text_size)),
           ),
           Container(
-            margin: EdgeInsets.only(top: 40.0),
+            margin: EdgeInsets.only(top: 50.0),
             padding: EdgeInsets.only(left: 20.0, right: 20.0),
             child: StreamBuilder<String>(
               initialData: '',
               stream: appBloc.intentParsingBloc.unRecordedSentenceResult,
               builder: (context, snapshot) => Text(
                     snapshot.data,
-                    maxLines: 3,
+                    maxLines: 4,
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 32.0)
                 ),

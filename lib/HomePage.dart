@@ -164,6 +164,8 @@ class HomePageState extends State<HomePage> {
         return new StopButtonWidget(
           onPressed: onStopRequestPress,
         );
+      } else if (appState==ApplicationWaitState.ApplicationNotReady){
+        return Container();
       }
 
       if (currentPageIndex==0) {

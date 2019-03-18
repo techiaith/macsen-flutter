@@ -32,7 +32,7 @@ class ApplicationStateProvider extends InheritedWidget {
 }
 
 enum RecordingType { RequestRecording, SentenceRecording }
-enum ApplicationWaitState { ApplicationWaiting, ApplicationReady, ApplicationPerforming }
+enum ApplicationWaitState { ApplicationWaiting, ApplicationReady, ApplicationPerforming, ApplicationNotReady }
 
 class ApplicationBloc extends BlocBase {
 

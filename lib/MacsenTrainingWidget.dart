@@ -10,54 +10,102 @@ class MacsenTrainingWidget extends StatefulWidget {
 
 class _MacsenTrainingState extends State<MacsenTrainingWidget>{
 
+  bool _isConfirmedToProceed=false;
+
   Widget build(BuildContext context){
+
+    if (_isConfirmedToProceed)
+      return _buildRecordingSentences(context);
+    else
+      return _buildIntroAndConfirm(context);
+
+  }
+
+  Widget _buildIntroAndConfirm(BuildContext context){
+
     final ApplicationBloc appBloc = ApplicationStateProvider.of(context);
+    appBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationNotReady);
 
-    appBloc.getUniqueUID().then((uid){
-      appBloc.intentParsingBloc.getUnRecordedSentences.add(uid);
-    });
-
-    double text_size = 22.0;
+    double text_size = 18.0;
 
     return Container(
       child: Column(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Container(
             margin: EdgeInsets.only(top:20.0),
             padding: EdgeInsets.only(left: 20.0, right: 20.0),
-            child: Text("Mae Macsen yn medru deall eich cwestiynau ddim ond weithiau.",
-                   style: TextStyle(fontSize: text_size)),
+            child: Text("Hyfforddi", style: TextStyle(fontSize: text_size+4)),
+          ),
+          Container(
+            margin: EdgeInsets.only(top:20.0),
+            padding: EdgeInsets.only(left: 20.0, right: 20.0),
+            child: Text("Ar hyn o bryd, dyw Macsen ddim yn adnabod eich cwestiynau bob amser.",
+                style: TextStyle(fontSize: text_size)),
           ),
           Container(
             margin: EdgeInsets.only(top:10.0),
             padding: EdgeInsets.only(left: 20.0, right: 20.0),
-            child: Text("Helpwch ni i'w wella drwy recordio rhai ohonynt.",
-                   style: TextStyle(fontSize: text_size)),
+            child: Text("Helpwch ni i’w wella drwy recordio rhai ohonyn nhw i greu dwy set fechan ar gyfer gwaith datblygu.",
+                style: TextStyle(fontSize: text_size)),
           ),
           Container(
             margin: EdgeInsets.only(top:10.0),
             padding: EdgeInsets.only(left: 20.0, right: 20.0),
-            child: Text("Bydd cwestiynau yn ymddangos isod, pwyswch y botwm meicroffon i ddechrau ac i orffen y recordiad.", style: TextStyle(fontSize: text_size)),
+            child: Text("Drwy gyfrannu eich llais, rydych yn rhoi hawl i ni storio’r llais ar weinydd y project, a’i gyhoeddi ar drwydded agored ganiataol fel rhan o set ddatblygu neu set brofi. Golyga hynny y modd i unrhyw un arall ddefnyddio’r lleisiau hefyd heb gyfyngiad. Ni fydd enw nac unrhyw fanylion personol eraill ynghlwm wrth y lleisiau hyn.", style: TextStyle(fontSize: text_size)),
           ),
           Container(
-            margin: EdgeInsets.only(top: 50.0),
+            margin: EdgeInsets.only(top:10.0),
             padding: EdgeInsets.only(left: 20.0, right: 20.0),
-            child: StreamBuilder<String>(
-              initialData: '',
-              stream: appBloc.intentParsingBloc.unRecordedSentenceResult,
-              builder: (context, snapshot) => Text(
-                    snapshot.data,
-                    maxLines: 4,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 32.0)
-                ),
-              ),
+            child: Text("Ar ôl glicio ar 'Iawn', bydd cwestiynau yn ymddangos, pwyswch y botwm microffon i ddechrau a gorffen recordio.", style: TextStyle(fontSize: text_size)),
           ),
-        ],
+          Container(
+            margin: EdgeInsets.only(top:20.0),
+            child: RaisedButton(
+              onPressed: _onIawnButtonPressed,
+              child: Text("Iawn", style: TextStyle(fontSize: 18.0)),
+            )
+          )
+        ]
+      )
+    );
+  }
+
+
+  void _onIawnButtonPressed(){
+    setState((){
+      _isConfirmedToProceed=true;
+    });
+  }
+
+
+  Widget _buildRecordingSentences(BuildContext context){
+
+    final ApplicationBloc appBloc = ApplicationStateProvider.of(context);
+
+    appBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationReady);
+
+    appBloc.getUniqueUID().then((uid){
+      appBloc.intentParsingBloc.getUnRecordedSentences.add(uid);
+    });
+
+    return Center(
+      child: Container(
+        padding: EdgeInsets.only(left: 20.0, right: 20.0),
+        child: StreamBuilder<String>(
+          initialData: '',
+          stream: appBloc.intentParsingBloc.unRecordedSentenceResult,
+          builder: (context, snapshot) => Text(
+            snapshot.data,
+            maxLines: 4,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 32.0)
+          ),
+        )
       ),
     );
   }
+
+
 }

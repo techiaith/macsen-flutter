@@ -12,6 +12,8 @@ class MacsenHelpWidget extends StatefulWidget {
 
 class _MacsenHelpState extends State<MacsenHelpWidget>{
 
+  final double font_size = 18.0;
+
   Widget build(BuildContext context){
     final ApplicationBloc appBloc = ApplicationStateProvider.of(context);
 
@@ -20,12 +22,17 @@ class _MacsenHelpState extends State<MacsenHelpWidget>{
     return Column(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Container(
-            padding: EdgeInsets.only(left: 20.0, right: 20.0, top:40.0, bottom: 20.0),
+            margin: EdgeInsets.only(top:20.0),
+            padding: EdgeInsets.only(left: 20.0, right: 20.0),
+            child: Text("Help",
+                style: TextStyle(fontSize: font_size+4)),
+          ),
+          Container(
+            padding: EdgeInsets.only(left: 20.0, right: 20.0, top:20.0, bottom: 20.0),
             child: Text("Dyma'r cwestiynau mae Macsen medru adnabod a gweithredu ar..",
-                        style: TextStyle(fontSize: 22.0),
+                        style: TextStyle(fontSize: font_size),
                         textAlign: TextAlign.left)
           ),
           Expanded(
@@ -49,18 +56,22 @@ class _MacsenHelpState extends State<MacsenHelpWidget>{
 class SkillTile extends StatelessWidget {
 
   final Skill skill;
+  final double font_size=18.0;
   SkillTile(this.skill);
 
   @override build(BuildContext context){
-    return ExpansionTile(
-      title: Text(this.skill.name, style: TextStyle(fontSize: 22.0)),
-      children: this.skill.sentences.map(_buildSentenceTile).toList()
+    return  Container(
+        padding: EdgeInsets.only(left: 10.0, right: 10.0),
+        child: ExpansionTile(
+          title: Text(this.skill.name, style: TextStyle(fontSize: font_size)),
+          children: this.skill.sentences.map(_buildSentenceTile).toList()
+        )
     );
   }
 
   Widget _buildSentenceTile(String sentence){
     return new ListTile(
-      title: Text(sentence, style: TextStyle(fontSize: 18.0)),
+      title: Text(sentence, style: TextStyle(fontSize: font_size)),
     );
   }
 

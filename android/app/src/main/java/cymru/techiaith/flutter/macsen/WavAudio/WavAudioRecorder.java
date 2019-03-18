@@ -2,13 +2,9 @@ package cymru.techiaith.flutter.macsen.WavAudio;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.RandomAccessFile;
-
-import androidx.core.content.ContextCompat;
 
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -107,9 +103,10 @@ public class WavAudioRecorder {
     private void writeAudioDataToFile(String filename) {
 
         byte data[] = new byte[bufferSize];
-        Path filepathandname = Paths.get(this._mainactivity.getApplicationContext().getFilesDir().getPath(), filename + ".wav");
 
-        this.wavFile = new File(filepathandname.toString());
+        String filepathandname = this._mainactivity.getApplicationContext().getFilesDir().getPath() + "/" + filename + ".wav";
+
+        this.wavFile = new File(filepathandname);
         if (this.wavFile.exists())
             this.wavFile.delete();
 

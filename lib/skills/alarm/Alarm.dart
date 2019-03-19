@@ -60,6 +60,9 @@ class Alarm {
             hour, minute);
 
         //
+        // sound from http://soundbible.com/339-Alarm-Alert-Effect.html
+        // (public domain)
+        //
         var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
             'macsen_alarm_channel_id',
             'your other channel name',

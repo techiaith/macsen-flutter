@@ -48,6 +48,20 @@ class AppDrawer extends StatelessWidget {
                     },
                   ),
                   ListTile(
+                    title: Text('Preifatrwydd', style: TextStyle(fontSize: 22.0)),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => InformationPage(
+                                title: 'Ynghylch Macsen',
+                                markdownFile: 'assets/markdown/preifatrwydd.md',
+                              )
+                          )
+                      );
+                    },
+                  ),
+                  ListTile(
                     title: Text('Mozilla CommonVoice', style: TextStyle(fontSize: 22.0)),
                     //subtitle: Text('(gwefan allanol)', style: TextStyle(fontSize: 12.0)),
                     onTap: () {

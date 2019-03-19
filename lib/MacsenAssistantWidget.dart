@@ -68,7 +68,6 @@ class _MacsenWidgetState extends State<MacsenAssistantWidget> {
 
   Widget _buildIntroduction(BuildContext context){
     final ApplicationBloc appBloc = ApplicationStateProvider.of(context);
-
     appBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationNotReady);
 
     double text_size = 18.0;
@@ -110,7 +109,7 @@ class _MacsenWidgetState extends State<MacsenAssistantWidget> {
               Container(
                 margin: EdgeInsets.only(top:20.0),
                 padding: EdgeInsets.only(left: 20.0, right: 20.0),
-                child: Text("Bydd Macsen wedyn yn rhoi ateb i'ch cwestiwn neu'n gweithredu yn ôl eich gorchymyn.",
+                child: Text("Ewch i 'Help' i weld y fath o gwestiynau mae Macsen adnabod.",
                     style: TextStyle(fontSize: text_size)),
               ),
               Container(

@@ -10,9 +10,7 @@ class MacsenTrainingWidget extends StatefulWidget {
 
 class _MacsenTrainingState extends State<MacsenTrainingWidget>{
 
-
-  bool _isConfirmedToProceed=false;
-
+  static bool _isConfirmedToProceed=false;
 
   Widget build(BuildContext context){
 

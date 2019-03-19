@@ -70,6 +70,7 @@ class ApplicationBloc extends BlocBase {
   Sink<String> get raiseApplicationException => _raiseApplicationExceptionController.sink;
 
 
+
   // Streams
   final BehaviorSubject<String> _currentRequestBehavior = BehaviorSubject<String>();
   Stream<String> get currentRequestText => _currentRequestBehavior.asBroadcastStream();
@@ -111,7 +112,6 @@ class ApplicationBloc extends BlocBase {
 
     _recordingTypeController.stream.listen((recordingType){
       _recordingType=recordingType;
-      print (_recordingType.toString());
     });
 
     _applicationWaitStateController.stream.listen((waitState){

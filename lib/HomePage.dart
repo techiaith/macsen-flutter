@@ -97,7 +97,7 @@ class HomePageState extends State<HomePage> {
                   ),
                   BottomNavigationBarItem(
                     icon: Icon(Icons.chat),
-                    title: new Text("Testun"),
+                    title: new Text("Teipio"),
                   ),
                   BottomNavigationBarItem(
                     icon: Icon(Icons.assignment),

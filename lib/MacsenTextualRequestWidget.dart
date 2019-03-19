@@ -29,6 +29,7 @@ class _MacsenTextualRequestState extends State<MacsenTextualRequestWidget> {
                   children: <Widget>[
                     TextFormField(
                       decoration: InputDecoration(
+                          hintText: "Teipiwch eich cwestiwn neu orchymyn yma a phwyso 'Gofyn'.",
                           labelText: "Cwestiwn neu Gorchymyn"
                       ),
                       style: TextStyle(

@@ -10,7 +10,9 @@ class MacsenTrainingWidget extends StatefulWidget {
 
 class _MacsenTrainingState extends State<MacsenTrainingWidget>{
 
+
   bool _isConfirmedToProceed=false;
+
 
   Widget build(BuildContext context){
 
@@ -20,6 +22,7 @@ class _MacsenTrainingState extends State<MacsenTrainingWidget>{
       return _buildIntroAndConfirm(context);
 
   }
+
 
   Widget _buildIntroAndConfirm(BuildContext context){
 

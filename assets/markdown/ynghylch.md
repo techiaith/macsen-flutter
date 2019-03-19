@@ -25,6 +25,7 @@ Daw’r tywydd o wefan OpenWeatherMap. Gyda’r mewnbwn llais mae’n rhoi tywyd
 
 Daw’r gerddoriaeth o wefan Spotify. **Mae angen i chi osod ap Spotify ar eich ffôn neu dabled iddo weithio**. Bydd yn rhaid i chi dderbyn yr amodau a thelerau sy’n codi hefyd cyn symud ymlaen. Ar hyn o bryd mae’n adnabod 21 band ac unigolyn Cymraeg, sef: Alffa, Anhrefn, Anweledig, Bryn Fôn, Cadi Gwen, Candelas, Cowbois Rhos Botwnnog, Cyrff, Gwibdaith Hen Frân, Gwilym Morus, Lleuwen, Mellt, Melys, Petrobas, Plant Duw, Sibrydion, Sŵnami, Y Bandana, Y Cyrff, Yr Ods, Yws Gwynedd. Os nad oes gennych gyfrif Spotify Premium, bydd weithiau yn chwarae caneuon gan artistiaid cysylltiedig i’r hyn y gofynsoch amdano – nodwedd o gyfrifon rhad ac am ddim Spotify yw hynny, nid gwall ar yr adnabod lleferydd.
 
+
 ## Siarad neu deipio
 
 Mae modd teipio yn ogystal â defnyddio’r llais i ofyn cwestiwn i Macsen. Yr un brawddegau mae Macsen yn eu hadnabod wrth siarad neu wrth deipio. Rydym yn dal wrthi yn gwella’r nodweddion lleferydd, ac os hoffech chi, gallwch ein helpu i’w wella yn y dyfodol drwy gyfrannu recordiadau o’ch llais. Gallwch wneud hyn drwy glicio ar Cyfrannu ar waelod eich sgrin.
@@ -37,6 +38,7 @@ Mae cannoedd o wirfoddolwyr wedi’n cynorthwyo i ddatblygu technoleg lleferydd 
  - Cyfrannu at CommonVoice Cymraeg, a darllen yn uchel rhai o’r miloedd brawddegau sydd yno fel promptiau ar eich cyfer. Bydd eich cyfraniadau yn mynd at y set ddata enfawr y mae Mozilla yn ei chadw at ddefnydd agored pawb.
 
  - Cyfrannu at wella adnabod brawddegau ap Macsen, a darllen brawddegau’r ap yn uchel (mae’r nodwedd hon dan y tab Hyfforddi ar yr ap). Bydd y recordiadau hyn yn cael eu cadw ar wahân i greu set datblygu a set brofi newydd ar gyfer ap Macsen.
+
 
 # Diolchiadau
 

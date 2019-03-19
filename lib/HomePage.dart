@@ -10,7 +10,6 @@ import 'MacsenHelpWidget.dart';
 
 import 'package:macsen/blocs/application_state_provider.dart';
 
-
 class HomePage extends StatefulWidget {
   HomePage({Key key,}) : super (key: key);
 
@@ -29,6 +28,7 @@ class HomePageState extends State<HomePage> {
   ];
 
   String _currentDialogMessage;
+
 
   @override
   Widget build(BuildContext context) {
@@ -116,6 +116,7 @@ class HomePageState extends State<HomePage> {
 
   void onTabPressed(int index) {
     final ApplicationBloc appBloc = ApplicationStateProvider.of(context);
+    appBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationReady);
     appBloc.changeCurrentApplicationPage.add(index);
   }
 

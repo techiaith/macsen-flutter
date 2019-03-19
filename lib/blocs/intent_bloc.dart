@@ -61,6 +61,9 @@ class IntentParsingBloc implements BlocBase {
 
   String _currentPerformingIntent;
 
+  // Skills
+  Alarm _alarm;
+
   // Sinks
   final StreamController<String> _determineIntentController = StreamController<String>();
   Sink<String> get determineIntent => _determineIntentController.sink;
@@ -232,7 +235,10 @@ class IntentParsingBloc implements BlocBase {
       if (_currentPerformingIntent=="chwaraea.cerddoriaeth") {
         Spotify.execute(_applicationBloc, jsonString);
       } else if (_currentPerformingIntent=="gosoda.larwm"){
-        Alarm.execute(_applicationBloc, jsonString);
+        //
+        _alarm = new Alarm(_applicationBloc);
+        _alarm.execute(jsonString);
+        _applicationBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationReady);
       } else {
         QASkill.execute(_applicationBloc, jsonString);
       }

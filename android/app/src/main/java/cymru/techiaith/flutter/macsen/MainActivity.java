@@ -20,7 +20,7 @@ import cymru.techiaith.flutter.macsen.WavAudio.WavAudioRecorder;
 import cymru.techiaith.flutter.macsen.WavAudio.WavAudioPlayer;
 import cymru.techiaith.flutter.macsen.WavAudio.WavAudioPlayerEventListener;
 import cymru.techiaith.flutter.macsen.Spotify.Spotify;
-import cymru.techiaith.flutter.macsen.Alarm.Alarm;
+
 
 public class MainActivity extends FlutterActivity implements MethodChannel.MethodCallHandler,
                                                              WavAudioPlayerEventListener {
@@ -58,9 +58,6 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     private MethodChannel spotify_channel;
     private Spotify spotify;
 
-    private MethodChannel alarm_channel;
-    private Alarm alarm;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,9 +77,6 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         spotify_channel = new MethodChannel(getFlutterView(), METHOD_CHANNEL + "/spotify");
         spotify_channel.setMethodCallHandler(this);
 
-        alarm_channel = new MethodChannel(getFlutterView(), METHOD_CHANNEL + "/alarm");
-        alarm_channel.setMethodCallHandler(this);
-
         wavAudioRecorder = new WavAudioRecorder(this);
 
         wavAudioPlayer = new WavAudioPlayer(this);
@@ -90,7 +84,6 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
 
         geolocation = new Geolocation(this);
         spotify = new Spotify(this);
-        alarm = new Alarm(this, alarm_channel);
 
         checkMicrophonePermission();
         checkLocationPermission();
@@ -128,11 +121,6 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             result.success(spotify.connect((String) methodCall.arguments) ? "OK":"FAIL");
         } else if (methodCall.method.equals(("spotifyStopPlayArtistOrBand"))) {
             result.success(spotify.disconnect());
-        } else if (methodCall.method.equals("setAlarm")) {
-            result.success(alarm.setAlarm(
-                    (int) methodCall.argument("hour"),
-                    (int) methodCall.argument("minutes")
-            ) ? "OK" : "FAIL");
         } else {
             result.notImplemented();
         }

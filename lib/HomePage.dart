@@ -55,8 +55,8 @@ class HomePageState extends State<HomePage> {
               initialData: '',
               stream: appBloc.onApplicationException,
               builder: (context, snapShotApplicationException) =>
-                StreamBuilder<int>(
-                  initialData: 0,
+                StreamBuilder<PageChangeEventInformation>(
+                  initialData: PageChangeEventInformation(0, PageChangeReason.Null),
                   stream: appBloc.onCurrentApplicationPageChange,
                   builder: (context, snapshotPageIndex) => _buildPageAction(
                       context,
@@ -65,15 +65,15 @@ class HomePageState extends State<HomePage> {
                   ),
             ),
 
-        floatingActionButton: StreamBuilder(
-            initialData: 0,
+        floatingActionButton: StreamBuilder<PageChangeEventInformation>(
             stream: appBloc.onCurrentApplicationPageChange,
-            builder: (context, snaphotPageChange) =>
+            initialData: PageChangeEventInformation(0, PageChangeReason.Null),
+            builder: (context, snapshotPageChange) =>
               StreamBuilder<ApplicationWaitState>(
                 stream: appBloc.onApplicationWaitStateChange,
                 builder: (context, snapshotApplicationWaitState) =>
                   _buildActionButton(context,
-                                     snaphotPageChange.data,
+                                     snapshotPageChange.data,
                                      snapshotApplicationWaitState.data)
                 )
         ),
@@ -81,12 +81,12 @@ class HomePageState extends State<HomePage> {
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
 
         bottomNavigationBar:
-          StreamBuilder<int>(
-            initialData: 0,
+          StreamBuilder<PageChangeEventInformation>(
+            initialData: PageChangeEventInformation(0, PageChangeReason.Null),
             stream: appBloc.onCurrentApplicationPageChange,
             builder: (context, snapshot) =>
               BottomNavigationBar(
-                currentIndex: snapshot.data,
+                currentIndex: snapshot.data.pageIndex,
                 onTap: onTabPressed,
                 type: BottomNavigationBarType.fixed,
                 fixedColor: Colors.black87,
@@ -117,18 +117,22 @@ class HomePageState extends State<HomePage> {
   void onTabPressed(int index) {
     final ApplicationBloc appBloc = ApplicationStateProvider.of(context);
     appBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationReady);
-    appBloc.changeCurrentApplicationPage.add(index);
+    PageChangeEventInformation pageChangeInfo = new PageChangeEventInformation(index, PageChangeReason.User);
+    appBloc.changeCurrentApplicationPage.add(pageChangeInfo);
   }
 
 
-  Widget _buildPageAction(BuildContext context, int currentPageIndex, String exceptionMessage){
+  Widget _buildPageAction(BuildContext context,
+                          PageChangeEventInformation pageChangeEventInfo,
+                          String exceptionMessage){
+
     if (exceptionMessage.length > 0){
       if (_currentDialogMessage != exceptionMessage){
         _currentDialogMessage = exceptionMessage;
         WidgetsBinding.instance.addPostFrameCallback((_) => _showDialog(context, exceptionMessage));
       }
     }
-    return _children[currentPageIndex];
+    return _children[pageChangeEventInfo.pageIndex];
   }
 
 
@@ -156,8 +160,10 @@ class HomePageState extends State<HomePage> {
   }
 
 
-  Widget _buildActionButton(BuildContext context, int currentPageIndex, ApplicationWaitState appState){
-
+  Widget _buildActionButton(BuildContext context,
+                            PageChangeEventInformation pageChange,
+                            ApplicationWaitState appState){
+    int currentPageIndex=pageChange.pageIndex;
     if ((currentPageIndex==0) || (currentPageIndex==2)){
 
       if (appState==ApplicationWaitState.ApplicationWaiting){

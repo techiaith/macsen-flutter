@@ -15,6 +15,21 @@ class _MacsenWidgetState extends State<MacsenAssistantWidget> {
 
   Widget build(BuildContext context) {
 
+    final ApplicationBloc appBloc = ApplicationStateProvider.of(context);
+    return StreamBuilder<PageChangeEventInformation>(
+      stream: appBloc.onCurrentApplicationPageChange,
+      initialData: PageChangeEventInformation(0, PageChangeReason.Null),
+      builder: (context, snapshot) => _buildPage(context, snapshot.data)
+    );
+
+  }
+
+  Widget _buildPage(BuildContext context, PageChangeEventInformation pageChangeInfo){
+
+    if (pageChangeInfo.pageIndex==0 && pageChangeInfo.reason==PageChangeReason.Application){
+      _isConfirmedToProceed=true;
+    }
+
     if (_isConfirmedToProceed)
       return _buildRequestAndResponse(context);
     else

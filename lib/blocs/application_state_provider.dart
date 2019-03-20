@@ -34,6 +34,14 @@ class ApplicationStateProvider extends InheritedWidget {
 enum RecordingType { RequestRecording, SentenceRecording }
 enum ApplicationWaitState { ApplicationWaiting, ApplicationReady, ApplicationPerforming, ApplicationNotReady }
 
+enum PageChangeReason { Null, User, Application}
+class PageChangeEventInformation {
+  int pageIndex;
+  PageChangeReason reason;
+  PageChangeEventInformation(this.pageIndex, this.reason){}
+}
+
+
 class ApplicationBloc extends BlocBase {
 
   MicrophoneBloc microphoneBloc;
@@ -49,7 +57,6 @@ class ApplicationBloc extends BlocBase {
 
   String _recordedSentence;
 
-
   //
   final StreamController<String> _requestController = StreamController<String>();
   Sink<String> get request => _requestController.sink;
@@ -63,12 +70,11 @@ class ApplicationBloc extends BlocBase {
   final StreamController<bool> _stopPerformingCurrentIntentController = StreamController<bool>();
   Sink<bool> get stopPerformingCurrentIntent => _stopPerformingCurrentIntentController.sink;
 
-  final StreamController<int> _currentApplicationPageController = StreamController<int>();
-  Sink<int> get changeCurrentApplicationPage => _currentApplicationPageController.sink;
+  final StreamController<PageChangeEventInformation> _currentApplicationPageController = StreamController<PageChangeEventInformation>();
+  Sink<PageChangeEventInformation> get changeCurrentApplicationPage => _currentApplicationPageController.sink;
 
   final StreamController<String> _raiseApplicationExceptionController = StreamController<String>();
   Sink<String> get raiseApplicationException => _raiseApplicationExceptionController.sink;
-
 
 
   // Streams
@@ -87,11 +93,11 @@ class ApplicationBloc extends BlocBase {
   final BehaviorSubject<String> _applicationExceptionBehaviour = BehaviorSubject<String>();
   Stream<String> get onApplicationException => _applicationExceptionBehaviour.asBroadcastStream();
 
-  final BehaviorSubject<int> _currentApplicationPageBehaviour = BehaviorSubject<int>();
-  Stream<int> get onCurrentApplicationPageChange => _currentApplicationPageBehaviour.asBroadcastStream();
+  final BehaviorSubject<PageChangeEventInformation> _currentApplicationPageBehaviour = BehaviorSubject<PageChangeEventInformation>();
+  Stream<PageChangeEventInformation> get onCurrentApplicationPageChange => _currentApplicationPageBehaviour.asBroadcastStream();
 
 
-
+  //
   void dispose(){
     _requestController.close();
     _recordingTypeController.close();
@@ -141,7 +147,6 @@ class ApplicationBloc extends BlocBase {
       intentParsingBloc.stopPerformIntent.add(true);
 
       _applicationWaitStateBehaviour.add(ApplicationWaitState.ApplicationReady);
-
     });
 
 
@@ -176,9 +181,14 @@ class ApplicationBloc extends BlocBase {
 
     // from TextualInputScreen
     _requestController.stream.listen((text){
-      _currentApplicationPageController.add(0);
+
+      PageChangeEventInformation pageChangeInfo =
+          new PageChangeEventInformation(0, PageChangeReason.Application);
+
+      _currentApplicationPageController.add(pageChangeInfo);
       _applicationWaitStateController.add(ApplicationWaitState.ApplicationWaiting);
       intentParsingBloc.determineIntent.add(text);
+
     });
 
 

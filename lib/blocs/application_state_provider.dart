@@ -78,6 +78,9 @@ class ApplicationBloc extends BlocBase {
   final BehaviorSubject<String> _currentResponseBehavior = BehaviorSubject<String>();
   Stream<String> get currentResponseText => _currentResponseBehavior.asBroadcastStream();
 
+  final BehaviorSubject<String> _currentResponseUrlBehavior = BehaviorSubject<String>();
+  Stream<String> get currentResponseUrl => _currentResponseUrlBehavior.asBroadcastStream();
+
   final BehaviorSubject<ApplicationWaitState> _applicationWaitStateBehaviour = BehaviorSubject<ApplicationWaitState>();
   Stream<ApplicationWaitState> get onApplicationWaitStateChange => _applicationWaitStateBehaviour.asBroadcastStream();
 
@@ -128,6 +131,7 @@ class ApplicationBloc extends BlocBase {
     _stopPerformingCurrentIntentController.stream.listen((stop){
       _currentRequestBehavior.add('');
       _currentResponseBehavior.add('');
+      _currentResponseUrlBehavior.add('');
 
       loudspeakerBloc.stop.add(true);
 
@@ -200,8 +204,9 @@ class ApplicationBloc extends BlocBase {
     });
 
 
-    loudspeakerBloc.currentSoundText.listen((text){
-      _currentResponseBehavior.add(text);
+    loudspeakerBloc.currentSound.listen((currentSound){
+      _currentResponseBehavior.add(currentSound.text);
+      _currentResponseUrlBehavior.add(currentSound.url);
     });
 
 

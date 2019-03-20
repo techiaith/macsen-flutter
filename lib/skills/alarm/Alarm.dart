@@ -32,7 +32,7 @@ class Alarm {
     bool setAlarmResult = true;
 
     _applicationBloc.textToSpeechBloc.queue.add(
-        TextToSpeechText(jsonResult["result"][0]["description"],'')
+        TextToSpeechText(jsonResult["result"][0]["description"],'','')
     );
     _applicationBloc.textToSpeechBloc.speakQueue.add(true);
 

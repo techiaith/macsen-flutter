@@ -24,14 +24,17 @@ class TextToSpeechText {
 
   String originalText;
   String locallyAdaptedText;
+  String url;
 
   TextToSpeechText(String originalText,
-                   String locallyAdaptedText) {
+                   String locallyAdaptedText,
+                   String url) {
     this.originalText=originalText;
     if (locallyAdaptedText=='')
       this.locallyAdaptedText=this.originalText;
     else
       this.locallyAdaptedText=locallyAdaptedText;
+    this.url=url;
   }
 }
 
@@ -102,9 +105,10 @@ class TextToSpeechBloc implements BlocBase {
         _isWaitingForTts=true;
         TextToSpeechText nextTextToSpeechText = _ttsQueue.removeFirst();
         await _ttsApi.speak(nextTextToSpeechText.locallyAdaptedText).then((wavfile){
-          print ("Playing " + wavfile);
           if (_playTtsResult) {
-            SoundFile soundFile = new SoundFile(wavfile, nextTextToSpeechText.originalText);
+            SoundFile soundFile = new SoundFile(wavfile,
+                                                nextTextToSpeechText.originalText,
+                                                nextTextToSpeechText.url);
             _ttsResultBehaviour.add(soundFile);
           }
           _isWaitingForTts=false;

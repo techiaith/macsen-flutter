@@ -124,7 +124,7 @@ class _MacsenTextualRequestState extends State<MacsenTextualRequestWidget> {
 
   }
 
-  
+
   void _onIawnButtonPressed(){
     setState((){
       _isConfirmedToProceed=true;

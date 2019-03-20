@@ -10,18 +10,23 @@ class QASkill {
 
     var jsonResult = JSON.jsonDecode(json);
     String ttsString;
+    String url;
 
     for (int i=0; i < jsonResult["result"].length; i++){
+
       ttsString = jsonResult["result"][i]["title"].trim()
           + '\n\n'
           + jsonResult["result"][i]["description"].trim();
 
       ttsString = ttsString.trim();
 
+      url = jsonResult["result"][i]["url"].trim();
+
       applicationBloc.textToSpeechBloc.queue.add(
           new TextToSpeechText(
               ttsString,
-              localAdaptStringForTts(ttsString)
+              localAdaptStringForTts(ttsString),
+              url
           )
       );
     }
@@ -39,5 +44,6 @@ class QASkill {
     outString = outString.replaceAll("k", "c");
     return outString;
   }
+
 
 }

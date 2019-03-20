@@ -64,8 +64,11 @@ class _MacsenTrainingState extends State<MacsenTrainingWidget>{
           Container(
             margin: EdgeInsets.only(top:20.0),
             child: RaisedButton(
-              onPressed: _onIawnButtonPressed,
               child: Text("Iawn", style: TextStyle(fontSize: 18.0)),
+              onPressed: (){
+                appBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationReady);
+                _onIawnButtonPressed();
+              },
             )
           )
         ]
@@ -84,9 +87,6 @@ class _MacsenTrainingState extends State<MacsenTrainingWidget>{
   Widget _buildRecordingSentences(BuildContext context){
 
     final ApplicationBloc appBloc = ApplicationStateProvider.of(context);
-
-    appBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationReady);
-
     appBloc.getUniqueUID().then((uid){
       appBloc.intentParsingBloc.getUnRecordedSentences.add(uid);
     });

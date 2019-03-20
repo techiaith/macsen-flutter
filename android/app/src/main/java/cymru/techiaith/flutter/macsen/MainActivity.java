@@ -90,15 +90,16 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
 
     }
 
+
     protected void onStart(){
         super.onStop();
     }
+
 
     protected void onStop(){
         super.onStop();
         spotify.disconnect();
     }
-
 
 
     @Override
@@ -117,6 +118,8 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             result.success(wavAudioPlayer.playAudio((String) methodCall.arguments) ? "OK":"FAIL");
         } else if (methodCall.method.equals("stopPlayingRecording")) {
             result.success(wavAudioPlayer.stopPlaying() ? "OK" : "FAIL");
+        } else if (methodCall.method.equals("checkIsSpotifyInstalled")) {
+            result.success(spotify.isSpotifyInstalled(this));
         } else if (methodCall.method.equals("spotifyPlayArtistOrBand")){
             result.success(spotify.connect((String) methodCall.arguments) ? "OK":"FAIL");
         } else if (methodCall.method.equals(("spotifyStopPlayArtistOrBand"))) {

@@ -27,8 +27,6 @@ class _MacsenTextualRequestState extends State<MacsenTextualRequestWidget> {
   }
 
 
-
-
   Widget _build_TextForm(BuildContext context){
 
     final ApplicationBloc appBloc = ApplicationStateProvider.of(context);
@@ -62,7 +60,6 @@ class _MacsenTextualRequestState extends State<MacsenTextualRequestWidget> {
                             {
                               _formKey.currentState.save();
                               appBloc.request.add(_requestText);
-                              appBloc.changeCurrentApplicationPage.add(0);
                             },
                             child: Text("Gofyn",
                               style: TextStyle(
@@ -79,6 +76,7 @@ class _MacsenTextualRequestState extends State<MacsenTextualRequestWidget> {
         )
     );
   }
+
 
   Widget _buildIntroduction(BuildContext context){
     final ApplicationBloc appBloc = ApplicationStateProvider.of(context);
@@ -126,11 +124,12 @@ class _MacsenTextualRequestState extends State<MacsenTextualRequestWidget> {
 
   }
 
-
+  
   void _onIawnButtonPressed(){
     setState((){
       _isConfirmedToProceed=true;
     });
   }
+
 
 }

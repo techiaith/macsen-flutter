@@ -172,6 +172,8 @@ class ApplicationBloc extends BlocBase {
 
     // from TextualInputScreen
     _requestController.stream.listen((text){
+      _currentApplicationPageController.add(0);
+      _applicationWaitStateController.add(ApplicationWaitState.ApplicationWaiting);
       intentParsingBloc.determineIntent.add(text);
     });
 

@@ -24,11 +24,11 @@ public class Spotify {
     }
 
 
-    public boolean connect(final String spotifyUri){
+    public boolean isSpotifyInstalled(MainActivity activity){
+        return SpotifyAppRemote.isSpotifyInstalled(activity.getApplicationContext());
+    }
 
-        //@todo - gwirio os yw Spotify wedi'i osod.
-        // h.y. SpotifyAppRemote.isSpotifyInstalled(...)
-        //
+    public boolean connect(final String spotifyUri){
 
         //
         if (mSpotifyAppRemote!=null && mSpotifyAppRemote.isConnected()){

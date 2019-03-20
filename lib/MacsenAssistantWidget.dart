@@ -25,7 +25,7 @@ class _MacsenWidgetState extends State<MacsenAssistantWidget> {
   Widget _buildRequestAndResponse(BuildContext context){
 
     final ApplicationBloc appBloc = ApplicationStateProvider.of(context);
-    appBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationReady);
+    //appBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationReady);
 
     double text_size = 24.0;
 
@@ -115,7 +115,10 @@ class _MacsenWidgetState extends State<MacsenAssistantWidget> {
               Container(
                   margin: EdgeInsets.only(top:20.0),
                   child: RaisedButton(
-                    onPressed: _onIawnButtonPressed,
+                    onPressed: () {
+                        appBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationReady);
+                        _onIawnButtonPressed();
+                      },
                     child: Text("Iawn", style: TextStyle(fontSize: 18.0)),
                   )
               )

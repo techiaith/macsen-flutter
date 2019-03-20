@@ -157,6 +157,7 @@ class HomePageState extends State<HomePage> {
 
 
   Widget _buildActionButton(BuildContext context, int currentPageIndex, ApplicationWaitState appState){
+
     if ((currentPageIndex==0) || (currentPageIndex==2)){
 
       if (appState==ApplicationWaitState.ApplicationWaiting){

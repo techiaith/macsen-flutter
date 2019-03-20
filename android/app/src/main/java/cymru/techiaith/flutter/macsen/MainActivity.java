@@ -21,6 +21,8 @@ import cymru.techiaith.flutter.macsen.WavAudio.WavAudioPlayer;
 import cymru.techiaith.flutter.macsen.WavAudio.WavAudioPlayerEventListener;
 import cymru.techiaith.flutter.macsen.Spotify.Spotify;
 
+import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 
 public class MainActivity extends FlutterActivity implements MethodChannel.MethodCallHandler,
                                                              WavAudioPlayerEventListener {
@@ -63,7 +65,20 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     protected void onCreate(Bundle savedInstanceState) {
        super.onCreate(savedInstanceState);
 
+        //make transparent status bar
+        getWindow().setStatusBarColor(0x00000000);
         GeneratedPluginRegistrant.registerWith(this);
+
+        //Remove full screen flag after load
+        ViewTreeObserver vto = getFlutterView().getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                getFlutterView().getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            }
+        });
+
 
         wavrecorder_channel = new MethodChannel(getFlutterView(), METHOD_CHANNEL + "/wavrecorder");
         wavrecorder_channel.setMethodCallHandler(this);

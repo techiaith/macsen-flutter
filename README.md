@@ -12,11 +12,13 @@ Mae'r ap yn dod a chasgliad o dechnolegau eraill ynghyd i alluogi cynorthwyydd C
  
 Bellach mae'r cydrannau ar y cyd yn medru gwneud y canlynol ar eich ffôn drwy siarad yn Gymraeg:
 
-• Chwarae cerddoriaeth Cymraeg oddi ar Spotify
-• Darllen newyddion gwahanol bynciau ar wefan Golwg360
-• Adrodd am y tywydd o OpenWeatherMap
-• Dweud yr amser 
-• Rhoi’r dyddiad
-* Gosod larwm
+- Chwarae cerddoriaeth Cymraeg oddi ar Spotify
+- Darllen newyddion gwahanol bynciau ar wefan Golwg360
+- Adrodd am y tywydd o OpenWeatherMap
+- Dweud yr amser 
+- Rhoi’r dyddiad
+- Gosod larwm
 
 Mae'r ap Macsen hefyd yn caniatáu i ddefnyddwyr recordio a chyfrannu eu lleisiau yn benodol ar gyfer setiau hyfforddi adnabod lleferydd Macsen.
+
+Gwelir rhagor o wybodaeth ar http://techiaith.cymru/macsen

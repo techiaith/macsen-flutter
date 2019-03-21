@@ -1,6 +1,6 @@
 # Macsen
 
-!(Eicon Macsen)[https://github.com/techiaith/macsen-flutter/blob/master/android/app/src/main/res/mipmap-hdpi/ic_launcher_foreground.png]
+<span style="display:block;text-align:center">![Eicon Macsen](https://github.com/techiaith/macsen-flutter/blob/master/android/app/src/main/res/mipmap-hdpi/ic_launcher_foreground.png)</span>
 
 ## Macsen - Y Cynorthwyydd personol Digidol Cymraeg
 

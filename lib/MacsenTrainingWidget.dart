@@ -54,12 +54,12 @@ class _MacsenTrainingState extends State<MacsenTrainingWidget>{
           Container(
             margin: EdgeInsets.only(top:10.0),
             padding: EdgeInsets.only(left: 20.0, right: 20.0),
-            child: Text("Drwy gyfrannu eich llais, rydych yn rhoi hawl i ni storio’r llais ar weinydd y project, a’i gyhoeddi ar drwydded agored ganiataol fel rhan o set ddatblygu neu set brofi. Golyga hynny y modd i unrhyw un arall ddefnyddio’r lleisiau hefyd heb gyfyngiad. Ni fydd enw nac unrhyw fanylion personol eraill ynghlwm wrth y lleisiau hyn.", style: TextStyle(fontSize: text_size)),
+            child: Text("Drwy gyfrannu eich llais, rydych yn rhoi hawl i ni storio’r llais ar weinydd y project, a’i gyhoeddi ar drwydded agored ganiataol fel rhan o set ddatblygu neu set brofi. Golyga hynny y bydd modd i unrhyw un arall ddefnyddio’r lleisiau hefyd heb gyfyngiad. Ni fydd enw nac unrhyw fanylion personol eraill ynghlwm wrth y lleisiau hyn.", style: TextStyle(fontSize: text_size)),
           ),
           Container(
             margin: EdgeInsets.only(top:10.0),
             padding: EdgeInsets.only(left: 20.0, right: 20.0),
-            child: Text("Ar ôl glicio ar 'Iawn', bydd cwestiynau yn ymddangos, pwyswch y botwm microffon i ddechrau a gorffen recordio.", style: TextStyle(fontSize: text_size)),
+            child: Text("Ar ôl glicio ar 'Iawn', bydd cwestiynau yn ymddangos. Pwyswch y botwm microffon i ddechrau a gorffen recordio.", style: TextStyle(fontSize: text_size)),
           ),
           Container(
             margin: EdgeInsets.only(top:20.0),

@@ -31,7 +31,7 @@ class _MacsenHelpState extends State<MacsenHelpWidget>{
           ),
           Container(
             padding: EdgeInsets.only(left: 20.0, right: 20.0, top:20.0, bottom: 20.0),
-            child: Text("Dyma'r cwestiynau mae Macsen medru adnabod a gweithredu ar..",
+            child: Text("Dyma'r cwestiynau mae Macsen yn gallu eu hadnabod ac ymateb iddynt:",
                         style: TextStyle(fontSize: font_size),
                         textAlign: TextAlign.left)
           ),

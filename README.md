@@ -1,5 +1,7 @@
 # Macsen
 
+!(Eicon Macsen)[https://github.com/techiaith/macsen-flutter/blob/master/android/app/src/main/res/mipmap-hdpi/ic_launcher_foreground.png]
+
 ## Macsen - Y Cynorthwyydd personol Digidol Cymraeg
 
 Mae Macsen yn feddalwedd cynorthwyydd personol digidol Cymraeg cod agored. Rydyn ni’n defnyddio’r project hwn i ddangos beth allwn ni greu wrth ddatblygu technoleg lleferydd a deallusrwydd artiffisial Cymraeg. 

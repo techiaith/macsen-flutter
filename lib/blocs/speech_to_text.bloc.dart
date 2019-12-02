@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert' as JSON;
 
 import 'package:rxdart/subjects.dart';
 
@@ -53,13 +54,17 @@ class SpeechToTextBloc implements BlocBase {
 
   void _onRecognizeWavFile(String wavFilePath){
     _applicationBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationWaiting);
-    _sttApi.transcribe(wavFilePath).then((transcription) {
-      if (transcription.length == 0){
+    _sttApi.transcribe(wavFilePath).then((jsonStringResult) {
+      if (jsonStringResult.length == 0){
         _applicationBloc.raiseApplicationException.add("Methwyd adnabod unrhyw gwestiwn neu orchymyn.");
         return;
       }
-      _applicationBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationReady);
-      _sttResultBehaviour.add(transcription);
+      var jsonResult = JSON.jsonDecode(jsonStringResult);
+      bool success = jsonResult["success"];
+      if (success) {
+        _applicationBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationReady);
+        _sttResultBehaviour.add(jsonResult["text"]);
+      }
     });
   }
 

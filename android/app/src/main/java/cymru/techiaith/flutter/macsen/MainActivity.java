@@ -63,10 +63,10 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-       super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
 
         //make transparent status bar
-        getWindow().setStatusBarColor(0x00000000);
+        //getWindow().setStatusBarColor(0x00000000);
         GeneratedPluginRegistrant.registerWith(this);
 
         //Remove full screen flag after load

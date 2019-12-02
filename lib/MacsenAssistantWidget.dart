@@ -98,7 +98,7 @@ class _MacsenWidgetState extends State<MacsenAssistantWidget> {
     if (url==null)
       return new Container();
 
-    if (url.length > 0){
+    if (url.length > 0) {
       return RaisedButton(
           onPressed: () {
             appBloc.stopPerformingCurrentIntent.add(true);

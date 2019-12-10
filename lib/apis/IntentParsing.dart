@@ -9,13 +9,14 @@ import 'package:http_parser/http_parser.dart';
 class IntentParsing {
 
   final String _apiAuthorityUrl = 'api.techiaith.org';
+  final String _apiPath = '/assistant/dev/';
 
 
   Future<String> performSkill(String text,
                               double latitude,
                               double longitude) async {
       return await httpsGet(
-          '/assistant/perform_skill',
+          _apiPath + 'perform_skill',
           {
             "text": text,
             "latitude" : latitude.toString(),
@@ -27,7 +28,7 @@ class IntentParsing {
 
   Future<String> getUnrecordedSentence(String uid) async {
     return await httpsGet(
-        '/assistant/get_unrecorded_sentence',
+        _apiPath + 'get_unrecorded_sentence',
         {
           "uid" : uid
         }
@@ -36,7 +37,7 @@ class IntentParsing {
 
 
   Future<String> getAllSentences() async {
-    return await httpsGet('/assistant//get_all_skills_intents_sentences');
+    return await httpsGet(_apiPath + 'get_all_skills_intents_sentences');
   }
 
 
@@ -53,7 +54,7 @@ class IntentParsing {
       MultipartRequest request = new MultipartRequest("POST",
         new Uri.https(
           _apiAuthorityUrl,
-          "/assistant/upload_recorded_sentence/"
+          _apiPath + 'upload_recorded_sentence/'
         ));
 
       request.fields["uid"] = uid;

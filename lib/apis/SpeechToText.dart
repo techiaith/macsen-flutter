@@ -15,11 +15,6 @@ class SpeechToText {
 
     String result = '';
 
-    // send to server ! :)
-    //var url = "http://macsen-stt.techiaith.cymru/dsserver/handleaudio/";
-
-
-    //
     File fileToUpload = new File(recordedFilePath);
     int wav_length = fileToUpload.lengthSync();
     Stream uploadStream = fileToUpload.openRead();

@@ -19,6 +19,8 @@ class SpeechToText {
     int wav_length = fileToUpload.lengthSync();
     Stream uploadStream = fileToUpload.openRead();
 
+    print ("SpeechToTextAPI : transcribe $recordedFilePath");
+
     try {
 
       MultipartRequest request = new MultipartRequest("POST",

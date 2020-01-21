@@ -148,6 +148,7 @@ class IntentParsingBloc implements BlocBase {
     if (text.length > 0) {
       _applicationBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationWaiting);
       _currentQuestionCommandBehavior.add(text);
+
       _intentApi.performSkill(text,_latitude,_longitude).then((intentJsonString) {
         if (intentJsonString.length > 0){
           _dispatchToSkill(intentJsonString);
@@ -157,6 +158,7 @@ class IntentParsingBloc implements BlocBase {
           return;
         }
       });
+
     }
   }
 

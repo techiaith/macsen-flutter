@@ -16,7 +16,7 @@ class IntentParsing {
                               double latitude,
                               double longitude) async {
 
-    print ("performSkill $text, $latitude, $longitude");
+    print ("intentParsingAPI : performSkill $text, $latitude, $longitude");
 
     return await httpsGet(
           _apiPath + 'perform_skill',
@@ -30,6 +30,7 @@ class IntentParsing {
 
 
   Future<String> getUnrecordedSentence(String uid) async {
+    print ("intentParsingAPI : getUnrecordedSentence $uid");
     return await httpsGet(
         _apiPath + 'get_unrecorded_sentence',
         {
@@ -40,13 +41,16 @@ class IntentParsing {
 
 
   Future<String> getAllSentences() async {
-    return await httpsGet(_apiPath + 'get_all_skills_intents_sentences');
+    print ("intentParsingAPI : getAllSentences");
+    return await httpsGet(_apiPath + 'get_all_skills_intents_sentences/');
   }
 
 
   Future<bool> uploadRecordedSentence(String uid,
                                       String sentence,
                                       String recordedFilePath) async {
+
+    print ("intentParsingAPI : uploadRecordedSentence $uid, '$sentence'");
 
     File fileToUpload = new File(recordedFilePath);
     int wav_length = fileToUpload.lengthSync();

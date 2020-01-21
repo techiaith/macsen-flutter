@@ -16,6 +16,8 @@ class TextToSpeech {
   //
   Future<String> speak(String text) async {
 
+    print ("TextToSpeechAPI : speak '$text'");
+
     try {
       HttpClient httpClient = new HttpClient();
       var request = await httpClient.getUrl(new Uri.https(

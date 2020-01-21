@@ -19,7 +19,7 @@ class IntentParsing {
     print ("performSkill $text, $latitude, $longitude");
 
     return await httpsGet(
-          '/assistant/perform_skill',
+          _apiPath + 'perform_skill',
           {
             "text": text,
             "latitude" : latitude.toString(),

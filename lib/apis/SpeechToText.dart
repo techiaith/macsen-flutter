@@ -9,7 +9,7 @@ import 'package:http_parser/http_parser.dart';
 class SpeechToText {
 
   final String _apiAuthorityUrl = 'api.techiaith.org';
-
+  final String _apiPath = "deepspeech/dev/speech_to_text/";
   //
   Future<String> transcribe(String recordedFilePath) async {
 
@@ -24,7 +24,7 @@ class SpeechToText {
       MultipartRequest request = new MultipartRequest("POST",
           new Uri.https(
               _apiAuthorityUrl,
-              "/deepspeech/dev/speech_to_text/"
+              _apiPath,
           ));
 
       request.files.add(

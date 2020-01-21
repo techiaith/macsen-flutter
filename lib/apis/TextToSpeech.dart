@@ -8,14 +8,18 @@ import 'package:macsen/utils/md5.dart';
 
 class TextToSpeech {
 
+  final String _apiAuthorityUrl = 'api.techiaith.org';
+  final String _apiPath = "/marytts/v1";
+
   static String ttsApiKey = '62bb5885-294d-4fcf-9b2a-23195723ea07';
 
+  //
   Future<String> speak(String text) async {
 
     try {
       HttpClient httpClient = new HttpClient();
       var request = await httpClient.getUrl(new Uri.https(
-          'api.techiaith.org', '/marytts/v1',
+          _apiAuthorityUrl, _apiPath,
           {
             "api_key": ttsApiKey,
             "format": 'wav',

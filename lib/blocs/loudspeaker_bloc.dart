@@ -146,10 +146,19 @@ class LoudSpeakerBloc implements BlocBase {
   Future<void> _onPlayBeep(BeepEnum beep) async{
     if ((beep==BeepEnum.HiBeep) || (beep==BeepEnum.LoBeep)) {
       _loudSpeakerPlayingBehaviour.add(true);
+      String beepFilePath;
+
       if (beep == BeepEnum.HiBeep)
-        await _native_play_channel.invokeMethod('playRecording', _audioHiBeepFilePath);
+        beepFilePath=_audioHiBeepFilePath;
       else if (beep == BeepEnum.LoBeep)
-        await _native_play_channel.invokeMethod('playRecording', _audioLowBeepFilePath);
+        beepFilePath=_audioLowBeepFilePath;
+
+      if (beepFilePath?.isNotEmpty ?? true){
+        await _native_play_channel.invokeMethod('playRecording', <String, dynamic>{
+          "filepath":beepFilePath
+        });
+      }
+
     }
   }
 
@@ -178,8 +187,9 @@ class LoudSpeakerBloc implements BlocBase {
         SoundFile nextSoundfile=_soundsQueue.removeFirst();
         await _native_play_channel.invokeMethod(
             'playRecording',
-            nextSoundfile.wavFilePath
-        );
+            <String, dynamic>{
+                "filepath":nextSoundfile.wavFilePath
+            });
         _currentSoundBehavior.add(nextSoundfile);
       }
     } else {

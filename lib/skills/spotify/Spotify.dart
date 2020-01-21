@@ -1,10 +1,13 @@
+import 'dart:async';
 import 'dart:convert' as JSON;
+
 import 'package:flutter/services.dart';
 import 'package:macsen/blocs/application_state_provider.dart';
 
 const MethodChannel _native_spotify_api = const MethodChannel('cymru.techiaith.flutter.macsen/spotify');
 
 class Spotify{
+
 
 
   static Future<bool> execute(ApplicationBloc applicationBloc,
@@ -19,8 +22,12 @@ class Spotify{
         var jsonResult = JSON.jsonDecode(json);
         String spotifyUrl = jsonResult["result"][0]["url"].trim();
 
+        //@todo - check for empty string
+
         try {
-          _native_spotify_api.invokeMethod('spotifyPlayArtistOrBand', spotifyUrl);
+          await _native_spotify_api.invokeMethod('spotifyPlayArtistOrBand', <String, dynamic>{
+            "artist_uri":spotifyUrl
+          });
         }
         on PlatformException catch (e) {
           playSpotifyResult = false;

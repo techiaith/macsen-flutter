@@ -15,8 +15,11 @@ class IntentParsing {
   Future<String> performSkill(String text,
                               double latitude,
                               double longitude) async {
-      return await httpsGet(
-          _apiPath + 'perform_skill',
+
+    print ("performSkill $text, $latitude, $longitude");
+
+    return await httpsGet(
+          '/assistant/perform_skill',
           {
             "text": text,
             "latitude" : latitude.toString(),

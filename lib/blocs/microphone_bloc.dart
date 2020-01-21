@@ -141,7 +141,9 @@ class MicrophoneBloc implements BlocBase {
     String nativeInvokeResult;
     try {
       print ("Start Recording...");
-      nativeInvokeResult = await _native_mic_record_channel.invokeMethod('startRecording', 'tmpwavfile');
+      nativeInvokeResult = await _native_mic_record_channel.invokeMethod('startRecording', <String, dynamic>{
+        'filename': 'tmpwavfile.wav'
+      });
       if (nativeInvokeResult == "OK"){
         _micStatus=MicrophoneStatus.Recording;
         _microphoneStatusBehaviour.add(MicrophoneStatus.Recording);

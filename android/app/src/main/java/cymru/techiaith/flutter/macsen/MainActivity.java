@@ -15,7 +15,6 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugins.GeneratedPluginRegistrant;
 
-import cymru.techiaith.flutter.macsen.Geolocation.Geolocation;
 import cymru.techiaith.flutter.macsen.WavAudio.WavAudioRecorder;
 import cymru.techiaith.flutter.macsen.WavAudio.WavAudioPlayer;
 import cymru.techiaith.flutter.macsen.WavAudio.WavAudioPlayerEventListener;
@@ -54,9 +53,6 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     private MethodChannel wavplayer_channel;
     private MethodChannel wavrecorder_channel;
 
-    private MethodChannel location_channel;
-    private Geolocation geolocation;
-
     private MethodChannel spotify_channel;
     private Spotify spotify;
 
@@ -86,9 +82,6 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         wavplayer_channel = new MethodChannel(getFlutterView(), METHOD_CHANNEL + "/wavplayer");
         wavplayer_channel.setMethodCallHandler(this);
 
-        location_channel = new MethodChannel(getFlutterView(), METHOD_CHANNEL + "/geolocation");
-        location_channel.setMethodCallHandler(this);
-
         spotify_channel = new MethodChannel(getFlutterView(), METHOD_CHANNEL + "/spotify");
         spotify_channel.setMethodCallHandler(this);
 
@@ -97,11 +90,9 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         wavAudioPlayer = new WavAudioPlayer(this);
         wavAudioPlayer.registerWavAudioPlayerEventListener(this);
 
-        geolocation = new Geolocation(this);
         spotify = new Spotify(this);
 
         checkMicrophonePermission();
-        checkLocationPermission();
 
     }
 
@@ -123,14 +114,12 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         //
         if (methodCall.method.equals("checkMicrophonePermissions")) {
             result.success(checkMicrophonePermission());
-        } else if (methodCall.method.equals("requestLastLocation")){
-            result.success(checkLocationPermission());
         } else if (methodCall.method.equals("startRecording")){
-            result.success(wavAudioRecorder.startRecord((String) methodCall.arguments) ? "OK":"FAIL");
+            result.success(wavAudioRecorder.startRecord(methodCall.argument("filename")) ? "OK":"FAIL");
         } else if (methodCall.method.equals("stopRecording")) {
             result.success(wavAudioRecorder.stopRecord() ? wavAudioRecorder.getWavFile().getAbsolutePath() : "FAIL");
         } else if (methodCall.method.equals("playRecording")) {
-            result.success(wavAudioPlayer.playAudio((String) methodCall.arguments) ? "OK":"FAIL");
+            result.success(wavAudioPlayer.playAudio(methodCall.argument("filepath")) ? "OK":"FAIL");
         } else if (methodCall.method.equals("stopPlayingRecording")) {
             result.success(wavAudioPlayer.stopPlaying() ? "OK" : "FAIL");
         } else if (methodCall.method.equals("checkIsSpotifyInstalled")) {
@@ -162,22 +151,6 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     }
 
 
-    private Boolean checkLocationPermission(){
-        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION );
-        boolean permissionGranted = permissionCheck == PackageManager.PERMISSION_GRANTED;
-        if (permissionGranted) {
-            geolocation.returnLastLocationreturnLastLocation(location_channel);
-            return true;
-        } else {
-            permissionRequestQueue.add(new PermissionRequest(
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    PERMISSIONS_REQUEST_LOCATION
-            ));
-            askForNextPermission();
-            return false;
-        }
-    }
-
 
     private void askForNextPermission(){
         if (permissionRequestQueue.size()>0){
@@ -200,14 +173,6 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             case PERMISSIONS_REQUEST_RECORD_AUDIO: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     wavrecorder_channel.invokeMethod("audioRecordingPermissionGranted","OK");
-                }
-                break;
-            }
-            case PERMISSIONS_REQUEST_LOCATION: {
-                if (grantResults.length > 0 && grantResults[0]  == PackageManager.PERMISSION_GRANTED){
-                    geolocation.returnLastLocationreturnLastLocation(location_channel);
-                } else {
-                    location_channel.invokeMethod("locationCoordinates", "NOT_GRANTED");
                 }
                 break;
             }

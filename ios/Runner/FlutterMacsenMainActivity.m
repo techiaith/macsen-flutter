@@ -65,7 +65,7 @@ FlutterMethodChannel* spotifyChannel;
             }
             else
             {
-                NSLog(call.method);
+                NSLog(@"%@", call.method);
                 result(FlutterMethodNotImplemented);
             }
             
@@ -97,7 +97,7 @@ FlutterMethodChannel* spotifyChannel;
             }
             else
             {
-                NSLog(call.method);
+                NSLog(@"%@", call.method);
                 result(FlutterMethodNotImplemented);
             }
         }];
@@ -131,7 +131,7 @@ FlutterMethodChannel* spotifyChannel;
             }
             else
             {
-                NSLog(call.method);
+                NSLog(@"%@", call.method);
                 result(FlutterMethodNotImplemented);
             }
         }];
@@ -144,8 +144,7 @@ FlutterMethodChannel* spotifyChannel;
 
 
 -(BOOL) openUrl:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options{
-    [self.spotify openUrl:url options:options];
-    return true;
+    return [self.spotify openUrl:url options:options];
 }
 
 

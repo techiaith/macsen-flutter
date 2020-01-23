@@ -56,6 +56,8 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     private MethodChannel spotify_channel;
     private Spotify spotify;
 
+    private MethodChannel location_channel;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +86,9 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
 
         spotify_channel = new MethodChannel(getFlutterView(), METHOD_CHANNEL + "/spotify");
         spotify_channel.setMethodCallHandler(this);
+
+        location_channel = new MethodChannel(getFlutterView(), METHOD_CHANNEL + "/geolocation");
+        location_channel.setMethodCallHandler(this);
 
         wavAudioRecorder = new WavAudioRecorder(this);
 
@@ -114,6 +119,8 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         //
         if (methodCall.method.equals("checkMicrophonePermissions")) {
             result.success(checkMicrophonePermission());
+        } else if (methodCall.method.equals("checkLocationPermission")){
+            result.success(checkLocationPermission());
         } else if (methodCall.method.equals("startRecording")){
             result.success(wavAudioRecorder.startRecord(methodCall.argument("filename")) ? "OK":"FAIL");
         } else if (methodCall.method.equals("stopRecording")) {
@@ -151,6 +158,22 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     }
 
 
+    private Boolean checkLocationPermission(){
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION );
+        boolean permissionGranted = permissionCheck == PackageManager.PERMISSION_GRANTED;
+
+        if (permissionGranted) {
+            return true;
+        } else {
+            permissionRequestQueue.add(new PermissionRequest(
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    PERMISSIONS_REQUEST_LOCATION
+            ));
+            askForNextPermission();
+            return false;
+        }
+    }
+
 
     private void askForNextPermission(){
         if (permissionRequestQueue.size()>0){
@@ -174,6 +197,14 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     wavrecorder_channel.invokeMethod("audioRecordingPermissionGranted","OK");
                 }
+                break;
+            }
+            case PERMISSIONS_REQUEST_LOCATION: {
+                if (grantResults.length > 0 && grantResults[0]  == PackageManager.PERMISSION_GRANTED)
+                    location_channel.invokeMethod("geolocationPermission", "GRANTED");
+                else
+                    location_channel.invokeMethod("geolocationPermission", "NOT_GRANTED");
+
                 break;
             }
         }

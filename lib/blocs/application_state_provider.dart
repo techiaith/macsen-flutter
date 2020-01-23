@@ -38,7 +38,7 @@ enum PageChangeReason { Null, User, Application}
 class PageChangeEventInformation {
   int pageIndex;
   PageChangeReason reason;
-  PageChangeEventInformation(this.pageIndex, this.reason){}
+  PageChangeEventInformation(this.pageIndex, this.reason);
 }
 
 

@@ -29,14 +29,24 @@ class SpeechToTextBloc implements BlocBase {
   final StreamController<String> _recogniseWavFileController = StreamController<String>();
   Sink<String> get recogniseFile => _recogniseWavFileController.sink;
 
+  final StreamController<bool> _serverInformationController = StreamController<bool>();
+  Sink<bool> get getServerInformation => _serverInformationController.sink;
+
 
   // Streams
   final BehaviorSubject<String> _sttResultBehaviour = BehaviorSubject<String>();
   Stream<String> get sttResult => _sttResultBehaviour.asBroadcastStream();
 
+  final BehaviorSubject<String> _modelNameBehaviour = BehaviorSubject<String>();
+  Stream<String> get modelName => _modelNameBehaviour.asBroadcastStream();
+
+  final BehaviorSubject<String> _modelVersionBehaviour = BehaviorSubject<String>();
+  Stream<String> get modelVersion => _modelVersionBehaviour.asBroadcastStream();
+
 
   void dispose(){
     _recogniseWavFileController.close();
+    _serverInformationController.close();
   }
 
 
@@ -47,6 +57,10 @@ class SpeechToTextBloc implements BlocBase {
     _recogniseWavFileController.stream.listen((wavFilePath){
       if (wavFilePath.length>0)
         _onRecognizeWavFile(wavFilePath);
+    });
+
+    _serverInformationController.stream.listen((add){
+      _onGetServerInformation();
     });
 
   }
@@ -68,5 +82,18 @@ class SpeechToTextBloc implements BlocBase {
     });
   }
 
+
+  void _onGetServerInformation(){
+    _sttApi.getVersions().then((jsonStringResult) {
+
+      if (jsonStringResult.length > 0) {
+        var jsonResult = JSON.jsonDecode(jsonStringResult);
+        _modelNameBehaviour.add(jsonResult['model_name']);
+        _modelVersionBehaviour.add(jsonResult['model_version']);
+      }
+
+    });
+
+  }
 
 }

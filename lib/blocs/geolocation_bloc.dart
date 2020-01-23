@@ -35,9 +35,11 @@ class GeolocationBloc implements BlocBase {
 
   Future<void> _requestLastKnownLocation() async {
     Position position = await Geolocator().getLastKnownPosition(desiredAccuracy: LocationAccuracy.high);
-    print (position);
-    _longitudeBehaviour.add(position.longitude);
-    _latitudeBehaviour.add(position.latitude);
+    if (position!=null) {
+      print(position);
+      _longitudeBehaviour.add(position.longitude);
+      _latitudeBehaviour.add(position.latitude);
+    }
   }
 
 }

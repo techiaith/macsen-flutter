@@ -141,13 +141,13 @@ class _MacsenWidgetState extends State<MacsenAssistantWidget> {
                 margin: EdgeInsets.only(top:20.0),
                 padding: EdgeInsets.only(left: 20.0, right: 20.0),
                 child: Text("I siarad â'r ap, pwyswch yr eicon microffon gwyrdd. Dylai droi'n goch.",
-                    style: TextStyle(fontSize: text_size)),
+                            style: TextStyle(fontSize: text_size)),
               ),
               Container(
                 margin: EdgeInsets.only(top:20.0),
                 padding: EdgeInsets.only(left: 20.0, right: 20.0),
                 child: Text("Gofynnwch eich cwestiwn neu lefarwch eich gorchymyn.",
-                      style: TextStyle(fontSize: text_size)),
+                            style: TextStyle(fontSize: text_size)),
               ),
               Container(
                 margin: EdgeInsets.only(top:20.0),
@@ -159,13 +159,13 @@ class _MacsenWidgetState extends State<MacsenAssistantWidget> {
                 margin: EdgeInsets.only(top:20.0),
                 padding: EdgeInsets.only(left: 20.0, right: 20.0),
                 child: Text("Pwyswch eicon y microffon eto pan fyddwch wedi gorffen siarad. Dylai droi nôl yn wyrdd.",
-                      style: TextStyle(fontSize: text_size)),
+                            style: TextStyle(fontSize: text_size)),
               ),
               Container(
                 margin: EdgeInsets.only(top:20.0),
                 padding: EdgeInsets.only(left: 20.0, right: 20.0),
                 child: Text("Ewch i 'Help' i weld y fath o gwestiynau mae Macsen adnabod.",
-                    style: TextStyle(fontSize: text_size)),
+                            style: TextStyle(fontSize: text_size)),
               ),
               Container(
                   margin: EdgeInsets.only(top:20.0),

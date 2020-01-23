@@ -125,7 +125,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         } else if (methodCall.method.equals("checkIsSpotifyInstalled")) {
             result.success(spotify.isSpotifyInstalled(this));
         } else if (methodCall.method.equals("spotifyPlayArtistOrBand")){
-            result.success(spotify.connect((String) methodCall.arguments) ? "OK":"FAIL");
+            result.success(spotify.connect((String) methodCall.argument("artist_uri")) ? "OK":"FAIL");
         } else if (methodCall.method.equals(("spotifyStopPlayArtistOrBand"))) {
             result.success(spotify.disconnect());
         } else {

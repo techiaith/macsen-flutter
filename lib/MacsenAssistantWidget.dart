@@ -131,7 +131,7 @@ class _MacsenWidgetState extends State<MacsenAssistantWidget> {
 
     double text_size = 18.0;
 
-    return Container(
+    return SingleChildScrollView(
         child: Column(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.start,

@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 
 import 'package:macsen/InformationPage.dart';
 import 'package:macsen/MozillaCommonVoicePage.dart';
+import 'package:macsen/ServersInformationPage.dart';
 
 
 class AppDrawer extends StatelessWidget {
@@ -62,14 +63,27 @@ class AppDrawer extends StatelessWidget {
                     },
                   ),
                   ListTile(
+                    title: Text('Gweinyddion', style: TextStyle(fontSize: 22.0)),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ServersInformationPage(
+                                title: 'Gwybodaeth Gweinyddion',
+                              )
+                          )
+                      );
+                    },
+                  ),
+                  ListTile(
                     title: Text('Mozilla CommonVoice', style: TextStyle(fontSize: 22.0)),
                     //subtitle: Text('(gwefan allanol)', style: TextStyle(fontSize: 12.0)),
                     onTap: () {
                       Navigator.pop(context);
                       Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => MozillaCommonVoicePage()
-                        )
+                          MaterialPageRoute(
+                              builder: (context) => MozillaCommonVoicePage()
+                          )
                       );
                     },
                   )

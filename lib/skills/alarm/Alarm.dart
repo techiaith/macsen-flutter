@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'dart:ui';
+import 'dart:async';
 import 'package:flutter/services.dart';
 import 'dart:convert' as JSON;
 
@@ -7,9 +8,6 @@ import 'package:macsen/blocs/application_state_provider.dart';
 import 'package:macsen/blocs/text_to_speech.dart';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
-const MethodChannel _native_alarm_api = const MethodChannel('cymru.techiaith.flutter.macsen/alarm');
-
 
 
 class Alarm {
@@ -20,7 +18,7 @@ class Alarm {
 
   Alarm(this._applicationBloc);
 
-  Future execute(dynamic json) async {
+  Future<void> execute(dynamic json) async {
 
     var jsonResult = JSON.jsonDecode(json);
 

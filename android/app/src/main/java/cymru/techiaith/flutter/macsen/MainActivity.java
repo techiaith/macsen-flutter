@@ -163,6 +163,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         boolean permissionGranted = permissionCheck == PackageManager.PERMISSION_GRANTED;
 
         if (permissionGranted) {
+            location_channel.invokeMethod("geolocationPermission", "GRANTED");
             return true;
         } else {
             permissionRequestQueue.add(new PermissionRequest(

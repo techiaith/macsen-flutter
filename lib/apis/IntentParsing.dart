@@ -9,7 +9,7 @@ import 'package:http_parser/http_parser.dart';
 class IntentParsing {
 
   final String _apiAuthorityUrl = 'api.techiaith.org';
-  final String _apiPath = '/assistant/dev/';
+  final String _apiPath = '/assistant/';
 
 
   Future<String> performSkill(String text,

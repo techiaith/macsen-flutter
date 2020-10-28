@@ -1,17 +1,14 @@
+import 'dart:async';
+import 'dart:convert' as JSON;
 import 'dart:typed_data';
 import 'dart:ui';
-import 'dart:async';
-import 'package:flutter/services.dart';
-import 'dart:convert' as JSON;
 
+import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:macsen/blocs/application_state_provider.dart';
 import 'package:macsen/blocs/text_to_speech.dart';
 
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
-
 class Alarm {
-
   ApplicationBloc _applicationBloc;
 
   var flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
@@ -19,7 +16,6 @@ class Alarm {
   Alarm(this._applicationBloc);
 
   Future<void> execute(dynamic json) async {
-
     var jsonResult = JSON.jsonDecode(json);
 
     // {"result": [{"title": "Gosod larwm",
@@ -29,9 +25,8 @@ class Alarm {
 
     bool setAlarmResult = true;
 
-    _applicationBloc.textToSpeechBloc.queue.add(
-        TextToSpeechText(jsonResult["result"][0]["description"],'','')
-    );
+    _applicationBloc.textToSpeechBloc.queue.add(TextToSpeechText(
+        jsonResult["result"][0]["description"], '', '', false));
     _applicationBloc.textToSpeechBloc.speakQueue.add(true);
 
     //
@@ -43,19 +38,14 @@ class Alarm {
     vibrationPattern[3] = 2000;
 
     try {
-
       if (jsonResult["result"][0]["success"] == true) {
-
         int hour = jsonResult["result"][0]["alarmtime"]["hour"];
         int minute = 0; //jsonResult["result"][0]["alarmtime"]["minute"];
 
         var nowDateTime = new DateTime.now();
 
         var scheduledNotificationDateTime = new DateTime(
-            nowDateTime.year,
-            nowDateTime.month,
-            nowDateTime.day,
-            hour, minute);
+            nowDateTime.year, nowDateTime.month, nowDateTime.day, hour, minute);
 
         //
         // sound from http://soundbible.com/339-Alarm-Alert-Effect.html
@@ -66,17 +56,16 @@ class Alarm {
             'your other channel name',
             'your other channel description',
             icon: 'secondary_icon',
-            sound: 'alarm_alert_effect_soundbibledotcom_462520910',
-            largeIcon: 'sample_large_icon',
-            largeIconBitmapSource: BitmapSource.Drawable,
+            sound: RawResourceAndroidNotificationSound(
+                'alarm_alert_effect_soundbibledotcom_462520910'),
+            largeIcon: DrawableResourceAndroidBitmap('sample_large_icon'),
             vibrationPattern: vibrationPattern,
             color: const Color.fromARGB(255, 255, 0, 0));
 
-        var iOSPlatformChannelSpecifics = new IOSNotificationDetails(
-            sound: "slow_spring_board.aiff");
+        var iOSPlatformChannelSpecifics =
+            new IOSNotificationDetails(sound: "slow_spring_board.aiff");
         var platformChannelSpecifics = new NotificationDetails(
-            androidPlatformChannelSpecifics,
-            iOSPlatformChannelSpecifics);
+            androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
 
         await flutterLocalNotificationsPlugin.schedule(
             0,
@@ -85,13 +74,10 @@ class Alarm {
             scheduledNotificationDateTime,
             platformChannelSpecifics);
       }
-    }
-    on PlatformException catch (e) {
-      _applicationBloc.raiseApplicationException.add(
-          "Roedd problem gosod larwm.");
+    } on PlatformException catch (e) {
+      _applicationBloc.raiseApplicationException
+          .add("Roedd problem gosod larwm.");
       setAlarmResult = false;
     }
-
   }
-
 }

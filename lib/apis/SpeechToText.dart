@@ -10,7 +10,7 @@ class SpeechToText {
 
   final String _apiAuthorityUrl = 'api.techiaith.org';
 
-  final String _apiPath = "deepspeech/dev/";
+  final String _apiPath = "deepspeech/macsen/";
 
   //
   Future<String> transcribe(String recordedFilePath) async {

@@ -67,7 +67,7 @@ class LoudSpeakerBloc implements BlocBase {
   final BehaviorSubject<SoundFile> _currentSoundBehavior = BehaviorSubject<SoundFile>();
   Stream<SoundFile> get currentSound => _currentSoundBehavior.asBroadcastStream();
 
-  final BehaviorSubject<bool> _loudSpeakerPlayingBehaviour = BehaviorSubject<bool>(seedValue: false);
+  final BehaviorSubject<bool> _loudSpeakerPlayingBehaviour = BehaviorSubject<bool>.seeded(false);
   Stream<bool> get isLoudSpeakerPlaying => _loudSpeakerPlayingBehaviour.asBroadcastStream();
 
   final BehaviorSubject<BeepEnum> _beepCompletedBehaviour = BehaviorSubject<BeepEnum>();

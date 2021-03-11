@@ -94,19 +94,19 @@ class HomePageState extends State<HomePage> {
                 items: [
                   BottomNavigationBarItem(
                     icon: Icon(Icons.mic),
-                    title: new Text("Siarad"),
+                    label: "Siarad",
                   ),
                   BottomNavigationBarItem(
                     icon: Icon(Icons.chat),
-                    title: new Text("Teipio"),
+                    label: "Teipio",
                   ),
                   BottomNavigationBarItem(
                     icon: Icon(Icons.assignment),
-                    title: new Text("Hyfforddi"),
+                    label: "Hyfforddi",
                   ),
                   BottomNavigationBarItem(
                     icon: Icon(Icons.help),
-                    title: new Text("Help"),
+                    label: "Help",
                   )
                 ]
               ),

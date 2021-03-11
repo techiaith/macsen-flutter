@@ -42,11 +42,11 @@ class MicrophoneBloc implements BlocBase {
 
 
   // Streams
-  final BehaviorSubject<MicrophoneStatus> _microphoneStatusBehaviour = BehaviorSubject<MicrophoneStatus>(seedValue: MicrophoneStatus.NotAllowed);
+  final BehaviorSubject<MicrophoneStatus> _microphoneStatusBehaviour = BehaviorSubject<MicrophoneStatus>.seeded(MicrophoneStatus.NotAllowed);
   Stream<MicrophoneStatus> get microphoneStatus => _microphoneStatusBehaviour.asBroadcastStream();
 
 
-  final BehaviorSubject<String> _recordingBehaviour = BehaviorSubject<String>(seedValue: '');
+  final BehaviorSubject<String> _recordingBehaviour = BehaviorSubject<String>.seeded('');
   Stream<String> get recordingFilePath => _recordingBehaviour.asBroadcastStream();
 
 

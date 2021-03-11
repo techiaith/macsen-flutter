@@ -56,16 +56,20 @@ class Alarm {
             'your other channel name',
             'your other channel description',
             icon: 'secondary_icon',
-            sound: RawResourceAndroidNotificationSound(
-                'alarm_alert_effect_soundbibledotcom_462520910'),
+            sound: RawResourceAndroidNotificationSound('alarm_alert_effect_soundbibledotcom_462520910'),
             largeIcon: DrawableResourceAndroidBitmap('sample_large_icon'),
             vibrationPattern: vibrationPattern,
-            color: const Color.fromARGB(255, 255, 0, 0));
+            color: const Color.fromARGB(255, 255, 0, 0)
+        );
 
-        var iOSPlatformChannelSpecifics =
-            new IOSNotificationDetails(sound: "slow_spring_board.aiff");
+        var iOSPlatformChannelSpecifics = new IOSNotificationDetails(
+            sound: "slow_spring_board.aiff"
+        );
+
         var platformChannelSpecifics = new NotificationDetails(
-            androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+            android: androidPlatformChannelSpecifics,
+            iOS: iOSPlatformChannelSpecifics
+        );
 
         await flutterLocalNotificationsPlugin.schedule(
             0,

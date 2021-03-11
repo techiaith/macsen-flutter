@@ -22,7 +22,7 @@ class ApplicationStateProvider extends InheritedWidget {
   ApplicationStateProvider({Key key, @required Widget child,})
     : super(key: key, child: child,);
 
-  static ApplicationBloc of(BuildContext context) => (context.inheritFromWidgetOfExactType(ApplicationStateProvider) as ApplicationStateProvider).bloc;
+  static ApplicationBloc of(BuildContext context) => (context.dependOnInheritedWidgetOfExactType<ApplicationStateProvider>()).bloc;
 
   @override
   bool updateShouldNotify(ApplicationStateProvider old){

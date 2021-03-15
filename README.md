@@ -1,6 +1,6 @@
 # Macsen - Ap cynorthwyydd llais Cymraeg / Welsh language voice assistant app.
 
-(click here to read this page in English)
+[click here to read this page in English](README_en.md)
 
 Mae Macsen yn ap cynorthwyydd llais Cymraeg cod agored ar gyfer ffonau symudol a
 thabledi Android ac iOS. Mae’n bosib siarad ar lafar gyda ap Macsen mewn Cymraeg 

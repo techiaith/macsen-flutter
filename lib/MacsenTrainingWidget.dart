@@ -63,7 +63,7 @@ class _MacsenTrainingState extends State<MacsenTrainingWidget>{
           ),
           Container(
             margin: EdgeInsets.only(top:20.0),
-            child: RaisedButton(
+            child: ElevatedButton (
               child: Text("Iawn", style: TextStyle(fontSize: 18.0)),
               onPressed: (){
                 appBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationReady);

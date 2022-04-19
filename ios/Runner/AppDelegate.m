@@ -6,6 +6,9 @@
 - (BOOL)application:(UIApplication *)application
     didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
+    if (@available(iOS 10.0, *)) {
+      [UNUserNotificationCenter currentNotificationCenter].delegate = (id<UNUserNotificationCenterDelegate>) self;
+    }
 
     self.macsenApp = [[FlutterMacsenMainActivity alloc]
                       initWithController:(FlutterViewController*)self.window.rootViewController];

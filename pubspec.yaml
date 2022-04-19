@@ -7,7 +7,10 @@ description: Macsen - Y Cynorthwyydd Personol Digidol Cymraeg
 # Both the version and the builder number may be overridden in flutter
 # build by specifying --build-name and --build-number, respectively.
 # Read more about versioning at semver.org.
-version: 1.0.0+1
+
+version: 22.3.14+1
+versionCode: 1
+versionName: 22.3.14
 
 environment:
   sdk: ">=2.0.0-dev.68.0 <3.0.0"
@@ -22,16 +25,16 @@ dependencies:
   #cupertino_icons: ^0.1.2
 
   crypto: ^3.0.0
-  flutter_local_notifications: ^5.0.0-nullsafety.0
   flutter_markdown: ^0.6.0
-  geolocator: ^7.0.1
+  geolocator: ^8.0.5
   http: ^0.13.0
   path_provider: ^2.0.1
-  rxdart: ^0.26.0
+  rxdart: ^0.27.3
   shared_preferences: ^2.0.3
   url_launcher: ^6.0.2
   uuid: ^3.0.1
-  webfeed: ^0.6.0
+  webfeed: ^0.7.0
+  hue_dart: ^0.3.0
 
 dev_dependencies:
   flutter_test:
@@ -49,6 +52,7 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  # audio contains alarm sound https://soundbible.com/1787-Annoying-Alarm-Clock.html
   assets:
       - assets/audio/
       - assets/markdown/

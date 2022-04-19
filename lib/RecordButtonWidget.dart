@@ -21,7 +21,6 @@ const MethodChannel platform = const MethodChannel('cymru.techiaith.flutter.macs
 
 class RecordButtonState extends State<RecordButtonWidget> {
 
-
   @override
   Widget build(BuildContext context) {
 
@@ -45,6 +44,7 @@ class RecordButtonState extends State<RecordButtonWidget> {
 
 
   IconData getMicrophoneIcon(MicrophoneStatus micStatus){
+
     if (micStatus == MicrophoneStatus.NotAllowed)
       return Icons.mic_off;
 
@@ -56,12 +56,15 @@ class RecordButtonState extends State<RecordButtonWidget> {
 
 
   Color getBackgroundColor(MicrophoneStatus micStatus){
+
     if (micStatus == MicrophoneStatus.Recording){
       return Colors.redAccent;
     }
+
     if (micStatus == MicrophoneStatus.NotAllowed){
       return Colors.red;
     }
+
     return Colors.teal;
   }
 

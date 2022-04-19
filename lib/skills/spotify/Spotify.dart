@@ -52,7 +52,14 @@ class Spotify{
 
 
   static Future<bool> isSpotifyInstalled() async {
-    return _native_spotify_api.invokeMethod("checkIsSpotifyInstalled");
+    Future<bool> inst;
+    try {
+      inst = _native_spotify_api.invokeMethod("checkIsSpotifyInstalled");
+    }
+    catch (e) {
+      print(e);
+    }
+    return inst;
   }
 
 

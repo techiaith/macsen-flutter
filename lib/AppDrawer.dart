@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:macsen/InformationPage.dart';
 import 'package:macsen/MozillaCommonVoicePage.dart';
 import 'package:macsen/ServersInformationPage.dart';
-
+import 'package:macsen/Golau.dart';
 
 class AppDrawer extends StatelessWidget {
 
@@ -83,6 +83,18 @@ class AppDrawer extends StatelessWidget {
                       Navigator.of(context).push(
                           MaterialPageRoute(
                               builder: (context) => MozillaCommonVoicePage()
+                          )
+                      );
+                    },
+                  ),
+                  ListTile(
+                    title: Text('Golau Phillips hue', style: TextStyle(fontSize: 22.0)),
+                    //subtitle: Text('(gwefan allanol)', style: TextStyle(fontSize: 12.0)),
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (context) => GolauPage()
                           )
                       );
                     },

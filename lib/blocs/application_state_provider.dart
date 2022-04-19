@@ -31,7 +31,7 @@ class ApplicationStateProvider extends InheritedWidget {
 
 }
 
-enum RecordingType { RequestRecording, SentenceRecording }
+enum RecordingType { RequestRecording, SentenceRecording, TranscribeRecording }
 enum ApplicationWaitState { ApplicationWaiting, ApplicationReady, ApplicationPerforming, ApplicationNotReady }
 
 enum PageChangeReason { Null, User, Application}
@@ -86,6 +86,9 @@ class ApplicationBloc extends BlocBase {
 
   final BehaviorSubject<String> _currentResponseUrlBehavior = BehaviorSubject<String>();
   Stream<String> get currentResponseUrl => _currentResponseUrlBehavior.asBroadcastStream();
+
+  final BehaviorSubject<String> _currentTranscribedTextBehavior = BehaviorSubject<String>();
+  Stream<String> get currentTranscribedText => _currentTranscribedTextBehavior.asBroadcastStream();
 
   final BehaviorSubject<ApplicationWaitState> _applicationWaitStateBehaviour = BehaviorSubject<ApplicationWaitState>();
   Stream<ApplicationWaitState> get onApplicationWaitStateChange => _applicationWaitStateBehaviour.asBroadcastStream();
@@ -157,13 +160,17 @@ class ApplicationBloc extends BlocBase {
 
 
     microphoneBloc.recordingFilePath.listen((filepath){
+
       if (filepath.length == 0)
         return;
 
       if (_recordingType==RecordingType.RequestRecording) {
         speechToTextBloc.recogniseFile.add(filepath);
       }
-      else {
+      else if (_recordingType==RecordingType.TranscribeRecording) {
+        speechToTextBloc.transcribeFile.add(filepath);
+      }
+      else if (_recordingType==RecordingType.SentenceRecording) {
         _applicationWaitStateBehaviour.add(ApplicationWaitState.ApplicationWaiting);
         getUniqueUID().then((uid){
           IntentRecording intentRecording = IntentRecording(uid,_recordedSentence,filepath);
@@ -178,6 +185,9 @@ class ApplicationBloc extends BlocBase {
       intentParsingBloc.determineIntent.add(recognizedText);
     });
 
+    speechToTextBloc.transcribeResult.listen((transcibedText) {
+      _currentTranscribedTextBehavior.add(transcibedText);
+    });
 
     // from TextualInputScreen
     _requestController.stream.listen((text){

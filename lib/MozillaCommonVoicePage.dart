@@ -45,7 +45,7 @@ class MozillaCommonVoiceState extends State<MozillaCommonVoicePage> {
               ),
               Container(
                 margin: EdgeInsets.only(top:20.0),
-                child: RaisedButton(
+                child: ElevatedButton (
                   onPressed: _launchCommonVoiceUrl,
                   child: Text("Agor CommonVoice",
                       style: TextStyle(fontSize: 24.0)),

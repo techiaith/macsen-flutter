@@ -33,6 +33,8 @@ class MicrophoneBloc implements BlocBase {
   ApplicationBloc applicationBloc;
 
   MicrophoneStatus _micStatus = MicrophoneStatus.NotAllowed;
+  bool _timerCancelled = false;
+
   String nativeRecordingResult;
 
 
@@ -144,10 +146,20 @@ class MicrophoneBloc implements BlocBase {
       nativeInvokeResult = await _native_mic_record_channel.invokeMethod('startRecording', <String, dynamic>{
         'filename': 'tmpwavfile.wav'
       });
+
       if (nativeInvokeResult == "OK"){
+        _timerCancelled = false;
         _micStatus=MicrophoneStatus.Recording;
         _microphoneStatusBehaviour.add(MicrophoneStatus.Recording);
+
+        print ("staring 10 second timer for recording");
+        Timer(Duration(seconds: 10), (){
+          if (_timerCancelled==false)
+            _onRecordStateChange(true);
+        });
+
       }
+
     } on PlatformException catch (e) {
       print(e.message);
       _microphoneStatusBehaviour.add(MicrophoneStatus.Available);
@@ -165,6 +177,7 @@ class MicrophoneBloc implements BlocBase {
         print (e.message);
         _recordingBehaviour.add('');
       }
+      _timerCancelled = true;
       _micStatus=MicrophoneStatus.Available;
       _microphoneStatusBehaviour.add(MicrophoneStatus.Available);
     }

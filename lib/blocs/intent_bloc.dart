@@ -9,7 +9,8 @@ import 'package:macsen/blocs/application_state_provider.dart';
 
 import 'package:macsen/skills/question_answer/QA.dart';
 import 'package:macsen/skills/spotify/Spotify.dart';
-import 'package:macsen/skills/alarm/Alarm.dart';
+import 'package:macsen/skills/alarm/Clock.dart';
+import 'package:macsen/skills/golau/golau.dart';
 
 
 //
@@ -62,7 +63,10 @@ class IntentParsingBloc implements BlocBase {
   String _currentPerformingIntent;
 
   // Skills
-  Alarm _alarm;
+  Clock _alarmClock;
+  Clock _timerClock;
+
+
 
   // Sinks
   final StreamController<String> _determineIntentController = StreamController<String>();
@@ -141,10 +145,18 @@ class IntentParsingBloc implements BlocBase {
       _longitude=longitude;
     });
 
+    //
+    _alarmClock = new Clock(_applicationBloc);
+    _alarmClock.init("alarm","Annoying_Alarm_Clock-UncleKornicob-420925725.wav");
+
+    _timerClock = new Clock(_applicationBloc);
+    _timerClock.init("timer","Annoying_Alarm_Clock-UncleKornicob-420925725.wav");
+
   }
 
 
   void _onDetermineIntent(String text){
+
     if (text.length > 0) {
       _applicationBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationWaiting);
       _currentQuestionCommandBehavior.add(text);
@@ -158,7 +170,8 @@ class IntentParsingBloc implements BlocBase {
           return;
         }
       });
-
+    } else {
+      _applicationBloc.raiseApplicationException.add("Methwyd clywed unrhyw gwestiwn neu orchymyn.");
     }
   }
 
@@ -229,19 +242,32 @@ class IntentParsingBloc implements BlocBase {
 
 
   void _dispatchToSkill(String jsonString){
+
     var jsonResult = JSON.jsonDecode(jsonString);
     bool success = jsonResult["success"];
-    if (success){
+    if (success) {
       _applicationBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationPerforming);
       _currentPerformingIntent=jsonResult["intent"];
+
       if (_currentPerformingIntent=="chwaraea.cerddoriaeth") {
         Spotify.execute(_applicationBloc, jsonString);
       } else if (_currentPerformingIntent=="gosoda.larwm"){
         //
-        _alarm = new Alarm(_applicationBloc);
-        _alarm.execute(jsonString);
+        _alarmClock = new Clock(_applicationBloc);
+        _alarmClock.setAlarm(jsonString);
+
         _applicationBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationReady);
-      } else {
+
+      } else if (_currentPerformingIntent=="amsera") {
+        //
+        _timerClock.setTimer(jsonString);
+
+        _applicationBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationReady);
+      } else if (_currentPerformingIntent=="rho_golau_i_ffwrdd_neu_ymlaen") {
+        Golau.execute(_applicationBloc, jsonString);
+        _applicationBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationReady);
+      }
+      else {
         QASkill.execute(_applicationBloc, jsonString);
       }
     } else {

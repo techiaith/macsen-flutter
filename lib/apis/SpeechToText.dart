@@ -10,11 +10,20 @@ class SpeechToText {
 
   final String _apiAuthorityUrl = 'api.techiaith.org';
 
-  final String _apiPath = "deepspeech/macsen/";
+  final String _recognizeApiPath = "coqui-stt/macsen/";
+  final String _transcribeApiPath = "wav2vec2/";
 
   //
   Future<String> transcribe(String recordedFilePath) async {
+    return _speech_to_text(recordedFilePath, _transcribeApiPath);
+  }
 
+  //
+  Future<String> recognize(String recordedFilePath) async {
+    return _speech_to_text(recordedFilePath, _recognizeApiPath);
+  }
+
+  Future<String> _speech_to_text(String recordedFilePath, String apiPath) async {
     String result = '';
 
     File fileToUpload = new File(recordedFilePath);
@@ -28,7 +37,7 @@ class SpeechToText {
       MultipartRequest request = new MultipartRequest("POST",
           new Uri.https(
               _apiAuthorityUrl,
-              _apiPath + "speech_to_text/"
+              apiPath + "speech_to_text/"
           ));
 
       request.files.add(
@@ -57,12 +66,14 @@ class SpeechToText {
       return null;
     }
 
+    print (result);
+
     return result;
 
   }
 
   Future<String> getVersions() async {
-    return await httpsGet(_apiPath + 'versions/');
+    return await httpsGet(_recognizeApiPath + 'versions/');
   }
 
 

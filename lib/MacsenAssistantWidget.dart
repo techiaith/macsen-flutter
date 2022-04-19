@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:macsen/blocs/application_state_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'package:macsen/blocs/application_state_provider.dart';
+
 
 class MacsenAssistantWidget extends StatefulWidget {
   MacsenAssistantWidget({
@@ -24,8 +26,8 @@ class _MacsenWidgetState extends State<MacsenAssistantWidget> {
         builder: (context, snapshot) => _buildPage(context, snapshot.data));
   }
 
-  Widget _buildPage(
-      BuildContext context, PageChangeEventInformation pageChangeInfo) {
+  Widget _buildPage(BuildContext context,
+                    PageChangeEventInformation pageChangeInfo) {
     if (pageChangeInfo.pageIndex == 0 &&
         pageChangeInfo.reason == PageChangeReason.Application) {
       _isConfirmedToProceed = true;
@@ -89,7 +91,7 @@ class _MacsenWidgetState extends State<MacsenAssistantWidget> {
       return new Container();
 
     if (url.length > 0) {
-      return RaisedButton(
+      return ElevatedButton(
           onPressed: () {
             appBloc.stopPerformingCurrentIntent.add(true);
             _launchUrl(url);
@@ -110,8 +112,8 @@ class _MacsenWidgetState extends State<MacsenAssistantWidget> {
 
   Widget _buildIntroduction(BuildContext context) {
     final ApplicationBloc appBloc = ApplicationStateProvider.of(context);
-    appBloc.changeApplicationWaitState
-        .add(ApplicationWaitState.ApplicationNotReady);
+
+    appBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationNotReady);
 
     double text_size = 18.0;
 
@@ -160,18 +162,20 @@ class _MacsenWidgetState extends State<MacsenAssistantWidget> {
           ),
           Container(
               margin: EdgeInsets.only(top: 20.0),
-              child: RaisedButton(
+              child: ElevatedButton(
                 onPressed: () {
-                  appBloc.changeApplicationWaitState
-                      .add(ApplicationWaitState.ApplicationReady);
-                  _onIawnButtonPressed();
+                  _onIawnButtonPressed(context);
                 },
                 child: Text("Iawn", style: TextStyle(fontSize: 18.0)),
               ))
         ]));
   }
 
-  void _onIawnButtonPressed() {
+  void _onIawnButtonPressed(BuildContext context) {
+    final ApplicationBloc appBloc = ApplicationStateProvider.of(context);
+
+    appBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationReady);
+
     setState(() {
       _isConfirmedToProceed = true;
     });

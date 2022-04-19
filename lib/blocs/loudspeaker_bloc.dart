@@ -35,7 +35,12 @@ class SoundFile {
   String text;
   String url;
 
-  SoundFile(this.wavFilePath, this.text, this.url);
+  SoundFile(String wavFilePath, String text, String url){
+    this.wavFilePath=wavFilePath;
+    this.text=text;
+    this.url=url;
+  }
+
 }
 
 
@@ -173,9 +178,11 @@ class LoudSpeakerBloc implements BlocBase {
 
 
   void _onPlayWavFile(SoundFile soundFile){
-    if (soundFile.wavFilePath.length > 0) {
-      _soundsQueue.add(soundFile);
-      _playNextInQueue();
+    if (soundFile!=null){
+      if (soundFile.wavFilePath.length > 0) {
+        _soundsQueue.add(soundFile);
+        _playNextInQueue();
+      }
     }
   }
 

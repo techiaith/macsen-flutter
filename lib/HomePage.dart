@@ -1,11 +1,12 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:flutter/material.dart';
 
 import 'RecordButtonWidget.dart';
 import 'StopButtonWidget.dart';
 import 'AppDrawer.dart';
+
 import 'MacsenAssistantWidget.dart';
-import 'MacsenTextualRequestWidget.dart';
+import 'MacsenTranscribeWidget.dart';
 import 'MacsenTrainingWidget.dart';
 import 'MacsenHelpWidget.dart';
 
@@ -23,10 +24,11 @@ class HomePageState extends State<HomePage> {
 
   final List<Widget> _children = [
     MacsenAssistantWidget(),
-    MacsenTextualRequestWidget(),
+    MacsenTranscribeWidget(),
     MacsenTrainingWidget(),
     MacsenHelpWidget()
   ];
+
 
   String _currentDialogMessage;
 
@@ -87,18 +89,19 @@ class HomePageState extends State<HomePage> {
             stream: appBloc.onCurrentApplicationPageChange,
             builder: (context, snapshot) =>
               BottomNavigationBar(
+                selectedItemColor: Colors.black87,
+                unselectedItemColor: Colors.grey,
                 currentIndex: snapshot.data.pageIndex,
                 onTap: onTabPressed,
                 type: BottomNavigationBarType.fixed,
-                fixedColor: Colors.black87,
                 items: [
                   BottomNavigationBarItem(
                     icon: Icon(Icons.mic),
                     label: "Siarad",
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.chat),
-                    label: "Teipio",
+                    icon: Icon(Icons.messenger_outline),
+                    label: "Trawsgrifio",
                   ),
                   BottomNavigationBarItem(
                     icon: Icon(Icons.assignment),
@@ -144,10 +147,10 @@ class HomePageState extends State<HomePage> {
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Problem",style: TextStyle(fontSize: 24.0)),
+        title: Text("Gwybodaeth",style: TextStyle(fontSize: 24.0)),
         content: Text(message, style: TextStyle(fontSize: 24.0)),
         actions: <Widget>[
-          FlatButton(
+          ElevatedButton(
             child: Text('Iawn', style: TextStyle(fontSize: 24.0)),
             onPressed: (){
               _currentDialogMessage='';
@@ -165,27 +168,37 @@ class HomePageState extends State<HomePage> {
                             PageChangeEventInformation pageChange,
                             ApplicationWaitState appState){
     int currentPageIndex=pageChange.pageIndex;
-    if ((currentPageIndex==0) || (currentPageIndex==2)){
+    if ((currentPageIndex==0) || (currentPageIndex==1) || (currentPageIndex==2)){
 
       if (appState==ApplicationWaitState.ApplicationWaiting){
         return new CircularProgressIndicator();
-      } else if (appState==ApplicationWaitState.ApplicationPerforming){
+      }
+      else if (appState==ApplicationWaitState.ApplicationPerforming){
         return new StopButtonWidget(
           onPressed: onStopRequestPress,
         );
-      } else if (appState==ApplicationWaitState.ApplicationNotReady){
+      }
+      else if (appState==ApplicationWaitState.ApplicationNotReady){
         return Container();
       }
 
+      //
       if (currentPageIndex==0) {
         return new RecordButtonWidget(
           onPressed: onRequestPress,
         );
-      } else if (currentPageIndex==2) {
+      }
+      else if (currentPageIndex==1){
+        return new RecordButtonWidget(
+          onPressed: onTranscribePress
+        );
+      }
+      else if (currentPageIndex==2) {
         return new RecordButtonWidget(
             onPressed: onRecordPress
         );
       }
+
     }
 
     return Container();
@@ -215,5 +228,10 @@ class HomePageState extends State<HomePage> {
     return null;
   }
 
-
+  VoidCallback onTranscribePress() {
+    final ApplicationBloc appBloc = ApplicationStateProvider.of(context);
+    appBloc.recordingType.add(RecordingType.TranscribeRecording);
+    appBloc.microphoneBloc.record.add(true);
+    return null;
+  }
 }

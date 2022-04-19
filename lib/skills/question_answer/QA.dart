@@ -40,6 +40,8 @@ class QASkill {
     outString = outString.replaceAll("S4C", "es pedwar ecc");
     outString = outString.replaceAll("Golwg 360", "Golwg tri chwech dimm");
     outString = outString.replaceAll("OpenWeather", "OopenWeddar");
+    outString = outString.replaceAll(" y ", " uh ");
+    outString = outString.replaceAll("Y ", "Uh ");
     outString = outString.replaceAll("k", "c");
     outString = outString.replaceAll("", "");
     return outString;

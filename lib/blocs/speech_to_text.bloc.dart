@@ -29,6 +29,9 @@ class SpeechToTextBloc implements BlocBase {
   final StreamController<String> _recogniseWavFileController = StreamController<String>();
   Sink<String> get recogniseFile => _recogniseWavFileController.sink;
 
+  final StreamController<String> _transcribeWavFileController = StreamController<String>();
+  Sink<String> get transcribeFile => _transcribeWavFileController.sink;
+
   final StreamController<bool> _serverInformationController = StreamController<bool>();
   Sink<bool> get getServerInformation => _serverInformationController.sink;
 
@@ -36,6 +39,9 @@ class SpeechToTextBloc implements BlocBase {
   // Streams
   final BehaviorSubject<String> _sttResultBehaviour = BehaviorSubject<String>();
   Stream<String> get sttResult => _sttResultBehaviour.asBroadcastStream();
+
+  final BehaviorSubject<String> _transciptionResultBehaviour = BehaviorSubject<String>();
+  Stream<String> get transcribeResult => _transciptionResultBehaviour.asBroadcastStream();
 
   final BehaviorSubject<String> _modelNameBehaviour = BehaviorSubject<String>();
   Stream<String> get modelName => _modelNameBehaviour.asBroadcastStream();
@@ -47,6 +53,7 @@ class SpeechToTextBloc implements BlocBase {
   void dispose(){
     _recogniseWavFileController.close();
     _serverInformationController.close();
+    _transcribeWavFileController.close();
   }
 
 
@@ -59,6 +66,11 @@ class SpeechToTextBloc implements BlocBase {
         _onRecognizeWavFile(wavFilePath);
     });
 
+    _transcribeWavFileController.stream.listen((wavFilePath){
+      if (wavFilePath.length>0)
+        _onTranscribeWavFile(wavFilePath);
+    });
+
     _serverInformationController.stream.listen((add){
       _onGetServerInformation();
     });
@@ -68,7 +80,7 @@ class SpeechToTextBloc implements BlocBase {
 
   void _onRecognizeWavFile(String wavFilePath){
     _applicationBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationWaiting);
-    _sttApi.transcribe(wavFilePath).then((jsonStringResult) {
+    _sttApi.recognize(wavFilePath).then((jsonStringResult) {
       if (jsonStringResult.length == 0){
         _applicationBloc.raiseApplicationException.add("Methwyd adnabod unrhyw gwestiwn neu orchymyn.");
         return;
@@ -82,6 +94,26 @@ class SpeechToTextBloc implements BlocBase {
     });
   }
 
+  void _onTranscribeWavFile(String wavFilePath){
+    _applicationBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationWaiting);
+    _sttApi.transcribe(wavFilePath).then((jsonStringResult){
+      if (jsonStringResult.length ==0){
+        _applicationBloc.raiseApplicationException.add("Methwyd trawsgrifio unrhyw destun o'r lleferydd");
+        return;
+      }
+      var jsonResult = JSON.jsonDecode(jsonStringResult);
+      bool success = jsonResult["success"];
+      if (success)
+      {
+        _applicationBloc.changeApplicationWaitState.add(ApplicationWaitState.ApplicationNotReady);
+        StringBuffer sb = new StringBuffer();
+        for (int t=0; t<jsonResult["transcripts"].length; t++){
+          sb.write(jsonResult["transcripts"][t]["text"]);
+        }
+        _transciptionResultBehaviour.add(sb.toString());
+      }
+    });
+  }
 
   void _onGetServerInformation(){
     _sttApi.getVersions().then((jsonStringResult) {
